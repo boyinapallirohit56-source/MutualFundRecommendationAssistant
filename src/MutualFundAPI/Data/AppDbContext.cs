@@ -20,6 +20,8 @@ public class AppDbContext : DbContext
     public DbSet<Portfolio> Portfolios => Set<Portfolio>();
     public DbSet<PortfolioHolding> PortfolioHoldings => Set<PortfolioHolding>();
     public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
+    public DbSet<WatchlistItem> WatchlistItems => Set<WatchlistItem>();
+    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

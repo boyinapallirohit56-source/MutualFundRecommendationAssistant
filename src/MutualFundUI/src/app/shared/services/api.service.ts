@@ -98,4 +98,47 @@ export class ApiService {
   runStressTest(scenarios?: any[]): Observable<any> {
     return this.http.post(`${this.apiUrl}/reports/stress-test`, scenarios ? { scenarios } : null);
   }
+
+  // Watchlist
+  getWatchlist(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/watchlist`);
+  }
+
+  addToWatchlist(mutualFundId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/watchlist`, { mutualFundId });
+  }
+
+  removeFromWatchlist(itemId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/watchlist/${itemId}`);
+  }
+
+  // Notifications
+  getNotifications(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/notifications`);
+  }
+
+  getNotificationCount(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/notifications/count`);
+  }
+
+  markNotificationRead(id: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/notifications/${id}/read`, {});
+  }
+
+  markAllNotificationsRead(): Observable<any> {
+    return this.http.put(`${this.apiUrl}/notifications/read-all`, {});
+  }
+
+  // Admin
+  getAdminUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admin/users`);
+  }
+
+  updateUserStatus(userId: number, isActive: boolean): Observable<any> {
+    return this.http.put(`${this.apiUrl}/admin/users/${userId}/status`, { isActive });
+  }
+
+  getAdminAnalytics(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/admin/analytics`);
+  }
 }

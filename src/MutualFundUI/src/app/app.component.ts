@@ -14,8 +14,10 @@ import { AuthService } from './shared/services/auth.service';
         <a routerLink="/dashboard">Dashboard</a>
         <a routerLink="/portfolio">Portfolio</a>
         <a routerLink="/funds">Funds</a>
+        <a routerLink="/watchlist">Watchlist</a>
         <a routerLink="/chat">AI Chat</a>
         <a routerLink="/stress-test">Stress Test</a>
+        <a routerLink="/admin" *ngIf="isAdmin()">Admin</a>
         <a (click)="logout()" style="cursor:pointer;color:#dc2626">Logout</a>
       </div>
     </nav>
@@ -27,5 +29,10 @@ export class AppComponent {
 
   logout() {
     this.authService.logout();
+  }
+
+  isAdmin(): boolean {
+    const user = this.authService.getUser();
+    return user?.role === 'Admin';
   }
 }

@@ -22,6 +22,9 @@ builder.Services.AddScoped<AIChatService>();
 builder.Services.AddScoped<PortfolioService>();
 builder.Services.AddScoped<FundService>();
 builder.Services.AddScoped<ReportService>();
+builder.Services.AddScoped<WatchlistService>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<AdminService>();
 
 // HttpClient for OpenAI
 builder.Services.AddHttpClient("OpenAI");

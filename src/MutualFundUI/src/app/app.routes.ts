@@ -14,5 +14,7 @@ export const routes: Routes = [
   { path: 'funds/:id', loadComponent: () => import('./funds/fund-factsheet.component').then(m => m.FundFactsheetComponent), canActivate: [authGuard] },
   { path: 'chat', loadComponent: () => import('./chat/chat.component').then(m => m.ChatComponent), canActivate: [authGuard] },
   { path: 'stress-test', loadComponent: () => import('./stress-test/stress-test.component').then(m => m.StressTestComponent), canActivate: [authGuard] },
+  { path: 'watchlist', loadComponent: () => import('./watchlist/watchlist.component').then(m => m.WatchlistComponent), canActivate: [authGuard] },
+  { path: 'admin', loadComponent: () => import('./admin/admin.component').then(m => m.AdminComponent), canActivate: [authGuard] },
   { path: '**', redirectTo: '/login' }
 ];
