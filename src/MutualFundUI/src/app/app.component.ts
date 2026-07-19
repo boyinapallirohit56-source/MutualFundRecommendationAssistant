@@ -12,8 +12,10 @@ import { AuthService } from './shared/services/auth.service';
       <a class="navbar-brand" routerLink="/dashboard">MF Advisor</a>
       <div class="navbar-links">
         <a routerLink="/dashboard">Dashboard</a>
-        <a routerLink="/onboarding">Profile</a>
-        <a routerLink="/risk-assessment">Assessment</a>
+        <a routerLink="/portfolio">Portfolio</a>
+        <a routerLink="/funds">Funds</a>
+        <a routerLink="/chat">AI Chat</a>
+        <a routerLink="/stress-test">Stress Test</a>
         <a (click)="logout()" style="cursor:pointer;color:#dc2626">Logout</a>
       </div>
     </nav>

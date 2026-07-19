@@ -18,6 +18,13 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<RiskAssessmentService>();
 builder.Services.AddScoped<RecommendationService>();
+builder.Services.AddScoped<AIChatService>();
+builder.Services.AddScoped<PortfolioService>();
+builder.Services.AddScoped<FundService>();
+builder.Services.AddScoped<ReportService>();
+
+// HttpClient for OpenAI
+builder.Services.AddHttpClient("OpenAI");
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

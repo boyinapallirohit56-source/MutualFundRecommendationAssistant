@@ -19,6 +19,7 @@ public class AppDbContext : DbContext
     public DbSet<MutualFund> MutualFunds => Set<MutualFund>();
     public DbSet<Portfolio> Portfolios => Set<Portfolio>();
     public DbSet<PortfolioHolding> PortfolioHoldings => Set<PortfolioHolding>();
+    public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
