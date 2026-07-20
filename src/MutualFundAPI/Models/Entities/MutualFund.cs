@@ -15,5 +15,12 @@ public class MutualFund
     public decimal? AUM { get; set; } // in Crores
     public string? FundManager { get; set; }
     public decimal? Rating { get; set; } // 1-5 star
+    public decimal? SharpeRatio { get; set; }
+    public decimal? Alpha { get; set; }
+    public decimal? Beta { get; set; }
+    public decimal? StandardDeviation { get; set; }
+    public decimal? ExitLoad { get; set; } // percentage
+    public string? Benchmark { get; set; }
+    public decimal? RollingReturns3Y { get; set; }
     public bool IsActive { get; set; } = true;
 }

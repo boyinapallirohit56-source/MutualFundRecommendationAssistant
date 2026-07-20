@@ -5,9 +5,25 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MutualFundAPI.Data;
 using MutualFundAPI.Data.Seeders;
+using MutualFundAPI.Middleware;
 using MutualFundAPI.Services;
+using Serilog;
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", Serilog.Events.LogEventLevel.Warning)
+    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .WriteTo.File("logs/app-.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
+    .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Use Serilog
+builder.Host.UseSerilog();
 
 // Database
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -15,6 +31,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Services
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<RiskAssessmentService>();
 builder.Services.AddScoped<RecommendationService>();
@@ -28,8 +45,9 @@ builder.Services.AddScoped<AdminService>();
 builder.Services.AddScoped<FileUploadService>();
 builder.Services.AddScoped<PdfReportService>();
 builder.Services.AddScoped<AmfiDataService>();
+builder.Services.AddScoped<DashboardService>();
 
-// HttpClient for OpenAI
+// HttpClient for external APIs
 builder.Services.AddHttpClient("OpenAI");
 builder.Services.AddHttpClient("AMFI");
 
@@ -107,15 +125,20 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Middleware pipeline
+app.UseGlobalExceptionHandler(); // Custom exception handling — must be first
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseSerilogRequestLogging(); // Log all HTTP requests
+
 app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+Log.Information("Application started successfully");
 app.Run();

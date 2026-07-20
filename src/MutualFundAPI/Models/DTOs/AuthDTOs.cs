@@ -19,6 +19,13 @@ public class AuthResponseDTO
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+    public bool IsEmailVerified { get; set; } = true;
+    public string? Message { get; set; }
+}
+
+public class ResendVerificationDTO
+{
+    public string Email { get; set; } = string.Empty;
 }
 
 public class ForgotPasswordDTO

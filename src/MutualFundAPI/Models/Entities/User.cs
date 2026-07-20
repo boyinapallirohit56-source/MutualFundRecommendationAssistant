@@ -9,6 +9,9 @@ public class User
     public string Role { get; set; } = "User"; // User or Admin
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public bool IsActive { get; set; } = true;
+    public bool IsEmailVerified { get; set; } = false;
+    public string? EmailVerificationToken { get; set; }
+    public DateTime? EmailVerificationExpiry { get; set; }
 
     // Navigation
     public UserProfile? Profile { get; set; }

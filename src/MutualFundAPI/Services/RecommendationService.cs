@@ -8,10 +8,12 @@ namespace MutualFundAPI.Services;
 public class RecommendationService
 {
     private readonly AppDbContext _context;
+    private readonly NotificationService _notificationService;
 
-    public RecommendationService(AppDbContext context)
+    public RecommendationService(AppDbContext context, NotificationService notificationService)
     {
         _context = context;
+        _notificationService = notificationService;
     }
 
     public async Task<RecommendationResponseDTO?> GenerateRecommendation(int userId)
@@ -43,6 +45,12 @@ public class RecommendationService
 
         _context.Recommendations.Add(recommendation);
         await _context.SaveChangesAsync();
+
+        // Auto-trigger notification
+        await _notificationService.CreateNotification(userId,
+            "New Recommendation Generated",
+            $"Your {assessment.RiskProfile} allocation has been prepared with fund suggestions. View it on your dashboard.",
+            "recommendation");
 
         // Create allocations with suggested funds
         foreach (var rule in rules.Where(r => r.Percentage > 0))
