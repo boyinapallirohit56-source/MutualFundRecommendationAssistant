@@ -22,6 +22,12 @@ public class AppDbContext : DbContext
     public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
     public DbSet<WatchlistItem> WatchlistItems => Set<WatchlistItem>();
     public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<RiskLevel> RiskLevels => Set<RiskLevel>();
+    public DbSet<GoalType> GoalTypes => Set<GoalType>();
+    public DbSet<FundCategory> FundCategories => Set<FundCategory>();
+    public DbSet<AssetClass> AssetClasses => Set<AssetClass>();
+    public DbSet<InvestmentType> InvestmentTypes => Set<InvestmentType>();
+    public DbSet<StressScenario> StressScenarios => Set<StressScenario>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
