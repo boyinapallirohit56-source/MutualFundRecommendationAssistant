@@ -25,9 +25,13 @@ builder.Services.AddScoped<ReportService>();
 builder.Services.AddScoped<WatchlistService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<AdminService>();
+builder.Services.AddScoped<FileUploadService>();
+builder.Services.AddScoped<PdfReportService>();
+builder.Services.AddScoped<AmfiDataService>();
 
 // HttpClient for OpenAI
 builder.Services.AddHttpClient("OpenAI");
+builder.Services.AddHttpClient("AMFI");
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

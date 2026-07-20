@@ -60,6 +60,47 @@ public class AuthService
         };
     }
 
+    public async Task<ForgotPasswordResponseDTO?> ForgotPassword(string email)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if (user == null)
+            return new ForgotPasswordResponseDTO { Message = "If the email exists, a reset link has been sent." };
+
+        // Generate reset token
+        var token = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
+
+        _context.Set<Models.Entities.PasswordResetToken>().Add(new Models.Entities.PasswordResetToken
+        {
+            UserId = user.Id,
+            Token = token,
+            ExpiresAt = DateTime.UtcNow.AddHours(1)
+        });
+        await _context.SaveChangesAsync();
+
+        // In production, this token would be sent via email
+        // For development, we return it in the response
+        return new ForgotPasswordResponseDTO
+        {
+            Message = "If the email exists, a reset link has been sent.",
+            ResetToken = token // Remove this in production — only for dev/testing
+        };
+    }
+
+    public async Task<bool> ResetPassword(string token, string newPassword)
+    {
+        var resetToken = await _context.Set<Models.Entities.PasswordResetToken>()
+            .Include(t => t.User)
+            .FirstOrDefaultAsync(t => t.Token == token && !t.IsUsed && t.ExpiresAt > DateTime.UtcNow);
+
+        if (resetToken == null) return false;
+
+        resetToken.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        resetToken.IsUsed = true;
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+
     private string GenerateToken(User user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));

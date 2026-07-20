@@ -12,10 +12,12 @@ namespace MutualFundAPI.Controllers;
 public class ReportController : ControllerBase
 {
     private readonly ReportService _reportService;
+    private readonly PdfReportService _pdfService;
 
-    public ReportController(ReportService reportService)
+    public ReportController(ReportService reportService, PdfReportService pdfService)
     {
         _reportService = reportService;
+        _pdfService = pdfService;
     }
 
     [HttpGet("risk-assessment")]
@@ -24,9 +26,19 @@ public class ReportController : ControllerBase
         var userId = GetUserId();
         var report = await _reportService.GenerateRiskAssessmentReport(userId);
         if (report == null)
-            return NotFound(new { message = "No risk assessment found. Please complete the questionnaire first." });
-
+            return NotFound(new { message = "No risk assessment found." });
         return Ok(report);
+    }
+
+    [HttpGet("risk-assessment/pdf")]
+    public async Task<IActionResult> GetRiskAssessmentPdf()
+    {
+        var userId = GetUserId();
+        var report = await _reportService.GenerateRiskAssessmentReport(userId);
+        if (report == null)
+            return NotFound(new { message = "No risk assessment found." });
+        var html = _pdfService.GenerateRiskAssessmentHtml(report);
+        return Content(html, "text/html");
     }
 
     [HttpGet("recommendation")]
@@ -35,9 +47,19 @@ public class ReportController : ControllerBase
         var userId = GetUserId();
         var report = await _reportService.GenerateRecommendationReport(userId);
         if (report == null)
-            return NotFound(new { message = "No recommendation found. Please generate a recommendation first." });
-
+            return NotFound(new { message = "No recommendation found." });
         return Ok(report);
+    }
+
+    [HttpGet("recommendation/pdf")]
+    public async Task<IActionResult> GetRecommendationPdf()
+    {
+        var userId = GetUserId();
+        var report = await _reportService.GenerateRecommendationReport(userId);
+        if (report == null)
+            return NotFound(new { message = "No recommendation found." });
+        var html = _pdfService.GenerateRecommendationHtml(report);
+        return Content(html, "text/html");
     }
 
     [HttpGet("portfolio")]
@@ -47,16 +69,24 @@ public class ReportController : ControllerBase
         var report = await _reportService.GeneratePortfolioReport(userId);
         if (report == null)
             return NotFound(new { message = "No portfolio found." });
-
         return Ok(report);
+    }
+
+    [HttpGet("portfolio/pdf")]
+    public async Task<IActionResult> GetPortfolioPdf()
+    {
+        var userId = GetUserId();
+        var report = await _reportService.GeneratePortfolioReport(userId);
+        if (report == null)
+            return NotFound(new { message = "No portfolio found." });
+        var html = _pdfService.GeneratePortfolioHtml(report);
+        return Content(html, "text/html");
     }
 
     [HttpPost("stress-test")]
     public async Task<IActionResult> RunStressTest([FromBody] StressTestRequestDTO? request)
     {
         var userId = GetUserId();
-
-        // If no custom scenarios provided, use defaults
         request ??= new StressTestRequestDTO
         {
             Scenarios = new List<StressScenarioDTO>
@@ -68,9 +98,28 @@ public class ReportController : ControllerBase
                 new() { Name = "Financial Crisis (-50%)", PercentageChange = -50 }
             }
         };
-
         var report = await _reportService.GenerateStressTestReport(userId, request);
         return Ok(report);
+    }
+
+    [HttpPost("stress-test/pdf")]
+    public async Task<IActionResult> RunStressTestPdf([FromBody] StressTestRequestDTO? request)
+    {
+        var userId = GetUserId();
+        request ??= new StressTestRequestDTO
+        {
+            Scenarios = new List<StressScenarioDTO>
+            {
+                new() { Name = "10% Market Decline", PercentageChange = -10 },
+                new() { Name = "20% Market Decline", PercentageChange = -20 },
+                new() { Name = "30% Market Decline", PercentageChange = -30 },
+                new() { Name = "Bull Market (+20%)", PercentageChange = 20 },
+                new() { Name = "Financial Crisis (-50%)", PercentageChange = -50 }
+            }
+        };
+        var report = await _reportService.GenerateStressTestReport(userId, request);
+        var html = _pdfService.GenerateStressTestHtml(report);
+        return Content(html, "text/html");
     }
 
     private int GetUserId()

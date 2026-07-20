@@ -28,6 +28,7 @@ public class AppDbContext : DbContext
     public DbSet<AssetClass> AssetClasses => Set<AssetClass>();
     public DbSet<InvestmentType> InvestmentTypes => Set<InvestmentType>();
     public DbSet<StressScenario> StressScenarios => Set<StressScenario>();
+    public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
