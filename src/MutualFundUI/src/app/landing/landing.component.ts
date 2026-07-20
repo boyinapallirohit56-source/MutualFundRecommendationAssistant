@@ -8,186 +8,194 @@ import { RouterLink } from '@angular/router';
   imports: [CommonModule, RouterLink],
   template: `
     <div class="landing">
-      <!-- Hero Section -->
+      <!-- Navigation -->
       <nav class="landing-nav">
-        <span class="brand">MF Advisor</span>
-        <div class="nav-actions">
-          <a routerLink="/login" class="btn btn-secondary">Sign In</a>
-          <a routerLink="/register" class="btn btn-primary">Get Started</a>
+        <div class="nav-inner">
+          <span class="brand">
+            <span class="brand-icon">&#9670;</span>
+            WealthAI
+          </span>
+          <div class="nav-actions">
+            <a routerLink="/login" class="btn btn-ghost">Sign In</a>
+            <a routerLink="/register" class="btn btn-primary">Get Started Free</a>
+          </div>
         </div>
       </nav>
 
+      <!-- Hero -->
       <section class="hero">
+        <div class="hero-bg"></div>
         <div class="hero-content">
-          <span class="hero-badge">AI-Powered Investment Platform</span>
-          <h1>Smart Mutual Fund<br>Recommendations</h1>
-          <p>
-            Don't know where to invest? Answer a few questions about your financial
-            situation and get personalized mutual fund recommendations with AI-powered
-            explanations in simple language.
+          <div class="hero-badge animate-in">
+            <span class="badge-dot"></span>
+            AI-Powered Wealth Management
+          </div>
+          <h1 class="hero-title animate-in">
+            Invest Smarter with<br>
+            <span class="gradient-text">Intelligent Recommendations</span>
+          </h1>
+          <p class="hero-desc animate-in">
+            Our AI analyzes your financial profile, risk tolerance, and goals to deliver
+            personalized mutual fund allocations — explained in language you understand.
           </p>
-          <div class="hero-actions">
-            <a routerLink="/register" class="btn btn-primary btn-lg">Start Free Assessment</a>
-            <a routerLink="/login" class="btn btn-outline btn-lg">I have an account</a>
+          <div class="hero-actions animate-in">
+            <a routerLink="/register" class="btn btn-primary btn-lg hero-cta">
+              Begin Your Investment Journey
+              <span class="cta-arrow">&#8594;</span>
+            </a>
+            <a routerLink="/login" class="btn btn-outline btn-lg">Sign In</a>
           </div>
-          <div class="hero-stats">
-            <div class="hero-stat">
-              <strong>15+</strong>
-              <span>Risk Questions</span>
-            </div>
-            <div class="hero-stat">
-              <strong>18+</strong>
-              <span>Mutual Funds</span>
-            </div>
-            <div class="hero-stat">
-              <strong>6</strong>
-              <span>Asset Classes</span>
-            </div>
-            <div class="hero-stat">
-              <strong>AI</strong>
-              <span>Powered</span>
+          <div class="hero-trust">
+            <span>&#128274; Bank-grade security</span>
+            <span>&#9889; AI-powered insights</span>
+            <span>&#128202; Data-driven allocation</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- How It Works -->
+      <section class="section how-it-works">
+        <div class="section-inner">
+          <div class="section-header">
+            <span class="section-label">How It Works</span>
+            <h2>Your Investment Journey in 4 Steps</h2>
+            <p>From understanding your goals to receiving personalized recommendations</p>
+          </div>
+          <div class="steps-grid">
+            <div class="step-card" *ngFor="let step of steps; let i = index">
+              <div class="step-number">{{ i + 1 }}</div>
+              <div class="step-line" *ngIf="i < 3"></div>
+              <h3>{{ step.title }}</h3>
+              <p>{{ step.desc }}</p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Features Section -->
-      <section class="features">
-        <div class="features-container">
-          <h2>How It Works</h2>
-          <p class="features-subtitle">Four simple steps to your personalized investment plan</p>
-
-          <div class="steps">
-            <div class="step">
-              <div class="step-num">1</div>
-              <h3>Tell Us About You</h3>
-              <p>Enter your financial details, income, savings, goals, and investment duration</p>
-            </div>
-            <div class="step">
-              <div class="step-num">2</div>
-              <h3>Take Risk Assessment</h3>
-              <p>Answer 15 questions about your risk tolerance and investment behaviour</p>
-            </div>
-            <div class="step">
-              <div class="step-num">3</div>
-              <h3>Get Recommendations</h3>
-              <p>Receive a personalized asset allocation with specific fund suggestions</p>
-            </div>
-            <div class="step">
-              <div class="step-num">4</div>
-              <h3>Understand Why</h3>
-              <p>AI explains every recommendation in simple language you can understand</p>
-            </div>
+      <!-- Features -->
+      <section class="section features">
+        <div class="section-inner">
+          <div class="section-header">
+            <span class="section-label">Platform Features</span>
+            <h2>Everything You Need to Invest Confidently</h2>
           </div>
-        </div>
-      </section>
-
-      <!-- Feature Cards -->
-      <section class="feature-cards">
-        <div class="features-container">
-          <h2>Everything You Need</h2>
-          <div class="cards-grid">
-            <div class="feature-card">
-              <div class="fc-icon">&#128202;</div>
-              <h3>Risk Assessment</h3>
-              <p>15 carefully designed questions to determine your exact risk profile</p>
-            </div>
-            <div class="feature-card">
-              <div class="fc-icon">&#127919;</div>
-              <h3>Smart Allocation</h3>
-              <p>AI-driven fund selection across Equity, Debt, Gold, and more</p>
-            </div>
-            <div class="feature-card">
-              <div class="fc-icon">&#128200;</div>
-              <h3>Portfolio Analysis</h3>
-              <p>Upload your portfolio and get diversification score, overlap detection, and insights</p>
-            </div>
-            <div class="feature-card">
-              <div class="fc-icon">&#129302;</div>
-              <h3>AI Assistant</h3>
-              <p>Ask anything about investing and get simple, jargon-free explanations</p>
-            </div>
-            <div class="feature-card">
-              <div class="fc-icon">&#9888;&#65039;</div>
-              <h3>Stress Testing</h3>
-              <p>See how your portfolio would react in market crashes and corrections</p>
-            </div>
-            <div class="feature-card">
-              <div class="fc-icon">&#128214;</div>
-              <h3>Reports</h3>
-              <p>Download detailed PDF reports of your assessment, recommendations, and analysis</p>
+          <div class="features-grid">
+            <div class="feature-card" *ngFor="let feature of features">
+              <div class="feature-icon">{{ feature.icon }}</div>
+              <h3>{{ feature.title }}</h3>
+              <p>{{ feature.desc }}</p>
             </div>
           </div>
         </div>
       </section>
 
       <!-- CTA -->
-      <section class="cta">
-        <h2>Ready to Start Investing Smart?</h2>
-        <p>Join thousands of first-time investors making informed decisions</p>
-        <a routerLink="/register" class="btn btn-primary btn-lg">Create Free Account</a>
+      <section class="section cta-section">
+        <div class="cta-card">
+          <h2>Ready to Make Smarter Investment Decisions?</h2>
+          <p>Join investors who trust AI to guide their wealth creation journey</p>
+          <a routerLink="/register" class="btn btn-primary btn-lg">Create Free Account</a>
+        </div>
       </section>
 
       <!-- Footer -->
       <footer class="landing-footer">
-        <p>Mutual Fund Advisor &copy; 2026 | For educational purposes only, not financial advice</p>
+        <div class="footer-inner">
+          <span class="footer-brand">&#9670; WealthAI</span>
+          <span class="footer-disclaimer">For educational purposes only. Not certified financial advice.</span>
+          <span class="footer-year">&copy; 2026</span>
+        </div>
       </footer>
     </div>
   `,
   styles: [`
     .landing { overflow-x: hidden; }
 
-    .landing-nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 48px; background: white; border-bottom: 1px solid #f3f4f6; }
-    .brand { font-size: 22px; font-weight: 800; background: linear-gradient(135deg, #1e40af, #0891b2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .nav-actions { display: flex; gap: 12px; }
+    /* Nav */
+    .landing-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(226,232,240,0.5); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 14px 32px; display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-size: 20px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px; }
+    .brand-icon { color: #6366f1; font-size: 22px; }
+    .nav-actions { display: flex; gap: 10px; }
 
-    .hero { background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0891b2 100%); padding: 80px 48px; text-align: center; color: white; }
-    .hero-content { max-width: 720px; margin: 0 auto; }
-    .hero-badge { display: inline-block; background: rgba(255,255,255,0.15); padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 24px; backdrop-filter: blur(4px); }
-    .hero h1 { font-size: 48px; font-weight: 800; line-height: 1.15; margin-bottom: 20px; letter-spacing: -1px; }
-    .hero p { font-size: 18px; color: rgba(255,255,255,0.85); max-width: 560px; margin: 0 auto 32px; line-height: 1.7; }
-    .hero-actions { display: flex; gap: 16px; justify-content: center; margin-bottom: 48px; }
-    .hero-actions .btn-outline { border-color: white; color: white; }
-    .hero-actions .btn-outline:hover { background: white; color: #1e40af; }
-    .hero-stats { display: flex; gap: 48px; justify-content: center; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.2); }
-    .hero-stat { text-align: center; }
-    .hero-stat strong { display: block; font-size: 24px; font-weight: 800; }
-    .hero-stat span { font-size: 13px; color: rgba(255,255,255,0.7); }
+    /* Hero */
+    .hero { position: relative; padding: 140px 32px 100px; text-align: center; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at top, rgba(99,102,241,0.06) 0%, transparent 60%), radial-gradient(ellipse at bottom right, rgba(6,182,212,0.04) 0%, transparent 50%); }
+    .hero-content { position: relative; max-width: 720px; margin: 0 auto; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(99,102,241,0.08); color: #6366f1; padding: 8px 16px; border-radius: 100px; font-size: 13px; font-weight: 600; margin-bottom: 24px; border: 1px solid rgba(99,102,241,0.15); }
+    .badge-dot { width: 6px; height: 6px; background: #6366f1; border-radius: 50%; animation: pulse 2s infinite; }
+    .hero-title { font-size: 56px; font-weight: 800; line-height: 1.1; color: #0f172a; letter-spacing: -2px; margin-bottom: 20px; }
+    .gradient-text { background: linear-gradient(135deg, #6366f1, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-desc { font-size: 18px; color: #64748b; max-width: 560px; margin: 0 auto 36px; line-height: 1.7; }
+    .hero-actions { display: flex; gap: 14px; justify-content: center; margin-bottom: 48px; }
+    .hero-cta { gap: 10px; }
+    .cta-arrow { transition: transform 0.2s; }
+    .hero-cta:hover .cta-arrow { transform: translateX(4px); }
+    .hero-trust { display: flex; gap: 32px; justify-content: center; font-size: 13px; color: #94a3b8; font-weight: 500; }
 
-    .features { padding: 80px 48px; background: white; text-align: center; }
-    .features-container { max-width: 1000px; margin: 0 auto; }
-    .features h2 { font-size: 32px; font-weight: 800; color: #111827; margin-bottom: 8px; }
-    .features-subtitle { color: #6b7280; font-size: 16px; margin-bottom: 48px; }
-    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
-    .step { padding: 24px; border-radius: 12px; background: #f9fafb; border: 1px solid #f3f4f6; }
-    .step-num { width: 40px; height: 40px; background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 16px; }
-    .step h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #1f2937; }
-    .step p { font-size: 13px; color: #6b7280; line-height: 1.6; }
+    /* Sections */
+    .section { padding: 100px 32px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 56px; }
+    .section-label { display: inline-block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #6366f1; margin-bottom: 12px; }
+    .section-header h2 { font-size: 36px; font-weight: 800; color: #0f172a; letter-spacing: -1px; margin-bottom: 12px; }
+    .section-header p { font-size: 16px; color: #64748b; }
 
-    .feature-cards { padding: 80px 48px; background: #f8fafc; text-align: center; }
-    .feature-cards h2 { font-size: 32px; font-weight: 800; color: #111827; margin-bottom: 40px; }
-    .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; text-align: left; }
-    .feature-card { background: white; padding: 28px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #f3f4f6; transition: all 0.2s; }
-    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
-    .fc-icon { font-size: 28px; margin-bottom: 12px; }
-    .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #1f2937; }
-    .feature-card p { font-size: 13px; color: #6b7280; line-height: 1.6; }
+    /* Steps */
+    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+    .step-card { text-align: center; padding: 32px 20px; position: relative; }
+    .step-number { width: 44px; height: 44px; background: linear-gradient(135deg, #6366f1, #818cf8); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; margin: 0 auto 20px; box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
+    .step-line { position: absolute; top: 54px; left: 60%; width: 80%; height: 2px; background: linear-gradient(90deg, #6366f1, #e2e8f0); opacity: 0.3; }
+    .step-card h3 { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+    .step-card p { font-size: 13px; color: #64748b; line-height: 1.6; }
 
-    .cta { padding: 80px 48px; text-align: center; background: linear-gradient(135deg, #1e3a8a, #0891b2); color: white; }
-    .cta h2 { font-size: 32px; font-weight: 800; margin-bottom: 12px; }
-    .cta p { font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 28px; }
+    /* Features */
+    .features { background: #f8fafc; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .feature-card { background: white; padding: 32px; border-radius: 16px; border: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: all 0.25s cubic-bezier(0.4,0,0.2,1); }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.06); border-color: rgba(99,102,241,0.2); }
+    .feature-icon { font-size: 28px; margin-bottom: 16px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(99,102,241,0.08); border-radius: 12px; }
+    .feature-card h3 { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+    .feature-card p { font-size: 13px; color: #64748b; line-height: 1.7; }
 
-    .landing-footer { padding: 24px 48px; text-align: center; background: #1f2937; color: #9ca3af; font-size: 13px; }
+    /* CTA */
+    .cta-section { padding: 80px 32px; }
+    .cta-card { max-width: 700px; margin: 0 auto; text-align: center; background: linear-gradient(135deg, #0f172a, #1e293b); padding: 64px 48px; border-radius: 24px; color: white; box-shadow: 0 20px 40px rgba(15,23,42,0.3); }
+    .cta-card h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; }
+    .cta-card p { color: #94a3b8; margin-bottom: 28px; font-size: 15px; }
+
+    /* Footer */
+    .landing-footer { padding: 24px 32px; border-top: 1px solid #f1f5f9; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #94a3b8; }
+    .footer-brand { font-weight: 700; color: #6366f1; }
 
     @media (max-width: 768px) {
-      .hero h1 { font-size: 28px; }
-      .hero { padding: 48px 24px; }
-      .steps { grid-template-columns: 1fr 1fr; }
-      .cards-grid { grid-template-columns: 1fr; }
-      .hero-stats { flex-wrap: wrap; gap: 24px; }
-      .landing-nav { padding: 16px 20px; }
-      .features, .feature-cards, .cta { padding: 48px 24px; }
+      .hero-title { font-size: 32px; letter-spacing: -1px; }
+      .hero { padding: 120px 20px 60px; }
+      .hero-actions { flex-direction: column; align-items: center; }
+      .hero-trust { flex-direction: column; gap: 8px; }
+      .steps-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+      .step-line { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .section { padding: 60px 20px; }
+      .footer-inner { flex-direction: column; gap: 8px; text-align: center; }
     }
   `]
 })
-export class LandingComponent {}
+export class LandingComponent {
+  steps = [
+    { title: 'Complete Profile', desc: 'Share your financial situation, goals, and investment timeline' },
+    { title: 'Risk Assessment', desc: 'Answer 15 questions to determine your investment risk tolerance' },
+    { title: 'AI Analysis', desc: 'Our engine calculates your optimal allocation across asset classes' },
+    { title: 'Get Recommendations', desc: 'Receive personalized fund suggestions with AI explanations' }
+  ];
+
+  features = [
+    { icon: '&#128202;', title: 'Risk Profiling', desc: 'Scientifically designed questionnaire to accurately assess your investment risk appetite' },
+    { icon: '&#129302;', title: 'AI Advisor', desc: 'Intelligent chatbot that explains investment concepts and recommendations in plain language' },
+    { icon: '&#128200;', title: 'Portfolio Analysis', desc: 'Upload your existing portfolio for diversification scoring and rebalancing insights' },
+    { icon: '&#9888;&#65039;', title: 'Stress Testing', desc: 'Simulate market crashes to understand how your portfolio would react under pressure' },
+    { icon: '&#128176;', title: 'Tax Optimization', desc: 'Section 80C calculator and ELSS fund recommendations for maximum tax savings' },
+    { icon: '&#128202;', title: 'Goal Planning', desc: 'Reverse SIP calculator to determine exactly how much you need to invest monthly' }
+  ];
+}
