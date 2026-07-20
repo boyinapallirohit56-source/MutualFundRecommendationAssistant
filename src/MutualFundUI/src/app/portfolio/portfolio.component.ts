@@ -16,32 +16,76 @@ import { ApiService } from '../shared/services/api.service';
 
       <!-- Add Holding Form -->
       <div class="card">
-        <h3 style="font-size:16px; margin-bottom:16px">Add New Holding</h3>
-        <div class="grid-2">
-          <div class="form-group">
-            <label>Fund Name</label>
-            <input type="text" [(ngModel)]="newHolding.fundName" placeholder="e.g., SBI Bluechip Fund">
-          </div>
-          <div class="form-group">
-            <label>Units</label>
-            <input type="number" [(ngModel)]="newHolding.units" placeholder="100">
-          </div>
-          <div class="form-group">
-            <label>Purchase NAV (Rs)</label>
-            <input type="number" [(ngModel)]="newHolding.purchaseNAV" placeholder="45.50">
-          </div>
-          <div class="form-group">
-            <label>Invested Amount (Rs)</label>
-            <input type="number" [(ngModel)]="newHolding.investedAmount" placeholder="50000">
-          </div>
-          <div class="form-group">
-            <label>Purchase Date</label>
-            <input type="date" [(ngModel)]="newHolding.purchaseDate">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
+          <h3 style="font-size:16px">Add Holdings</h3>
+          <div style="display:flex; gap:8px">
+            <button class="btn btn-secondary" [class.active-tab]="inputMode === 'manual'" (click)="inputMode = 'manual'">Manual Entry</button>
+            <button class="btn btn-secondary" [class.active-tab]="inputMode === 'upload'" (click)="inputMode = 'upload'">Upload File</button>
           </div>
         </div>
-        <button class="btn btn-primary mt-4" (click)="addHolding()" [disabled]="adding">
-          {{ adding ? 'Adding...' : 'Add Holding' }}
-        </button>
+
+        <!-- Manual Entry -->
+        <div *ngIf="inputMode === 'manual'">
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Fund Name</label>
+              <input type="text" [(ngModel)]="newHolding.fundName" placeholder="e.g., SBI Bluechip Fund">
+            </div>
+            <div class="form-group">
+              <label>Units</label>
+              <input type="number" [(ngModel)]="newHolding.units" placeholder="100">
+            </div>
+            <div class="form-group">
+              <label>Purchase NAV (Rs)</label>
+              <input type="number" [(ngModel)]="newHolding.purchaseNAV" placeholder="45.50">
+            </div>
+            <div class="form-group">
+              <label>Invested Amount (Rs)</label>
+              <input type="number" [(ngModel)]="newHolding.investedAmount" placeholder="50000">
+            </div>
+            <div class="form-group">
+              <label>Purchase Date</label>
+              <input type="date" [(ngModel)]="newHolding.purchaseDate">
+            </div>
+          </div>
+          <button class="btn btn-primary mt-4" (click)="addHolding()" [disabled]="adding">
+            {{ adding ? 'Adding...' : 'Add Holding' }}
+          </button>
+        </div>
+
+        <!-- File Upload -->
+        <div *ngIf="inputMode === 'upload'">
+          <div class="upload-area"
+               (dragover)="onDragOver($event)"
+               (dragleave)="onDragLeave($event)"
+               (drop)="onDrop($event)"
+               [class.drag-active]="isDragging"
+               (click)="fileInput.click()">
+            <div class="upload-icon">&#128194;</div>
+            <h4>Drag & Drop your file here</h4>
+            <p>or click to browse</p>
+            <p class="upload-formats">Supported: .csv, .xlsx</p>
+            <input #fileInput type="file" accept=".csv,.xlsx" style="display:none" (change)="onFileSelected($event)">
+          </div>
+
+          <div *ngIf="selectedFile" class="selected-file">
+            <span class="file-name">{{ selectedFile.name }}</span>
+            <span class="file-size">({{ (selectedFile.size / 1024).toFixed(1) }} KB)</span>
+            <button class="btn btn-primary" (click)="uploadFile()" [disabled]="uploading">
+              {{ uploading ? 'Importing...' : 'Import Holdings' }}
+            </button>
+          </div>
+
+          <div *ngIf="uploadResult" class="upload-result" [class.success]="uploadResult.success">
+            {{ uploadResult.message }}
+          </div>
+
+          <div class="upload-help mt-4">
+            <p><strong>CSV/Excel format expected:</strong></p>
+            <p>Columns: FundName, Units, PurchaseNAV, InvestedAmount, PurchaseDate</p>
+            <p class="upload-example">Example: SBI Bluechip Fund, 100, 45.50, 4550, 2024-01-15</p>
+          </div>
+        </div>
       </div>
 
       <!-- Portfolio Summary -->
@@ -143,6 +187,23 @@ import { ApiService } from '../shared/services/api.service';
     .btn-remove { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 12px; }
     .btn-remove:hover { text-decoration: underline; }
     .rebalance-item { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 12px; background: #f9fafb; border-radius: 6px; margin-bottom: 6px; }
+    .active-tab { background: #1e40af !important; color: white !important; border-color: #1e40af !important; }
+    .upload-area { border: 2px dashed #d1d5db; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .upload-area:hover { border-color: #1e40af; background: #f8fafc; }
+    .upload-area.drag-active { border-color: #1e40af; background: #eff6ff; }
+    .upload-icon { font-size: 40px; margin-bottom: 12px; }
+    .upload-area h4 { font-size: 15px; color: #374151; margin-bottom: 4px; }
+    .upload-area p { font-size: 13px; color: #6b7280; }
+    .upload-formats { margin-top: 8px; font-size: 12px; color: #9ca3af; }
+    .selected-file { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 12px 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; }
+    .file-name { font-weight: 600; font-size: 14px; color: #166534; }
+    .file-size { font-size: 12px; color: #6b7280; }
+    .upload-result { margin-top: 12px; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; }
+    .upload-result.success { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+    .upload-result:not(.success) { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .upload-help { font-size: 13px; color: #6b7280; background: #f9fafb; padding: 12px 16px; border-radius: 8px; }
+    .upload-help p { margin-bottom: 4px; }
+    .upload-example { font-family: monospace; font-size: 12px; color: #4b5563; margin-top: 4px; }
   `]
 })
 export class PortfolioComponent implements OnInit {
@@ -150,6 +211,13 @@ export class PortfolioComponent implements OnInit {
   analysis: any = null;
   loading = true;
   adding = false;
+  inputMode = 'manual';
+
+  // File upload
+  isDragging = false;
+  selectedFile: File | null = null;
+  uploading = false;
+  uploadResult: { success: boolean; message: string } | null = null;
 
   newHolding = {
     fundName: '',
@@ -191,6 +259,57 @@ export class PortfolioComponent implements OnInit {
   analyzePortfolio() {
     this.apiService.analyzePortfolio().subscribe({
       next: (res) => { this.analysis = res; }
+    });
+  }
+
+  // File Upload Methods
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      this.selectedFile = files[0];
+    }
+  }
+
+  onFileSelected(event: any) {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      this.selectedFile = files[0];
+    }
+  }
+
+  uploadFile() {
+    if (!this.selectedFile) return;
+    this.uploading = true;
+    this.uploadResult = null;
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+
+    const endpoint = this.selectedFile.name.endsWith('.csv') ? 'upload/csv' : 'upload/excel';
+
+    this.apiService.uploadPortfolioFile(endpoint, formData).subscribe({
+      next: (res: any) => {
+        this.uploading = false;
+        this.uploadResult = { success: true, message: res.message || 'Holdings imported successfully!' };
+        this.selectedFile = null;
+        this.loadPortfolio();
+      },
+      error: (err: any) => {
+        this.uploading = false;
+        this.uploadResult = { success: false, message: err.error?.message || 'Upload failed. Check file format.' };
+      }
     });
   }
 }

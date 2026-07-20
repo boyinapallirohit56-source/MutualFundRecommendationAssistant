@@ -102,4 +102,26 @@ public class AdminController : ControllerBase
         var analytics = await _adminService.GetAnalytics();
         return Ok(analytics);
     }
+
+    // --- AMFI Data Sync ---
+
+    [HttpPost("sync-amfi")]
+    public async Task<IActionResult> SyncAmfiData([FromServices] AmfiDataService amfiService)
+    {
+        var result = await amfiService.SyncNavData();
+        if (!result.Success)
+            return BadRequest(new { message = result.ErrorMessage });
+
+        return Ok(new { message = $"Sync complete. Processed: {result.Processed}, Updated: {result.Updated}" });
+    }
+
+    [HttpPost("import-amfi/{category}")]
+    public async Task<IActionResult> ImportAmfiByCategory(string category, [FromServices] AmfiDataService amfiService, [FromQuery] int maxFunds = 20)
+    {
+        var result = await amfiService.ImportFundsByCategory(category, maxFunds);
+        if (!result.Success)
+            return BadRequest(new { message = result.ErrorMessage });
+
+        return Ok(new { message = $"Imported {result.Updated} funds for category: {category}" });
+    }
 }

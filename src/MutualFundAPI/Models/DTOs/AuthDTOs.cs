@@ -19,4 +19,28 @@ public class AuthResponseDTO
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+    public bool IsEmailVerified { get; set; } = true;
+    public string? Message { get; set; }
+}
+
+public class ResendVerificationDTO
+{
+    public string Email { get; set; } = string.Empty;
+}
+
+public class ForgotPasswordDTO
+{
+    public string Email { get; set; } = string.Empty;
+}
+
+public class ResetPasswordDTO
+{
+    public string Token { get; set; } = string.Empty;
+    public string NewPassword { get; set; } = string.Empty;
+}
+
+public class ForgotPasswordResponseDTO
+{
+    public string Message { get; set; } = string.Empty;
+    public string? ResetToken { get; set; } // In production, this would be sent via email only
 }

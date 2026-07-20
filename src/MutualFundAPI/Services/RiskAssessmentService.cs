@@ -8,10 +8,12 @@ namespace MutualFundAPI.Services;
 public class RiskAssessmentService
 {
     private readonly AppDbContext _context;
+    private readonly NotificationService _notificationService;
 
-    public RiskAssessmentService(AppDbContext context)
+    public RiskAssessmentService(AppDbContext context, NotificationService notificationService)
     {
         _context = context;
+        _notificationService = notificationService;
     }
 
     public async Task<List<RiskQuestionDTO>> GetQuestions()
@@ -58,6 +60,12 @@ public class RiskAssessmentService
 
         _context.RiskAssessments.Add(assessment);
         await _context.SaveChangesAsync();
+
+        // Auto-trigger notification
+        await _notificationService.CreateNotification(userId,
+            "Risk Assessment Complete",
+            $"Your risk profile is {riskProfile} (Score: {normalizedScore}/100). View your recommended allocation.",
+            "assessment");
 
         // Save individual responses
         foreach (var answer in dto.Answers)

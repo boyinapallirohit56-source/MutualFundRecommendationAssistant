@@ -2,9 +2,10 @@ import { Routes } from '@angular/router';
 import { authGuard } from './shared/guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', loadComponent: () => import('./landing/landing.component').then(m => m.LandingComponent) },
   { path: 'login', loadComponent: () => import('./auth/login.component').then(m => m.LoginComponent) },
   { path: 'register', loadComponent: () => import('./auth/register.component').then(m => m.RegisterComponent) },
+  { path: 'forgot-password', loadComponent: () => import('./auth/forgot-password.component').then(m => m.ForgotPasswordComponent) },
   { path: 'onboarding', loadComponent: () => import('./onboarding/onboarding.component').then(m => m.OnboardingComponent), canActivate: [authGuard] },
   { path: 'risk-assessment', loadComponent: () => import('./risk-assessment/risk-assessment.component').then(m => m.RiskAssessmentComponent), canActivate: [authGuard] },
   { path: 'dashboard', loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent), canActivate: [authGuard] },
@@ -13,7 +14,12 @@ export const routes: Routes = [
   { path: 'funds/compare', loadComponent: () => import('./funds/fund-compare.component').then(m => m.FundCompareComponent), canActivate: [authGuard] },
   { path: 'funds/:id', loadComponent: () => import('./funds/fund-factsheet.component').then(m => m.FundFactsheetComponent), canActivate: [authGuard] },
   { path: 'chat', loadComponent: () => import('./chat/chat.component').then(m => m.ChatComponent), canActivate: [authGuard] },
+  { path: 'sip-calculator', loadComponent: () => import('./sip-calculator/sip-calculator.component').then(m => m.SipCalculatorComponent), canActivate: [authGuard] },
+  { path: 'what-if', loadComponent: () => import('./what-if/what-if.component').then(m => m.WhatIfComponent), canActivate: [authGuard] },
+  { path: 'tax-saving', loadComponent: () => import('./tax-saving/tax-saving.component').then(m => m.TaxSavingComponent), canActivate: [authGuard] },
+  { path: 'financial-health', loadComponent: () => import('./financial-health/financial-health.component').then(m => m.FinancialHealthComponent), canActivate: [authGuard] },
   { path: 'stress-test', loadComponent: () => import('./stress-test/stress-test.component').then(m => m.StressTestComponent), canActivate: [authGuard] },
+  { path: 'reports', loadComponent: () => import('./reports/reports.component').then(m => m.ReportsComponent), canActivate: [authGuard] },
   { path: 'watchlist', loadComponent: () => import('./watchlist/watchlist.component').then(m => m.WatchlistComponent), canActivate: [authGuard] },
   { path: 'admin', loadComponent: () => import('./admin/admin.component').then(m => m.AdminComponent), canActivate: [authGuard] },
   { path: '**', redirectTo: '/login' }

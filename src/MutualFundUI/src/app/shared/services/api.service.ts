@@ -57,6 +57,10 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/portfolio/analyze`);
   }
 
+  uploadPortfolioFile(endpoint: string, formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/portfolio/${endpoint}`, formData);
+  }
+
   // Funds
   listFunds(category?: string, search?: string): Observable<any[]> {
     let params: any = {};
@@ -140,5 +144,23 @@ export class ApiService {
 
   getAdminAnalytics(): Observable<any> {
     return this.http.get(`${this.apiUrl}/admin/analytics`);
+  }
+
+  // Auth - Forgot Password
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/reset-password`, { token, newPassword });
+  }
+
+  resendVerification(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/resend-verification`, { email });
+  }
+
+  // Dashboard aggregation
+  getDashboardData(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/dashboard`);
   }
 }
