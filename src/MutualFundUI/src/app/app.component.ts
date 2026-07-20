@@ -17,10 +17,16 @@ import { ApiService } from './shared/services/api.service';
         <a routerLink="/funds">Funds</a>
         <a routerLink="/watchlist">Watchlist</a>
         <a routerLink="/chat">AI Chat</a>
-        <a routerLink="/sip-calculator">SIP Calc</a>
+        <a routerLink="/sip-calculator">Calculators</a>
+        <a routerLink="/what-if">What If</a>
+        <a routerLink="/tax-saving">Tax Saving</a>
+        <a routerLink="/financial-health">Health Score</a>
         <a routerLink="/stress-test">Stress Test</a>
         <a routerLink="/reports">Reports</a>
         <a routerLink="/admin" *ngIf="isAdmin()">Admin</a>
+
+        <!-- Dark Mode Toggle -->
+        <span class="dark-toggle" (click)="toggleDarkMode()">{{ isDarkMode ? '&#9728;' : '&#127769;' }}</span>
 
         <!-- Notification Bell -->
         <div class="notification-wrapper" (click)="toggleNotifications()">
@@ -71,6 +77,7 @@ export class AppComponent implements OnInit {
   showNotifications = false;
   notifications: any[] = [];
   unreadCount = 0;
+  isDarkMode = false;
 
   constructor(public authService: AuthService, private apiService: ApiService) {}
 
@@ -78,6 +85,9 @@ export class AppComponent implements OnInit {
     if (this.authService.isLoggedIn()) {
       this.loadNotifications();
     }
+    // Restore dark mode preference
+    this.isDarkMode = localStorage.getItem('darkMode') === 'true';
+    if (this.isDarkMode) document.body.classList.add('dark-mode');
   }
 
   loadNotifications() {
@@ -119,6 +129,12 @@ export class AppComponent implements OnInit {
 
   logout() {
     this.authService.logout();
+  }
+
+  toggleDarkMode() {
+    this.isDarkMode = !this.isDarkMode;
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', this.isDarkMode.toString());
   }
 
   isAdmin(): boolean {
