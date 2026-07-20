@@ -18,6 +18,7 @@ import { ApiService } from './shared/services/api.service';
         <a routerLink="/watchlist">Watchlist</a>
         <a routerLink="/chat">AI Chat</a>
         <a routerLink="/stress-test">Stress Test</a>
+        <a routerLink="/reports">Reports</a>
         <a routerLink="/admin" *ngIf="isAdmin()">Admin</a>
 
         <!-- Notification Bell -->

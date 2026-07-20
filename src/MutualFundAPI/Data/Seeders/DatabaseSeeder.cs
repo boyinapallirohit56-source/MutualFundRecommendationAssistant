@@ -27,6 +27,9 @@ public static class DatabaseSeeder
             SeedDemoUsers(context, logger);
             SeedSamplePortfolios(context, logger);
             SeedTestRecommendations(context, logger);
+            SeedFundHoldings(context, logger);
+            SeedNAVHistory(context, logger);
+            SeedGoals(context, logger);
         }
 
         context.SaveChanges();
@@ -296,24 +299,24 @@ public static class DatabaseSeeder
 
         var funds = new List<MutualFund>
         {
-            new() { Name = "SBI Bluechip Fund", Category = "Equity", SubCategory = "Large Cap", AMC = "SBI", CAGR1Y = 18.5m, CAGR3Y = 14.2m, CAGR5Y = 12.8m, ExpenseRatio = 0.85m, AUM = 45000, FundManager = "Sohini Andani", Rating = 4.5m },
-            new() { Name = "ICICI Prudential Bluechip Fund", Category = "Equity", SubCategory = "Large Cap", AMC = "ICICI", CAGR1Y = 17.8m, CAGR3Y = 13.9m, CAGR5Y = 12.5m, ExpenseRatio = 0.90m, AUM = 38000, FundManager = "Rajat Chandak", Rating = 4 },
-            new() { Name = "Mirae Asset Large Cap Fund", Category = "Equity", SubCategory = "Large Cap", AMC = "Mirae Asset", CAGR1Y = 19.2m, CAGR3Y = 15.1m, CAGR5Y = 13.4m, ExpenseRatio = 0.52m, AUM = 35000, FundManager = "Gaurav Misra", Rating = 5 },
-            new() { Name = "Kotak Emerging Equity Fund", Category = "Equity", SubCategory = "Mid Cap", AMC = "Kotak", CAGR1Y = 25.3m, CAGR3Y = 20.1m, CAGR5Y = 16.8m, ExpenseRatio = 0.75m, AUM = 28000, FundManager = "Pankaj Tibrewal", Rating = 4.5m },
-            new() { Name = "HDFC Mid-Cap Opportunities Fund", Category = "Equity", SubCategory = "Mid Cap", AMC = "HDFC", CAGR1Y = 24.1m, CAGR3Y = 19.5m, CAGR5Y = 15.9m, ExpenseRatio = 0.82m, AUM = 42000, FundManager = "Chirag Setalvad", Rating = 4 },
-            new() { Name = "Nippon India Small Cap Fund", Category = "Equity", SubCategory = "Small Cap", AMC = "Nippon", CAGR1Y = 30.2m, CAGR3Y = 28.5m, CAGR5Y = 22.1m, ExpenseRatio = 0.88m, AUM = 32000, FundManager = "Samir Rachh", Rating = 4.5m },
-            new() { Name = "SBI Small Cap Fund", Category = "Equity", SubCategory = "Small Cap", AMC = "SBI", CAGR1Y = 28.7m, CAGR3Y = 25.3m, CAGR5Y = 20.8m, ExpenseRatio = 0.72m, AUM = 18000, FundManager = "R. Srinivasan", Rating = 5 },
-            new() { Name = "HDFC Short Term Debt Fund", Category = "Debt", SubCategory = "Short Duration", AMC = "HDFC", CAGR1Y = 7.2m, CAGR3Y = 6.8m, CAGR5Y = 7.1m, ExpenseRatio = 0.35m, AUM = 15000, FundManager = "Anil Bamboli", Rating = 4 },
-            new() { Name = "ICICI Prudential All Seasons Bond Fund", Category = "Debt", SubCategory = "Corporate Bond", AMC = "ICICI", CAGR1Y = 7.8m, CAGR3Y = 7.1m, CAGR5Y = 7.5m, ExpenseRatio = 0.42m, AUM = 12000, FundManager = "Manish Banthia", Rating = 4.5m },
-            new() { Name = "SBI Magnum Gilt Fund", Category = "Debt", SubCategory = "Govt Securities", AMC = "SBI", CAGR1Y = 8.1m, CAGR3Y = 6.5m, CAGR5Y = 7.8m, ExpenseRatio = 0.48m, AUM = 8000, FundManager = "Dinesh Ahuja", Rating = 4 },
-            new() { Name = "ICICI Prudential Balanced Advantage Fund", Category = "Hybrid", SubCategory = "Balanced Advantage", AMC = "ICICI", CAGR1Y = 12.5m, CAGR3Y = 10.8m, CAGR5Y = 11.2m, ExpenseRatio = 0.95m, AUM = 52000, FundManager = "Sankaran Naren", Rating = 4.5m },
-            new() { Name = "HDFC Balanced Advantage Fund", Category = "Hybrid", SubCategory = "Balanced Advantage", AMC = "HDFC", CAGR1Y = 13.1m, CAGR3Y = 11.2m, CAGR5Y = 11.8m, ExpenseRatio = 0.88m, AUM = 62000, FundManager = "Gopal Agrawal", Rating = 4 },
-            new() { Name = "SBI Gold Fund", Category = "Gold", SubCategory = "Gold ETF", AMC = "SBI", CAGR1Y = 15.2m, CAGR3Y = 12.8m, CAGR5Y = 11.5m, ExpenseRatio = 0.50m, AUM = 2500, FundManager = "Raviprakash Sharma", Rating = 4 },
-            new() { Name = "HDFC Gold Fund", Category = "Gold", SubCategory = "Gold ETF", AMC = "HDFC", CAGR1Y = 14.8m, CAGR3Y = 12.5m, CAGR5Y = 11.2m, ExpenseRatio = 0.45m, AUM = 2000, FundManager = "Krishan Daga", Rating = 4 },
-            new() { Name = "HDFC Liquid Fund", Category = "Liquid", SubCategory = "Liquid Fund", AMC = "HDFC", CAGR1Y = 6.8m, CAGR3Y = 5.5m, CAGR5Y = 5.8m, ExpenseRatio = 0.20m, AUM = 55000, FundManager = "Anil Bamboli", Rating = 4.5m },
-            new() { Name = "SBI Liquid Fund", Category = "Liquid", SubCategory = "Liquid Fund", AMC = "SBI", CAGR1Y = 6.7m, CAGR3Y = 5.4m, CAGR5Y = 5.7m, ExpenseRatio = 0.22m, AUM = 48000, FundManager = "R.P. Agrawal", Rating = 4 },
-            new() { Name = "Motilal Oswal Nasdaq 100 Fund", Category = "International", SubCategory = "International Equity", AMC = "Motilal Oswal", CAGR1Y = 22.5m, CAGR3Y = 18.2m, CAGR5Y = 20.1m, ExpenseRatio = 0.50m, AUM = 5000, FundManager = "Swapnil Mayekar", Rating = 4.5m },
-            new() { Name = "Franklin India Feeder - US Opportunities Fund", Category = "International", SubCategory = "International Equity", AMC = "Franklin", CAGR1Y = 18.3m, CAGR3Y = 15.8m, CAGR5Y = 16.2m, ExpenseRatio = 0.55m, AUM = 3500, FundManager = "Grant Bowers", Rating = 4 }
+            new() { Name = "SBI Bluechip Fund", Category = "Equity", SubCategory = "Large Cap", AMC = "SBI", CAGR1Y = 18.5m, CAGR3Y = 14.2m, CAGR5Y = 12.8m, ExpenseRatio = 0.85m, AUM = 45000, FundManager = "Sohini Andani", Rating = 4.5m, SharpeRatio = 1.2m, Alpha = 2.1m, Beta = 0.92m, StandardDeviation = 14.5m, ExitLoad = 1.0m, Benchmark = "Nifty 100", RollingReturns3Y = 13.8m },
+            new() { Name = "ICICI Prudential Bluechip Fund", Category = "Equity", SubCategory = "Large Cap", AMC = "ICICI", CAGR1Y = 17.8m, CAGR3Y = 13.9m, CAGR5Y = 12.5m, ExpenseRatio = 0.90m, AUM = 38000, FundManager = "Rajat Chandak", Rating = 4, SharpeRatio = 1.1m, Alpha = 1.5m, Beta = 0.95m, StandardDeviation = 15.2m, ExitLoad = 1.0m, Benchmark = "Nifty 100", RollingReturns3Y = 13.2m },
+            new() { Name = "Mirae Asset Large Cap Fund", Category = "Equity", SubCategory = "Large Cap", AMC = "Mirae Asset", CAGR1Y = 19.2m, CAGR3Y = 15.1m, CAGR5Y = 13.4m, ExpenseRatio = 0.52m, AUM = 35000, FundManager = "Gaurav Misra", Rating = 5, SharpeRatio = 1.4m, Alpha = 3.2m, Beta = 0.88m, StandardDeviation = 13.8m, ExitLoad = 1.0m, Benchmark = "Nifty 100", RollingReturns3Y = 14.5m },
+            new() { Name = "Kotak Emerging Equity Fund", Category = "Equity", SubCategory = "Mid Cap", AMC = "Kotak", CAGR1Y = 25.3m, CAGR3Y = 20.1m, CAGR5Y = 16.8m, ExpenseRatio = 0.75m, AUM = 28000, FundManager = "Pankaj Tibrewal", Rating = 4.5m, SharpeRatio = 1.3m, Alpha = 4.5m, Beta = 1.05m, StandardDeviation = 18.2m, ExitLoad = 1.0m, Benchmark = "Nifty Midcap 150", RollingReturns3Y = 19.2m },
+            new() { Name = "HDFC Mid-Cap Opportunities Fund", Category = "Equity", SubCategory = "Mid Cap", AMC = "HDFC", CAGR1Y = 24.1m, CAGR3Y = 19.5m, CAGR5Y = 15.9m, ExpenseRatio = 0.82m, AUM = 42000, FundManager = "Chirag Setalvad", Rating = 4, SharpeRatio = 1.2m, Alpha = 3.8m, Beta = 1.02m, StandardDeviation = 17.5m, ExitLoad = 1.0m, Benchmark = "Nifty Midcap 150", RollingReturns3Y = 18.5m },
+            new() { Name = "Nippon India Small Cap Fund", Category = "Equity", SubCategory = "Small Cap", AMC = "Nippon", CAGR1Y = 30.2m, CAGR3Y = 28.5m, CAGR5Y = 22.1m, ExpenseRatio = 0.88m, AUM = 32000, FundManager = "Samir Rachh", Rating = 4.5m, SharpeRatio = 1.5m, Alpha = 6.2m, Beta = 1.15m, StandardDeviation = 22.0m, ExitLoad = 1.0m, Benchmark = "Nifty Smallcap 250", RollingReturns3Y = 27.0m },
+            new() { Name = "SBI Small Cap Fund", Category = "Equity", SubCategory = "Small Cap", AMC = "SBI", CAGR1Y = 28.7m, CAGR3Y = 25.3m, CAGR5Y = 20.8m, ExpenseRatio = 0.72m, AUM = 18000, FundManager = "R. Srinivasan", Rating = 5, SharpeRatio = 1.4m, Alpha = 5.8m, Beta = 1.10m, StandardDeviation = 20.5m, ExitLoad = 1.0m, Benchmark = "Nifty Smallcap 250", RollingReturns3Y = 24.5m },
+            new() { Name = "HDFC Short Term Debt Fund", Category = "Debt", SubCategory = "Short Duration", AMC = "HDFC", CAGR1Y = 7.2m, CAGR3Y = 6.8m, CAGR5Y = 7.1m, ExpenseRatio = 0.35m, AUM = 15000, FundManager = "Anil Bamboli", Rating = 4, SharpeRatio = 0.8m, Alpha = 0.5m, Beta = 0.15m, StandardDeviation = 2.1m, ExitLoad = 0, Benchmark = "CRISIL Short Term Bond", RollingReturns3Y = 6.5m },
+            new() { Name = "ICICI Prudential All Seasons Bond Fund", Category = "Debt", SubCategory = "Corporate Bond", AMC = "ICICI", CAGR1Y = 7.8m, CAGR3Y = 7.1m, CAGR5Y = 7.5m, ExpenseRatio = 0.42m, AUM = 12000, FundManager = "Manish Banthia", Rating = 4.5m, SharpeRatio = 0.9m, Alpha = 0.8m, Beta = 0.12m, StandardDeviation = 1.8m, ExitLoad = 0, Benchmark = "CRISIL Composite Bond", RollingReturns3Y = 6.8m },
+            new() { Name = "SBI Magnum Gilt Fund", Category = "Debt", SubCategory = "Govt Securities", AMC = "SBI", CAGR1Y = 8.1m, CAGR3Y = 6.5m, CAGR5Y = 7.8m, ExpenseRatio = 0.48m, AUM = 8000, FundManager = "Dinesh Ahuja", Rating = 4, SharpeRatio = 0.7m, Alpha = 0.3m, Beta = 0.10m, StandardDeviation = 3.5m, ExitLoad = 0, Benchmark = "CRISIL 10yr Gilt", RollingReturns3Y = 6.2m },
+            new() { Name = "ICICI Prudential Balanced Advantage Fund", Category = "Hybrid", SubCategory = "Balanced Advantage", AMC = "ICICI", CAGR1Y = 12.5m, CAGR3Y = 10.8m, CAGR5Y = 11.2m, ExpenseRatio = 0.95m, AUM = 52000, FundManager = "Sankaran Naren", Rating = 4.5m, SharpeRatio = 1.1m, Alpha = 2.0m, Beta = 0.65m, StandardDeviation = 10.2m, ExitLoad = 1.0m, Benchmark = "CRISIL Hybrid 35+65", RollingReturns3Y = 10.5m },
+            new() { Name = "HDFC Balanced Advantage Fund", Category = "Hybrid", SubCategory = "Balanced Advantage", AMC = "HDFC", CAGR1Y = 13.1m, CAGR3Y = 11.2m, CAGR5Y = 11.8m, ExpenseRatio = 0.88m, AUM = 62000, FundManager = "Gopal Agrawal", Rating = 4, SharpeRatio = 1.0m, Alpha = 1.8m, Beta = 0.70m, StandardDeviation = 11.0m, ExitLoad = 1.0m, Benchmark = "CRISIL Hybrid 35+65", RollingReturns3Y = 10.8m },
+            new() { Name = "SBI Gold Fund", Category = "Gold", SubCategory = "Gold ETF", AMC = "SBI", CAGR1Y = 15.2m, CAGR3Y = 12.8m, CAGR5Y = 11.5m, ExpenseRatio = 0.50m, AUM = 2500, FundManager = "Raviprakash Sharma", Rating = 4, SharpeRatio = 0.6m, Alpha = 0, Beta = 0.05m, StandardDeviation = 12.0m, ExitLoad = 0, Benchmark = "Gold Price (MCX)", RollingReturns3Y = 12.0m },
+            new() { Name = "HDFC Gold Fund", Category = "Gold", SubCategory = "Gold ETF", AMC = "HDFC", CAGR1Y = 14.8m, CAGR3Y = 12.5m, CAGR5Y = 11.2m, ExpenseRatio = 0.45m, AUM = 2000, FundManager = "Krishan Daga", Rating = 4, SharpeRatio = 0.6m, Alpha = 0, Beta = 0.05m, StandardDeviation = 11.8m, ExitLoad = 0, Benchmark = "Gold Price (MCX)", RollingReturns3Y = 11.8m },
+            new() { Name = "HDFC Liquid Fund", Category = "Liquid", SubCategory = "Liquid Fund", AMC = "HDFC", CAGR1Y = 6.8m, CAGR3Y = 5.5m, CAGR5Y = 5.8m, ExpenseRatio = 0.20m, AUM = 55000, FundManager = "Anil Bamboli", Rating = 4.5m, SharpeRatio = 0, Alpha = 0, Beta = 0, StandardDeviation = 0.3m, ExitLoad = 0, Benchmark = "CRISIL Liquid Fund", RollingReturns3Y = 5.3m },
+            new() { Name = "SBI Liquid Fund", Category = "Liquid", SubCategory = "Liquid Fund", AMC = "SBI", CAGR1Y = 6.7m, CAGR3Y = 5.4m, CAGR5Y = 5.7m, ExpenseRatio = 0.22m, AUM = 48000, FundManager = "R.P. Agrawal", Rating = 4, SharpeRatio = 0, Alpha = 0, Beta = 0, StandardDeviation = 0.3m, ExitLoad = 0, Benchmark = "CRISIL Liquid Fund", RollingReturns3Y = 5.2m },
+            new() { Name = "Motilal Oswal Nasdaq 100 Fund", Category = "International", SubCategory = "International Equity", AMC = "Motilal Oswal", CAGR1Y = 22.5m, CAGR3Y = 18.2m, CAGR5Y = 20.1m, ExpenseRatio = 0.50m, AUM = 5000, FundManager = "Swapnil Mayekar", Rating = 4.5m, SharpeRatio = 1.3m, Alpha = 3.5m, Beta = 1.0m, StandardDeviation = 16.5m, ExitLoad = 1.0m, Benchmark = "Nasdaq 100", RollingReturns3Y = 17.5m },
+            new() { Name = "Franklin India Feeder - US Opportunities Fund", Category = "International", SubCategory = "International Equity", AMC = "Franklin", CAGR1Y = 18.3m, CAGR3Y = 15.8m, CAGR5Y = 16.2m, ExpenseRatio = 0.55m, AUM = 3500, FundManager = "Grant Bowers", Rating = 4, SharpeRatio = 1.1m, Alpha = 2.0m, Beta = 0.95m, StandardDeviation = 15.0m, ExitLoad = 1.0m, Benchmark = "S&P 500", RollingReturns3Y = 15.0m }
         };
 
         context.MutualFunds.AddRange(funds);
@@ -441,6 +444,80 @@ public static class DatabaseSeeder
             new RecommendationAllocation { RecommendationId = recommendation.Id, AssetClass = "Gold", Percentage = 5, SuggestedFunds = "SBI Gold Fund" },
             new RecommendationAllocation { RecommendationId = recommendation.Id, AssetClass = "Liquid", Percentage = 5, SuggestedFunds = "HDFC Liquid Fund" },
             new RecommendationAllocation { RecommendationId = recommendation.Id, AssetClass = "International", Percentage = 5, SuggestedFunds = "Motilal Oswal Nasdaq 100 Fund" }
+        );
+    }
+
+    private static void SeedFundHoldings(AppDbContext context, ILogger logger)
+    {
+        if (context.FundHoldings.Any()) return;
+        logger.LogInformation("Seeding: Fund Holdings (top stocks per fund)");
+
+        var sbi = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("SBI Bluechip"));
+        if (sbi == null) return;
+
+        context.FundHoldings.AddRange(
+            new FundHolding { MutualFundId = sbi.Id, StockName = "HDFC Bank", Sector = "Banking", Percentage = 9.5m },
+            new FundHolding { MutualFundId = sbi.Id, StockName = "Reliance Industries", Sector = "Oil & Gas", Percentage = 8.2m },
+            new FundHolding { MutualFundId = sbi.Id, StockName = "Infosys", Sector = "IT", Percentage = 7.8m },
+            new FundHolding { MutualFundId = sbi.Id, StockName = "ICICI Bank", Sector = "Banking", Percentage = 7.1m },
+            new FundHolding { MutualFundId = sbi.Id, StockName = "TCS", Sector = "IT", Percentage = 6.5m },
+            new FundHolding { MutualFundId = sbi.Id, StockName = "Bharti Airtel", Sector = "Telecom", Percentage = 5.2m },
+            new FundHolding { MutualFundId = sbi.Id, StockName = "ITC", Sector = "FMCG", Percentage = 4.8m },
+            new FundHolding { MutualFundId = sbi.Id, StockName = "L&T", Sector = "Engineering", Percentage = 4.5m },
+            new FundHolding { MutualFundId = sbi.Id, StockName = "Kotak Mahindra Bank", Sector = "Banking", Percentage = 4.0m },
+            new FundHolding { MutualFundId = sbi.Id, StockName = "Axis Bank", Sector = "Banking", Percentage = 3.8m }
+        );
+
+        var kotak = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("Kotak Emerging"));
+        if (kotak != null)
+        {
+            context.FundHoldings.AddRange(
+                new FundHolding { MutualFundId = kotak.Id, StockName = "Persistent Systems", Sector = "IT", Percentage = 5.5m },
+                new FundHolding { MutualFundId = kotak.Id, StockName = "Coforge", Sector = "IT", Percentage = 4.8m },
+                new FundHolding { MutualFundId = kotak.Id, StockName = "Supreme Industries", Sector = "Manufacturing", Percentage = 4.2m },
+                new FundHolding { MutualFundId = kotak.Id, StockName = "The Phoenix Mills", Sector = "Real Estate", Percentage = 3.9m },
+                new FundHolding { MutualFundId = kotak.Id, StockName = "Sundaram Finance", Sector = "Finance", Percentage = 3.5m }
+            );
+        }
+    }
+
+    private static void SeedNAVHistory(AppDbContext context, ILogger logger)
+    {
+        if (context.FundNAVHistory.Any()) return;
+        logger.LogInformation("Seeding: NAV History (last 12 months for SBI Bluechip)");
+
+        var sbi = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("SBI Bluechip"));
+        if (sbi == null) return;
+
+        var baseNAV = 65.0m;
+        var today = DateTime.UtcNow;
+
+        for (int i = 12; i >= 0; i--)
+        {
+            var date = today.AddMonths(-i);
+            var variation = (decimal)(new Random(i * 7).NextDouble() * 8 - 2); // -2% to +6%
+            var nav = baseNAV + (baseNAV * variation / 100) + (i * 0.5m);
+
+            context.FundNAVHistory.Add(new FundNAVHistory
+            {
+                MutualFundId = sbi.Id,
+                NAV = Math.Round(nav, 2),
+                Date = new DateTime(date.Year, date.Month, 1)
+            });
+        }
+    }
+
+    private static void SeedGoals(AppDbContext context, ILogger logger)
+    {
+        var demo = context.Users.FirstOrDefault(u => u.Email == "demo@test.com");
+        if (demo == null) return;
+        if (context.Goals.Any(g => g.UserId == demo.Id)) return;
+        logger.LogInformation("Seeding: Goals (Development only)");
+
+        context.Goals.AddRange(
+            new Goal { UserId = demo.Id, Name = "Retirement", TargetAmount = 5000000, CurrentAmount = 750000, TargetYears = 25, MonthlySIP = 10000 },
+            new Goal { UserId = demo.Id, Name = "Wealth Creation", TargetAmount = 2000000, CurrentAmount = 350000, TargetYears = 10, MonthlySIP = 15000 },
+            new Goal { UserId = demo.Id, Name = "Tax Saving", TargetAmount = 150000, CurrentAmount = 100000, TargetYears = 1, MonthlySIP = 12500 }
         );
     }
 }
