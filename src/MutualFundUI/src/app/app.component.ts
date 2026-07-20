@@ -10,7 +10,9 @@ import { ApiService } from './shared/services/api.service';
   imports: [RouterOutlet, RouterLink, CommonModule],
   template: `
     <nav class="navbar" *ngIf="authService.isLoggedIn()">
-      <a class="navbar-brand" routerLink="/dashboard">MF Advisor</a>
+      <a class="navbar-brand" routerLink="/dashboard">
+        <span style="color:#6366f1; margin-right:6px">&#9670;</span>WealthAI
+      </a>
       <div class="navbar-links">
         <a routerLink="/dashboard">Dashboard</a>
         <a routerLink="/portfolio">Portfolio</a>
