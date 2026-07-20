@@ -57,6 +57,10 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/portfolio/analyze`);
   }
 
+  uploadPortfolioFile(endpoint: string, formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/portfolio/${endpoint}`, formData);
+  }
+
   // Funds
   listFunds(category?: string, search?: string): Observable<any[]> {
     let params: any = {};

@@ -14,6 +14,7 @@ export const routes: Routes = [
   { path: 'funds/compare', loadComponent: () => import('./funds/fund-compare.component').then(m => m.FundCompareComponent), canActivate: [authGuard] },
   { path: 'funds/:id', loadComponent: () => import('./funds/fund-factsheet.component').then(m => m.FundFactsheetComponent), canActivate: [authGuard] },
   { path: 'chat', loadComponent: () => import('./chat/chat.component').then(m => m.ChatComponent), canActivate: [authGuard] },
+  { path: 'sip-calculator', loadComponent: () => import('./sip-calculator/sip-calculator.component').then(m => m.SipCalculatorComponent), canActivate: [authGuard] },
   { path: 'stress-test', loadComponent: () => import('./stress-test/stress-test.component').then(m => m.StressTestComponent), canActivate: [authGuard] },
   { path: 'reports', loadComponent: () => import('./reports/reports.component').then(m => m.ReportsComponent), canActivate: [authGuard] },
   { path: 'watchlist', loadComponent: () => import('./watchlist/watchlist.component').then(m => m.WatchlistComponent), canActivate: [authGuard] },

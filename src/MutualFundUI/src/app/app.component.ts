@@ -17,6 +17,7 @@ import { ApiService } from './shared/services/api.service';
         <a routerLink="/funds">Funds</a>
         <a routerLink="/watchlist">Watchlist</a>
         <a routerLink="/chat">AI Chat</a>
+        <a routerLink="/sip-calculator">SIP Calc</a>
         <a routerLink="/stress-test">Stress Test</a>
         <a routerLink="/reports">Reports</a>
         <a routerLink="/admin" *ngIf="isAdmin()">Admin</a>
