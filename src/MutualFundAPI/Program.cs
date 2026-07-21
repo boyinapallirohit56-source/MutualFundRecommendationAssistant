@@ -17,7 +17,6 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
     .WriteTo.File("logs/app-.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
     .Enrich.FromLogContext()
-    .Enrich.WithMachineName()
     .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
