@@ -37,6 +37,13 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // Disable cascade delete for ALL relationships to prevent circular cascade errors
+        foreach (var relationship in modelBuilder.Model.GetEntityTypes()
+            .SelectMany(e => e.GetForeignKeys()))
+        {
+            relationship.DeleteBehavior = DeleteBehavior.Restrict;
+        }
+
         // User
         modelBuilder.Entity<User>(entity =>
         {
