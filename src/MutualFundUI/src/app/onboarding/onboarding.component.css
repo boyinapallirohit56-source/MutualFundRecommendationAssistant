@@ -1,0 +1,5 @@
+h3 { font-size: 18px; font-weight: 600; }
+.goals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.goal-checkbox { display: flex; align-items: center; gap: 8px; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; cursor: pointer; font-size: 14px; }
+.goal-checkbox:hover { border-color: #2563eb; }
+.goal-checkbox input { width: 16px; height: 16px; }

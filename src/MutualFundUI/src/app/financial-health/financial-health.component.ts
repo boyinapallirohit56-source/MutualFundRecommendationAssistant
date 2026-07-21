@@ -6,64 +6,8 @@ import { ApiService } from '../shared/services/api.service';
   selector: 'app-financial-health',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="container" style="margin-top:24px; max-width:700px">
-      <div class="page-header">
-        <h1>Financial Health Score</h1>
-        <p>Your overall financial wellness at a glance</p>
-      </div>
-
-      <div class="card score-card text-center" *ngIf="score !== null">
-        <div class="score-circle" [class]="getScoreClass()">
-          <span class="score-num">{{ score }}</span>
-          <span class="score-max">/100</span>
-        </div>
-        <h2 class="score-rating">{{ getRating() }}</h2>
-        <p class="score-desc">{{ getDescription() }}</p>
-      </div>
-
-      <div class="card" *ngIf="breakdown">
-        <h3 style="font-size:16px; margin-bottom:16px">Score Breakdown</h3>
-        <div class="breakdown-list">
-          <div class="breakdown-item" *ngFor="let item of breakdown">
-            <div class="bi-header">
-              <span class="bi-name">{{ item.name }}</span>
-              <span class="bi-score">{{ item.score }}/{{ item.max }}</span>
-            </div>
-            <div class="bi-bar">
-              <div class="bi-fill" [style.width.%]="(item.score / item.max) * 100"
-                   [style.background]="item.score >= item.max * 0.7 ? '#10b981' : item.score >= item.max * 0.4 ? '#f59e0b' : '#ef4444'">
-              </div>
-            </div>
-            <p class="bi-tip">{{ item.tip }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="card text-center" *ngIf="score === null && !loading">
-        <p style="color:#6b7280">Complete your profile to see your Financial Health Score.</p>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .score-card { padding: 40px; }
-    .score-circle { width: 140px; height: 140px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 16px; border: 6px solid; }
-    .score-circle.excellent { border-color: #10b981; background: #ecfdf5; }
-    .score-circle.good { border-color: #3b82f6; background: #eff6ff; }
-    .score-circle.fair { border-color: #f59e0b; background: #fffbeb; }
-    .score-circle.poor { border-color: #ef4444; background: #fef2f2; }
-    .score-num { font-size: 42px; font-weight: 800; color: #111827; line-height: 1; }
-    .score-max { font-size: 16px; color: #6b7280; }
-    .score-rating { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-    .score-desc { color: #6b7280; font-size: 14px; max-width: 400px; margin: 0 auto; }
-    .breakdown-list { display: flex; flex-direction: column; gap: 20px; }
-    .bi-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
-    .bi-name { font-size: 14px; font-weight: 600; color: #374151; }
-    .bi-score { font-size: 14px; font-weight: 700; color: #1e40af; }
-    .bi-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
-    .bi-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
-    .bi-tip { font-size: 12px; color: #6b7280; margin-top: 4px; }
-  `]
+  templateUrl: './financial-health.component.html',
+  styleUrls: ['./financial-health.component.css']
 })
 export class FinancialHealthComponent implements OnInit {
   score: number | null = null;

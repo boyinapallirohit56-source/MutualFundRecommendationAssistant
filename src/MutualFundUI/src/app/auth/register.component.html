@@ -1,0 +1,64 @@
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="auth-left-content">
+      <div class="auth-brand">
+        <span class="brand-icon">&#9670;</span>
+        <span>WealthAI</span>
+      </div>
+      <h2>Start your intelligent<br>investment journey</h2>
+      <p>Create an account to receive AI-powered mutual fund recommendations tailored to your financial goals.</p>
+      <div class="auth-features">
+        <div class="auth-feature"><span>&#10003;</span> Free personalized risk assessment</div>
+        <div class="auth-feature"><span>&#10003;</span> AI explains every recommendation</div>
+        <div class="auth-feature"><span>&#10003;</span> No investment experience needed</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-card animate-in">
+      <div *ngIf="!registered">
+        <h1>Create Account</h1>
+        <p class="auth-subtitle">Begin your investment journey in 2 minutes</p>
+
+        <div class="form-group mt-6">
+          <label>Full Name</label>
+          <input type="text" [(ngModel)]="name" placeholder="Your full name">
+        </div>
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" [(ngModel)]="email" placeholder="you&#64;example.com">
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" [(ngModel)]="password" placeholder="Min 6 characters">
+        </div>
+
+        <p class="error-text" *ngIf="error">{{ error }}</p>
+
+        <button class="btn btn-primary btn-lg" style="width:100%" (click)="register()" [disabled]="loading">
+          {{ loading ? 'Creating account...' : 'Create Account' }}
+        </button>
+
+        <div class="auth-divider">
+          <span>Already have an account?</span>
+        </div>
+
+        <a routerLink="/login" class="btn btn-secondary btn-lg" style="width:100%">Sign In</a>
+      </div>
+
+      <!-- Success State -->
+      <div *ngIf="registered" class="success-state animate-scale-in">
+        <div class="success-icon-wrapper">
+          <div class="success-icon">&#9993;</div>
+        </div>
+        <h2>Check Your Email</h2>
+        <p>We've sent a verification link to <strong>{{ email }}</strong></p>
+        <p class="success-hint">Click the link in the email to activate your account and start investing.</p>
+        <button class="btn btn-primary btn-lg mt-6" (click)="router.navigate(['/login'])">Go to Sign In</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,100 @@
+<div class="landing">
+  <!-- Navigation -->
+  <nav class="landing-nav">
+    <div class="nav-inner">
+      <span class="brand">
+        <span class="brand-icon">&#9670;</span>
+        WealthAI
+      </span>
+      <div class="nav-actions">
+        <a routerLink="/login" class="btn btn-ghost">Sign In</a>
+        <a routerLink="/register" class="btn btn-primary">Get Started Free</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge animate-in">
+        <span class="badge-dot"></span>
+        AI-Powered Wealth Management
+      </div>
+      <h1 class="hero-title animate-in">
+        Invest Smarter with<br>
+        <span class="gradient-text">Intelligent Recommendations</span>
+      </h1>
+      <p class="hero-desc animate-in">
+        Our AI analyzes your financial profile, risk tolerance, and goals to deliver
+        personalized mutual fund allocations — explained in language you understand.
+      </p>
+      <div class="hero-actions animate-in">
+        <a routerLink="/register" class="btn btn-primary btn-lg hero-cta">
+          Begin Your Investment Journey
+          <span class="cta-arrow">&#8594;</span>
+        </a>
+        <a routerLink="/login" class="btn btn-outline btn-lg">Sign In</a>
+      </div>
+      <div class="hero-trust">
+        <span>&#128274; Bank-grade security</span>
+        <span>&#9889; AI-powered insights</span>
+        <span>&#128202; Data-driven allocation</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="section how-it-works">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">How It Works</span>
+        <h2>Your Investment Journey in 4 Steps</h2>
+        <p>From understanding your goals to receiving personalized recommendations</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card" *ngFor="let step of steps; let i = index">
+          <div class="step-number">{{ i + 1 }}</div>
+          <div class="step-line" *ngIf="i < 3"></div>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section features">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">Platform Features</span>
+        <h2>Everything You Need to Invest Confidently</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card" *ngFor="let feature of features">
+          <div class="feature-icon">{{ feature.icon }}</div>
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section cta-section">
+    <div class="cta-card">
+      <h2>Ready to Make Smarter Investment Decisions?</h2>
+      <p>Join investors who trust AI to guide their wealth creation journey</p>
+      <a routerLink="/register" class="btn btn-primary btn-lg">Create Free Account</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <div class="footer-inner">
+      <span class="footer-brand">&#9670; WealthAI</span>
+      <span class="footer-disclaimer">For educational purposes only. Not certified financial advice.</span>
+      <span class="footer-year">&copy; 2026</span>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,143 @@
+<div class="container" style="margin-top:24px; max-width:900px">
+  <div class="page-header">
+    <h1>Investment Calculators</h1>
+    <p>Plan your investments with these tools</p>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="calc-tabs">
+    <button [class.active]="activeTab === 'sip'" (click)="activeTab = 'sip'">SIP Calculator</button>
+    <button [class.active]="activeTab === 'goal'" (click)="activeTab = 'goal'">Goal Planner</button>
+    <button [class.active]="activeTab === 'emi'" (click)="activeTab = 'emi'">EMI vs SIP</button>
+  </div>
+
+  <!-- SIP Calculator -->
+  <div *ngIf="activeTab === 'sip'" class="animate-in">
+    <div class="grid-2">
+      <div class="card">
+        <h3 class="card-title">SIP Calculator</h3>
+        <p class="card-desc">How much will my SIP grow to?</p>
+        <div class="form-group">
+          <label>Monthly Investment (Rs.)</label>
+          <input type="number" [(ngModel)]="sip.monthly" (ngModelChange)="calcSIP()">
+          <input type="range" [(ngModel)]="sip.monthly" min="500" max="100000" step="500" class="range-slider" (ngModelChange)="calcSIP()">
+        </div>
+        <div class="form-group">
+          <label>Duration: {{ sip.years }} years</label>
+          <input type="range" [(ngModel)]="sip.years" min="1" max="40" class="range-slider" (ngModelChange)="calcSIP()">
+        </div>
+        <div class="form-group">
+          <label>Expected Return: {{ sip.returnRate }}%</label>
+          <input type="range" [(ngModel)]="sip.returnRate" min="4" max="25" step="0.5" class="range-slider" (ngModelChange)="calcSIP()">
+        </div>
+      </div>
+      <div class="card result-card">
+        <div class="result-main">
+          <span class="result-label">Future Value</span>
+          <span class="result-value">Rs. {{ sip.futureValue | number:'1.0-0' }}</span>
+        </div>
+        <div class="result-row"><span>Total Invested</span><span>Rs. {{ sip.totalInvested | number:'1.0-0' }}</span></div>
+        <div class="result-row gain"><span>Wealth Gained</span><span>Rs. {{ sip.gained | number:'1.0-0' }}</span></div>
+        <div class="result-row"><span>Growth</span><span>{{ sip.growthX }}x ({{ sip.gainPct }}%)</span></div>
+        <div class="visual-bar mt-4">
+          <div class="bar-invested" [style.width.%]="sip.investedPct"></div>
+          <div class="bar-gained" [style.width.%]="sip.gainedPct"></div>
+        </div>
+        <div class="bar-legend">
+          <span class="legend-invested">Invested ({{ sip.investedPct | number:'1.0-0' }}%)</span>
+          <span class="legend-gained">Gained ({{ sip.gainedPct | number:'1.0-0' }}%)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Goal Planner (Reverse SIP) -->
+  <div *ngIf="activeTab === 'goal'" class="animate-in">
+    <div class="grid-2">
+      <div class="card">
+        <h3 class="card-title">Goal Planner</h3>
+        <p class="card-desc">How much should I invest monthly to reach my goal?</p>
+        <div class="form-group">
+          <label>Target Amount (Rs.)</label>
+          <input type="number" [(ngModel)]="goal.target" (ngModelChange)="calcGoal()">
+        </div>
+        <div class="form-group">
+          <label>Time to Achieve: {{ goal.years }} years</label>
+          <input type="range" [(ngModel)]="goal.years" min="1" max="35" class="range-slider" (ngModelChange)="calcGoal()">
+        </div>
+        <div class="form-group">
+          <label>Expected Return: {{ goal.returnRate }}%</label>
+          <input type="range" [(ngModel)]="goal.returnRate" min="6" max="20" step="0.5" class="range-slider" (ngModelChange)="calcGoal()">
+        </div>
+        <div class="goal-presets">
+          <button (click)="setGoal('Retirement', 10000000, 25)">Retirement (1Cr)</button>
+          <button (click)="setGoal('Child Education', 5000000, 15)">Education (50L)</button>
+          <button (click)="setGoal('Home', 3000000, 10)">Home (30L)</button>
+          <button (click)="setGoal('Car', 1000000, 5)">Car (10L)</button>
+        </div>
+      </div>
+      <div class="card result-card">
+        <div class="result-main">
+          <span class="result-label">Monthly SIP Needed</span>
+          <span class="result-value">Rs. {{ goal.monthlySIP | number:'1.0-0' }}</span>
+        </div>
+        <div class="result-row"><span>Target Amount</span><span>Rs. {{ goal.target | number:'1.0-0' }}</span></div>
+        <div class="result-row"><span>Total You'll Invest</span><span>Rs. {{ goal.totalInvested | number:'1.0-0' }}</span></div>
+        <div class="result-row gain"><span>Market Will Add</span><span>Rs. {{ goal.marketGain | number:'1.0-0' }}</span></div>
+        <div class="result-row"><span>Time</span><span>{{ goal.years }} years ({{ goal.years * 12 }} months)</span></div>
+        <p class="tip-text mt-4" *ngIf="goal.goalName">
+          To reach your {{ goal.goalName }} goal of Rs.{{ goal.target | number:'1.0-0' }} in {{ goal.years }} years, start a SIP of Rs.{{ goal.monthlySIP | number:'1.0-0' }}/month today.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMI vs SIP Comparison -->
+  <div *ngIf="activeTab === 'emi'" class="animate-in">
+    <div class="grid-2">
+      <div class="card">
+        <h3 class="card-title">EMI vs SIP</h3>
+        <p class="card-desc">What if you invested your idle money instead of keeping it in savings?</p>
+        <div class="form-group">
+          <label>Monthly Amount (Rs.)</label>
+          <input type="number" [(ngModel)]="emi.monthly" (ngModelChange)="calcEMI()">
+        </div>
+        <div class="form-group">
+          <label>Duration: {{ emi.years }} years</label>
+          <input type="range" [(ngModel)]="emi.years" min="1" max="20" class="range-slider" (ngModelChange)="calcEMI()">
+        </div>
+        <div class="form-group">
+          <label>Savings Account Rate: {{ emi.savingsRate }}%</label>
+          <input type="range" [(ngModel)]="emi.savingsRate" min="2" max="7" step="0.5" class="range-slider" (ngModelChange)="calcEMI()">
+        </div>
+        <div class="form-group">
+          <label>Mutual Fund Return: {{ emi.mfRate }}%</label>
+          <input type="range" [(ngModel)]="emi.mfRate" min="8" max="20" step="0.5" class="range-slider" (ngModelChange)="calcEMI()">
+        </div>
+      </div>
+      <div class="card result-card">
+        <div class="comparison-boxes">
+          <div class="comp-box savings">
+            <span class="comp-label">Savings Account</span>
+            <span class="comp-value">Rs. {{ emi.savingsValue | number:'1.0-0' }}</span>
+            <span class="comp-rate">at {{ emi.savingsRate }}% per year</span>
+          </div>
+          <div class="comp-vs">VS</div>
+          <div class="comp-box mutual-fund">
+            <span class="comp-label">Mutual Fund SIP</span>
+            <span class="comp-value">Rs. {{ emi.mfValue | number:'1.0-0' }}</span>
+            <span class="comp-rate">at {{ emi.mfRate }}% per year</span>
+          </div>
+        </div>
+        <div class="opportunity-cost">
+          <span>You're missing out on</span>
+          <strong>Rs. {{ emi.difference | number:'1.0-0' }}</strong>
+          <span>by keeping money in savings</span>
+        </div>
+        <p class="tip-text mt-4">
+          Investing Rs.{{ emi.monthly | number:'1.0-0' }}/month in mutual funds instead of savings could give you {{ emi.extraPercent }}% more wealth over {{ emi.years }} years.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

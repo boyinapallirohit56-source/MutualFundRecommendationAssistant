@@ -1,0 +1,11 @@
+.section-title { font-size: 15px; font-weight: 600; margin-top: 24px; margin-bottom: 12px; }
+.stat-box { text-align: center; padding: 12px; background: #f9fafb; border-radius: 8px; }
+.stat-label { display: block; font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+.stat-value { display: block; font-size: 18px; font-weight: 600; }
+.green { color: #10b981; }
+.info-table { width: 100%; font-size: 14px; }
+.info-table td { padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
+.info-table td:first-child { color: #6b7280; width: 50%; }
+.info-table td:last-child { font-weight: 500; }
+.peer-item { padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+.peer-item:last-child { border-bottom: none; }

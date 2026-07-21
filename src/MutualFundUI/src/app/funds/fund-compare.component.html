@@ -1,0 +1,90 @@
+<div class="container" style="margin-top:24px">
+  <div class="page-header">
+    <h1>Fund Comparison</h1>
+    <p>Side-by-side comparison of selected funds</p>
+  </div>
+
+  <div class="card text-center" *ngIf="loading">
+    <p>Loading comparison...</p>
+  </div>
+
+  <div class="card" *ngIf="comparison && !loading">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th *ngFor="let fund of comparison.funds">{{ fund.name }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Category</td>
+          <td *ngFor="let fund of comparison.funds">{{ fund.subCategory }}</td>
+        </tr>
+        <tr>
+          <td>AMC</td>
+          <td *ngFor="let fund of comparison.funds">{{ fund.amc }}</td>
+        </tr>
+        <tr>
+          <td>NAV</td>
+          <td *ngFor="let fund of comparison.funds">Rs. {{ fund.nav || 'N/A' }}</td>
+        </tr>
+        <tr>
+          <td>1Y Returns</td>
+          <td *ngFor="let fund of comparison.funds"
+              [class]="getCellClass(fund.cagr1Y, 'cagr1Y', 'higher')">
+            {{ fund.cagr1Y || 'N/A' }}%
+          </td>
+        </tr>
+        <tr>
+          <td>3Y Returns</td>
+          <td *ngFor="let fund of comparison.funds"
+              [class]="getCellClass(fund.cagr3Y, 'cagr3Y', 'higher')">
+            {{ fund.cagr3Y || 'N/A' }}%
+          </td>
+        </tr>
+        <tr>
+          <td>5Y Returns</td>
+          <td *ngFor="let fund of comparison.funds"
+              [class]="getCellClass(fund.cagr5Y, 'cagr5Y', 'higher')">
+            {{ fund.cagr5Y || 'N/A' }}%
+          </td>
+        </tr>
+        <tr>
+          <td>Expense Ratio</td>
+          <td *ngFor="let fund of comparison.funds"
+              [class]="getCellClass(fund.expenseRatio, 'expenseRatio', 'lower')">
+            {{ fund.expenseRatio || 'N/A' }}%
+          </td>
+        </tr>
+        <tr>
+          <td>AUM (Cr)</td>
+          <td *ngFor="let fund of comparison.funds"
+              [class]="getCellClass(fund.aum, 'aum', 'higher')">
+            Rs. {{ fund.aum | number:'1.0-0' }}
+          </td>
+        </tr>
+        <tr>
+          <td>Fund Manager</td>
+          <td *ngFor="let fund of comparison.funds">{{ fund.fundManager || 'N/A' }}</td>
+        </tr>
+        <tr>
+          <td>Rating</td>
+          <td *ngFor="let fund of comparison.funds"
+              [class]="getCellClass(fund.rating, 'rating', 'higher')">
+            {{ fund.rating || 'N/A' }} ★
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Legend -->
+    <div class="legend">
+      <span class="legend-item"><span class="dot best"></span> Best</span>
+      <span class="legend-item"><span class="dot good"></span> Good</span>
+      <span class="legend-item"><span class="dot worst"></span> Worst</span>
+    </div>
+  </div>
+
+  <button class="btn btn-secondary mt-4" (click)="router.navigate(['/funds'])">Back to Funds</button>
+</div>

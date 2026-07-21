@@ -11,27 +11,8 @@ export interface ChartData {
   selector: 'app-pie-chart',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="chart-wrapper">
-      <canvas #chartCanvas [width]="size" [height]="size"></canvas>
-      <div class="chart-legend" *ngIf="showLegend">
-        <div class="legend-item" *ngFor="let item of data">
-          <span class="legend-color" [style.background]="item.color"></span>
-          <span class="legend-label">{{ item.label }}</span>
-          <span class="legend-value">{{ item.value }}%</span>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .chart-wrapper { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; justify-content: center; }
-    canvas { max-width: 100%; }
-    .chart-legend { display: flex; flex-direction: column; gap: 8px; }
-    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-    .legend-color { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .legend-label { color: #374151; min-width: 80px; }
-    .legend-value { font-weight: 600; color: #111827; }
-  `]
+  templateUrl: './pie-chart.component.html',
+  styleUrls: ['./pie-chart.component.css']
 })
 export class PieChartComponent implements OnChanges, AfterViewInit {
   @Input() data: ChartData[] = [];
