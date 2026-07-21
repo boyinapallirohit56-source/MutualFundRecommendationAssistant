@@ -8,74 +8,8 @@ import { ApiService } from '../shared/services/api.service';
   selector: 'app-fund-list',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  template: `
-    <div class="container" style="margin-top:24px">
-      <div class="page-header">
-        <h1>Mutual Funds</h1>
-        <p>Browse and explore mutual funds</p>
-      </div>
-
-      <!-- Filters -->
-      <div class="card" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
-        <input type="text" [(ngModel)]="searchTerm" placeholder="Search by fund name or AMC..."
-               style="flex:1; min-width:200px; padding:10px 14px; border:1px solid #d1d5db; border-radius:8px; font-size:14px"
-               (keyup.enter)="loadFunds()">
-        <select [(ngModel)]="selectedCategory" (change)="loadFunds()"
-                style="padding:10px 14px; border:1px solid #d1d5db; border-radius:8px; font-size:14px">
-          <option value="">All Categories</option>
-          <option value="Equity">Equity</option>
-          <option value="Debt">Debt</option>
-          <option value="Hybrid">Hybrid</option>
-          <option value="Gold">Gold</option>
-          <option value="Liquid">Liquid</option>
-          <option value="International">International</option>
-        </select>
-        <button class="btn btn-secondary" (click)="loadFunds()">Search</button>
-        <button class="btn btn-primary" (click)="goToCompare()" [disabled]="selectedFunds.length < 2">
-          Compare ({{ selectedFunds.length }})
-        </button>
-      </div>
-
-      <!-- Fund List -->
-      <div class="card" *ngIf="funds.length">
-        <div class="fund-item" *ngFor="let fund of funds">
-          <div style="display:flex; align-items:center; gap:12px">
-            <input type="checkbox" [checked]="isSelected(fund.id)" (change)="toggleFund(fund.id)"
-                   [disabled]="!isSelected(fund.id) && selectedFunds.length >= 4">
-            <div>
-              <strong style="font-size:14px; cursor:pointer; color:#2563eb" (click)="viewFund(fund.id)">{{ fund.name }}</strong>
-              <div style="font-size:12px; color:#6b7280">{{ fund.amc }} | {{ fund.subCategory }}</div>
-            </div>
-          </div>
-          <div style="display:flex; gap:24px; align-items:center; font-size:13px">
-            <div class="fund-metric">
-              <span class="metric-label">3Y CAGR</span>
-              <span class="metric-value" style="color:#10b981">{{ fund.cagr3Y || 'N/A' }}%</span>
-            </div>
-            <div class="fund-metric">
-              <span class="metric-label">Expense</span>
-              <span class="metric-value">{{ fund.expenseRatio || 'N/A' }}%</span>
-            </div>
-            <div class="fund-metric">
-              <span class="metric-label">Rating</span>
-              <span class="metric-value">{{ fund.rating || 'N/A' }} ★</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card text-center" *ngIf="!funds.length && !loading">
-        <p style="color:#6b7280">No funds found matching your criteria.</p>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .fund-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #f3f4f6; }
-    .fund-item:last-child { border-bottom: none; }
-    .fund-metric { text-align: center; }
-    .metric-label { display: block; font-size: 11px; color: #6b7280; }
-    .metric-value { display: block; font-weight: 600; }
-  `]
+  templateUrl: './fund-list.component.html',
+  styleUrls: ['./fund-list.component.css']
 })
 export class FundListComponent implements OnInit {
   funds: any[] = [];

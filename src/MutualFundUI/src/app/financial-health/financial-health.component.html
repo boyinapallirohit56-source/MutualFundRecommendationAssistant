@@ -1,0 +1,37 @@
+<div class="container" style="margin-top:24px; max-width:700px">
+  <div class="page-header">
+    <h1>Financial Health Score</h1>
+    <p>Your overall financial wellness at a glance</p>
+  </div>
+
+  <div class="card score-card text-center" *ngIf="score !== null">
+    <div class="score-circle" [class]="getScoreClass()">
+      <span class="score-num">{{ score }}</span>
+      <span class="score-max">/100</span>
+    </div>
+    <h2 class="score-rating">{{ getRating() }}</h2>
+    <p class="score-desc">{{ getDescription() }}</p>
+  </div>
+
+  <div class="card" *ngIf="breakdown">
+    <h3 style="font-size:16px; margin-bottom:16px">Score Breakdown</h3>
+    <div class="breakdown-list">
+      <div class="breakdown-item" *ngFor="let item of breakdown">
+        <div class="bi-header">
+          <span class="bi-name">{{ item.name }}</span>
+          <span class="bi-score">{{ item.score }}/{{ item.max }}</span>
+        </div>
+        <div class="bi-bar">
+          <div class="bi-fill" [style.width.%]="(item.score / item.max) * 100"
+               [style.background]="item.score >= item.max * 0.7 ? '#10b981' : item.score >= item.max * 0.4 ? '#f59e0b' : '#ef4444'">
+          </div>
+        </div>
+        <p class="bi-tip">{{ item.tip }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card text-center" *ngIf="score === null && !loading">
+    <p style="color:#6b7280">Complete your profile to see your Financial Health Score.</p>
+  </div>
+</div>

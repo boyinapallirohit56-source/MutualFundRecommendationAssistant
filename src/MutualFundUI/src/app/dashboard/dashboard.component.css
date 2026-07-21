@@ -1,0 +1,61 @@
+.dashboard-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
+.greeting { font-size: 14px; color: var(--text-tertiary); font-weight: 500; }
+.dashboard-header h1 { font-size: 32px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.8px; }
+.header-sub { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+.header-actions { display: flex; gap: 10px; }
+
+.loading-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.skeleton-card { height: 100px; background: var(--surface-2); border-radius: var(--radius-lg); animation: pulse 1.5s infinite; }
+
+.empty-state { text-align: center; padding: 64px 32px; }
+.empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.8; }
+.empty-state h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.empty-state p { color: var(--text-secondary); max-width: 400px; margin: 0 auto; }
+
+.stat-card { display: flex; align-items: center; gap: 14px; padding: 20px; background: var(--surface-0); border-radius: var(--radius-lg); border: 1px solid var(--border-light); box-shadow: var(--shadow-card); transition: all 0.2s; }
+.stat-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+.stat-card-icon { width: 44px; height: 44px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.stat-card-label { display: block; font-size: 12px; color: var(--text-tertiary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-card-value { display: block; font-size: 18px; font-weight: 800; color: var(--text-primary); margin-top: 2px; letter-spacing: -0.3px; }
+
+.card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.card-header-row h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+
+.allocation-list { display: flex; flex-direction: column; gap: 16px; }
+.alloc-item { }
+.alloc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.alloc-info { display: flex; align-items: center; gap: 8px; }
+.alloc-dot { width: 10px; height: 10px; border-radius: 3px; }
+.alloc-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.alloc-pct { font-size: 14px; font-weight: 800; color: var(--brand-accent); }
+.alloc-bar-track { height: 6px; background: var(--surface-2); border-radius: var(--radius-full); overflow: hidden; }
+.alloc-bar-fill { height: 100%; border-radius: var(--radius-full); transition: width 0.6s var(--ease-default); }
+.alloc-funds { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; }
+
+.ai-card { background: linear-gradient(135deg, rgba(99,102,241,0.03), rgba(6,182,212,0.03)); border: 1px solid rgba(99,102,241,0.1); }
+.ai-text { font-size: 14px; color: var(--text-secondary); line-height: 1.8; }
+
+.goals-list { display: flex; flex-direction: column; gap: 16px; }
+.goal-row { }
+.goal-info { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.goal-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.goal-pct { font-size: 13px; font-weight: 700; color: var(--brand-accent); }
+.goal-bar-track { height: 5px; background: var(--surface-2); border-radius: var(--radius-full); }
+.goal-bar-fill { height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: var(--radius-full); transition: width 0.5s; }
+
+.activity-list { display: flex; flex-direction: column; gap: 12px; }
+.activity-row { display: flex; align-items: center; gap: 12px; }
+.activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.activity-text { flex: 1; font-size: 13px; color: var(--text-secondary); }
+.activity-time { font-size: 12px; color: var(--text-tertiary); }
+
+.sip-list { display: flex; flex-direction: column; gap: 12px; }
+.sip-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--surface-1); border-radius: var(--radius-sm); }
+.sip-date { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+.sip-amount { font-size: 14px; font-weight: 700; color: var(--brand-accent); }
+
+@media (max-width: 768px) {
+  .dashboard-header { flex-direction: column; gap: 16px; }
+  .header-actions { width: 100%; }
+  .loading-grid { grid-template-columns: 1fr 1fr; }
+}

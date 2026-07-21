@@ -1,0 +1,11 @@
+.scenario-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 16px; }
+.scenario-header { display: flex; justify-content: space-between; align-items: center; }
+.scenario-header h3 { font-size: 16px; font-weight: 600; }
+.market-change { font-size: 18px; font-weight: 700; padding: 4px 12px; border-radius: 6px; }
+.negative { background: #fef2f2; color: #dc2626; }
+.positive { background: #ecfdf5; color: #059669; }
+.stat-box { text-align: center; padding: 10px; background: #f9fafb; border-radius: 8px; }
+.stat-label { display: block; font-size: 11px; color: #6b7280; margin-bottom: 4px; }
+.stat-value { display: block; font-size: 14px; font-weight: 600; }
+.fund-impacts { margin-top: 12px; }
+.fund-impact-item { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; border-bottom: 1px solid #f3f4f6; }

@@ -1,0 +1,10 @@
+<div class="chart-wrapper">
+  <canvas #chartCanvas [width]="size" [height]="size"></canvas>
+  <div class="chart-legend" *ngIf="showLegend">
+    <div class="legend-item" *ngFor="let item of data">
+      <span class="legend-color" [style.background]="item.color"></span>
+      <span class="legend-label">{{ item.label }}</span>
+      <span class="legend-value">{{ item.value }}%</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="auth-left-content">
+      <div class="auth-brand">
+        <span class="brand-icon">&#9670;</span>
+        <span>WealthAI</span>
+      </div>
+      <h2>Welcome back to your<br>investment dashboard</h2>
+      <p>Track your portfolio, review recommendations, and chat with your AI advisor.</p>
+      <div class="auth-features">
+        <div class="auth-feature"><span>&#10003;</span> AI-powered fund recommendations</div>
+        <div class="auth-feature"><span>&#10003;</span> Portfolio analysis & insights</div>
+        <div class="auth-feature"><span>&#10003;</span> Stress testing & risk profiling</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-card animate-in">
+      <h1>Sign In</h1>
+      <p class="auth-subtitle">Enter your credentials to access your account</p>
+
+      <div class="form-group mt-6">
+        <label>Email Address</label>
+        <input type="email" [(ngModel)]="email" placeholder="you&#64;example.com">
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" [(ngModel)]="password" placeholder="Enter your password">
+      </div>
+
+      <div class="form-actions-row">
+        <label class="remember-me">
+          <input type="checkbox"> Remember me
+        </label>
+        <a routerLink="/forgot-password" class="forgot-link">Forgot password?</a>
+      </div>
+
+      <p class="error-text" *ngIf="error">{{ error }}</p>
+
+      <button class="btn btn-primary btn-lg" style="width:100%" (click)="login()" [disabled]="loading">
+        {{ loading ? 'Signing in...' : 'Sign In' }}
+      </button>
+
+      <div class="auth-divider">
+        <span>Don't have an account?</span>
+      </div>
+
+      <a routerLink="/register" class="btn btn-secondary btn-lg" style="width:100%">Create Account</a>
+    </div>
+  </div>
+</div>

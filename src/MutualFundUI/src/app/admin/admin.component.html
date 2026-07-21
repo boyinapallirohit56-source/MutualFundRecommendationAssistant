@@ -1,0 +1,123 @@
+<div class="container" style="margin-top:24px">
+  <div class="page-header">
+    <h1>Admin Portal</h1>
+    <p>Manage users, questionnaire, funds, and view analytics</p>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tabs">
+    <button class="tab" [class.active]="activeTab === 'analytics'" (click)="activeTab = 'analytics'">Analytics</button>
+    <button class="tab" [class.active]="activeTab === 'users'" (click)="activeTab = 'users'; loadUsers()">Users</button>
+    <button class="tab" [class.active]="activeTab === 'funds'" (click)="activeTab = 'funds'; loadFunds()">Funds</button>
+  </div>
+
+  <!-- Analytics Tab -->
+  <div *ngIf="activeTab === 'analytics' && analytics">
+    <div class="grid-2" style="grid-template-columns:repeat(4,1fr); margin-bottom:20px">
+      <div class="card stat-card">
+        <span class="stat-number">{{ analytics.totalUsers }}</span>
+        <span class="stat-text">Total Users</span>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-number">{{ analytics.activeUsers }}</span>
+        <span class="stat-text">Active Users</span>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-number">{{ analytics.totalAssessments }}</span>
+        <span class="stat-text">Assessments</span>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-number">{{ analytics.totalRecommendations }}</span>
+        <span class="stat-text">Recommendations</span>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="font-size:15px; margin-bottom:12px">Risk Profile Distribution</h3>
+        <div class="dist-item" *ngFor="let item of riskDistItems">
+          <span>{{ item.key }}</span>
+          <span class="dist-count">{{ item.value }}</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15px; margin-bottom:12px">Goal Distribution</h3>
+        <div class="dist-item" *ngFor="let item of goalDistItems">
+          <span>{{ item.key }}</span>
+          <span class="dist-count">{{ item.value }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" *ngIf="analytics.recentActivity?.length">
+      <h3 style="font-size:15px; margin-bottom:12px">Recent Activity</h3>
+      <div class="activity-item" *ngFor="let a of analytics.recentActivity">
+        <span><strong>{{ a.userName }}</strong> {{ a.action }}</span>
+        <span class="activity-time">{{ a.timestamp | date:'short' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Users Tab -->
+  <div *ngIf="activeTab === 'users'">
+    <div class="card">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Risk Profile</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.riskProfile || 'Not assessed' }}</td>
+            <td>
+              <span class="status-badge" [class.active]="user.isActive" [class.inactive]="!user.isActive">
+                {{ user.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+            <td>
+              <button class="btn-action" (click)="toggleUserStatus(user)">
+                {{ user.isActive ? 'Deactivate' : 'Activate' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Funds Tab -->
+  <div *ngIf="activeTab === 'funds'">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
+        <h3 style="font-size:15px">Mutual Funds ({{ funds.length }})</h3>
+      </div>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>AMC</th>
+            <th>3Y CAGR</th>
+            <th>Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let fund of funds">
+            <td>{{ fund.name }}</td>
+            <td>{{ fund.subCategory }}</td>
+            <td>{{ fund.amc }}</td>
+            <td>{{ fund.cagr3Y }}%</td>
+            <td>{{ fund.rating }} ★</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
