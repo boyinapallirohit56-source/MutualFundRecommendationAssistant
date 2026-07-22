@@ -107,13 +107,32 @@ public class RecommendationService
 
     private async Task<List<MutualFund>> GetTopFunds(string category, int count)
     {
-        return await _context.MutualFunds
+        // Get all active funds in this category
+        var allFunds = await _context.MutualFunds
             .Where(f => f.Category == category && f.IsActive)
-            .OrderByDescending(f => f.Rating)
-            .ThenByDescending(f => f.CAGR3Y)
-            .ThenBy(f => f.ExpenseRatio)
-            .Take(count)
             .ToListAsync();
+
+        if (!allFunds.Any()) return new List<MutualFund>();
+
+        // Approach 3: Randomly pick a ranking criteria each time
+        var random = new Random();
+        var criteria = random.Next(4);
+
+        List<MutualFund> ranked = criteria switch
+        {
+            0 => allFunds.OrderByDescending(f => f.Rating).ThenByDescending(f => f.CAGR3Y).ToList(),
+            1 => allFunds.OrderByDescending(f => f.CAGR3Y).ThenByDescending(f => f.CAGR5Y).ToList(),
+            2 => allFunds.OrderByDescending(f => f.SharpeRatio).ThenByDescending(f => f.Rating).ToList(),
+            _ => allFunds.OrderBy(f => f.ExpenseRatio).ThenByDescending(f => f.CAGR3Y).ToList()
+        };
+
+        // Approach 1: Take top 5, then randomly pick 'count' from them
+        var topFunds = ranked.Take(Math.Min(5, ranked.Count)).ToList();
+
+        // Approach 2: Shuffle and pick — ensures different results each time
+        var shuffled = topFunds.OrderBy(_ => random.Next()).Take(count).ToList();
+
+        return shuffled;
     }
 
     private static string GenerateExplanation(string riskProfile)
