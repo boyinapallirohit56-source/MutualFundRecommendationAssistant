@@ -134,7 +134,7 @@
         </div>
         <div *ngIf="!goals.length" style="text-align:center; padding:20px 0">
           <p style="color:var(--text-tertiary); font-size:14px; margin-bottom:12px">Complete your profile to track goals</p>
-          <button class="btn btn-ghost btn-sm" (click)="router.navigate(['/onboarding'])">Set Up Goals →</button>
+          <button class="btn btn-ghost btn-sm" (click)="router.navigate(['/onboarding'], {queryParams: {step: 4}})">Set Up Goals →</button>
         </div>
       </div>
     </div>
@@ -167,7 +167,7 @@
         </div>
         <div *ngIf="!upcomingSIPs.length" style="text-align:center; padding:20px 0">
           <p style="color:var(--text-tertiary); font-size:14px; margin-bottom:12px">Set up your SIP in onboarding</p>
-          <button class="btn btn-ghost btn-sm" (click)="router.navigate(['/onboarding'])">Configure SIP →</button>
+          <button class="btn btn-ghost btn-sm" (click)="router.navigate(['/onboarding'], {queryParams: {step: 3}})">Configure SIP →</button>
         </div>
       </div>
     </div>
