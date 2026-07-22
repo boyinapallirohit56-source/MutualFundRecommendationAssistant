@@ -34,6 +34,8 @@ export class OnboardingComponent implements OnInit {
 
   goalOptions = ['Wealth Creation', 'Retirement', 'Tax Saving', 'Child Education', 'Home Purchase', 'Emergency Fund'];
   selectedGoals: string[] = [];
+  goalTargets: { [key: string]: number } = {};
+  goalYears: { [key: string]: number } = {};
 
   constructor(private apiService: ApiService, private router: Router, private route: ActivatedRoute) {}
 
@@ -78,17 +80,37 @@ export class OnboardingComponent implements OnInit {
     this.profile.goals = this.selectedGoals.join(',');
     this.apiService.saveProfile(this.profile).subscribe({
       next: () => {
-        this.saving = false;
-        // If user came directly to a step, go back to dashboard
-        if (this.directStep) {
-          this.router.navigate(['/dashboard']);
+        // Save goals with target amounts to backend
+        const goalsToSave = this.selectedGoals
+          .filter(g => this.goalTargets[g] && this.goalTargets[g] > 0)
+          .map(g => ({
+            name: g,
+            targetAmount: this.goalTargets[g] || 0,
+            targetYears: this.goalYears[g] || 5,
+            monthlySIP: this.profile.sipAmount || 0
+          }));
+
+        if (goalsToSave.length > 0) {
+          this.apiService.createGoalsBatch(goalsToSave).subscribe({
+            next: () => this.navigateAfterSave(),
+            error: () => this.navigateAfterSave()
+          });
         } else {
-          this.router.navigate(['/risk-assessment']);
+          this.navigateAfterSave();
         }
       },
       error: () => {
         this.saving = false;
       }
     });
+  }
+
+  private navigateAfterSave() {
+    this.saving = false;
+    if (this.directStep) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/risk-assessment']);
+    }
   }
 }

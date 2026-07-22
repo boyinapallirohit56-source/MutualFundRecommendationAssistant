@@ -100,13 +100,27 @@
   <!-- Step 4: Goals -->
   <div class="card" *ngIf="step === 4">
     <h3>Financial Goals</h3>
-    <p style="color:#6b7280; margin-top:8px">Select all that apply</p>
+    <p style="color:var(--text-secondary); margin-top:8px">Select your goals and set target amounts</p>
+
     <div class="goals-grid mt-4">
-      <label class="goal-checkbox" *ngFor="let goal of goalOptions">
-        <input type="checkbox" [checked]="isGoalSelected(goal)" (change)="toggleGoal(goal)">
-        {{ goal }}
-      </label>
+      <div class="goal-select-item" *ngFor="let goal of goalOptions">
+        <label class="goal-checkbox">
+          <input type="checkbox" [checked]="isGoalSelected(goal)" (change)="toggleGoal(goal)">
+          {{ goal }}
+        </label>
+        <div class="goal-target" *ngIf="isGoalSelected(goal)">
+          <div class="form-group" style="margin-bottom:8px">
+            <label>Target Amount (₹)</label>
+            <input type="number" [(ngModel)]="goalTargets[goal]" placeholder="e.g., 5000000">
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label>Timeline (Years)</label>
+            <input type="number" [(ngModel)]="goalYears[goal]" placeholder="e.g., 10">
+          </div>
+        </div>
+      </div>
     </div>
+
     <div style="display:flex; gap:12px" class="mt-4">
       <button class="btn btn-secondary" (click)="step = 3">Back</button>
       <button class="btn btn-primary" (click)="saveProfile()" [disabled]="saving">
