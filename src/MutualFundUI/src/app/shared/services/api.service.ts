@@ -163,4 +163,17 @@ export class ApiService {
   getDashboardData(): Observable<any> {
     return this.http.get(`${this.apiUrl}/dashboard`);
   }
+
+  // Goals
+  getGoals(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/goals`);
+  }
+
+  createGoalsBatch(goals: any[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/goals/batch`, goals);
+  }
+
+  updateGoalProgress(goalId: number, currentAmount: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/goals/${goalId}/progress`, { currentAmount });
+  }
 }

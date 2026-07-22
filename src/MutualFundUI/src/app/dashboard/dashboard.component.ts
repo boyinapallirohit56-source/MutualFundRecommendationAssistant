@@ -67,8 +67,16 @@ export class DashboardComponent implements OnInit {
     this.apiService.getProfile().subscribe({
       next: (res) => {
         this.profile = res;
-        this.buildGoals(res.goals);
         this.buildSIPDates(res.sipAmount);
+      }
+    });
+    // Load real goals from backend
+    this.apiService.getGoals().subscribe({
+      next: (goals: any[]) => {
+        this.goals = goals.map((g: any) => ({
+          name: g.name,
+          progress: g.progressPercentage
+        }));
       }
     });
   }
@@ -92,16 +100,6 @@ export class DashboardComponent implements OnInit {
         value: a.percentage,
         color: this.getColor(a.assetClass)
       }));
-  }
-
-  buildGoals(goalsString: string) {
-    if (!goalsString) return;
-    const goalNames = goalsString.split(',').map((g: string) => g.trim()).filter((g: string) => g);
-    // Simulate progress based on profile completion
-    this.goals = goalNames.map((name: string, index: number) => ({
-      name,
-      progress: Math.min(95, 20 + (index * 15) + Math.floor(Math.random() * 20))
-    }));
   }
 
   buildSIPDates(sipAmount: number) {
