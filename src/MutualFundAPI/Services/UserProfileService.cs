@@ -31,7 +31,13 @@ public class UserProfileService
             Savings = profile.Savings,
             Loans = profile.Loans,
             ExistingInvestments = profile.ExistingInvestments,
+            InvestmentType = profile.InvestmentType,
             SIPAmount = profile.SIPAmount,
+            SIPFrequency = profile.SIPFrequency,
+            SIPDate = profile.SIPDate,
+            LumpSumAmount = profile.LumpSumAmount,
+            HasSWP = profile.HasSWP,
+            SWPAmount = profile.SWPAmount,
             DurationInYears = profile.DurationInYears,
             Goals = profile.Goals
         };
@@ -57,7 +63,13 @@ public class UserProfileService
         profile.Savings = dto.Savings;
         profile.Loans = dto.Loans;
         profile.ExistingInvestments = dto.ExistingInvestments;
+        profile.InvestmentType = dto.InvestmentType;
         profile.SIPAmount = dto.SIPAmount;
+        profile.SIPFrequency = dto.SIPFrequency;
+        profile.SIPDate = dto.SIPDate;
+        profile.LumpSumAmount = dto.LumpSumAmount;
+        profile.HasSWP = dto.HasSWP;
+        profile.SWPAmount = dto.SWPAmount;
         profile.DurationInYears = dto.DurationInYears;
         profile.Goals = dto.Goals;
         profile.UpdatedAt = DateTime.UtcNow;

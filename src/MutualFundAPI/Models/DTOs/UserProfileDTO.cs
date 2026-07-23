@@ -17,7 +17,13 @@ public class UserProfileDTO
 
     // Investment
     public string ExistingInvestments { get; set; } = string.Empty;
+    public string InvestmentType { get; set; } = "SIP"; // SIP, LumpSum, Both
     public decimal SIPAmount { get; set; }
+    public string SIPFrequency { get; set; } = "Monthly"; // Weekly, Monthly, Quarterly
+    public int SIPDate { get; set; } = 5; // Day of month or day of week
+    public decimal LumpSumAmount { get; set; }
+    public bool HasSWP { get; set; } = false;
+    public decimal SWPAmount { get; set; }
     public int DurationInYears { get; set; }
 
     // Goals (comma-separated)

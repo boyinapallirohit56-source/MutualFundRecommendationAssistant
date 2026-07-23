@@ -27,7 +27,13 @@ export class OnboardingComponent implements OnInit {
     savings: 0,
     loans: 0,
     existingInvestments: '',
+    investmentType: 'SIP',
     sipAmount: 0,
+    sipFrequency: 'Monthly',
+    sipDate: 5,
+    lumpSumAmount: 0,
+    hasSWP: false,
+    swpAmount: 0,
     durationInYears: 0,
     goals: ''
   };
