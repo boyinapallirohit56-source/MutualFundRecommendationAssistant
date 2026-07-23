@@ -178,6 +178,41 @@ public class GoalController : ControllerBase
         return initialAmount;
     }
 
+    [HttpPost("recalculate")]
+    public async Task<IActionResult> RecalculateProgress()
+    {
+        var userId = GetUserId();
+        var goals = await _context.Goals
+            .Where(g => g.UserId == userId && g.IsActive)
+            .ToListAsync();
+
+        if (!goals.Any())
+            return Ok(new { message = "No goals to recalculate" });
+
+        // Get user's financial profile
+        var profile = await _context.UserProfiles.FirstOrDefaultAsync(p => p.UserId == userId);
+        decimal userSavings = profile?.Savings ?? 0;
+        decimal userSIPAmount = profile?.SIPAmount ?? 0;
+        string existingInvestments = profile?.ExistingInvestments ?? "None";
+        int goalCount = goals.Count;
+
+        foreach (var goal in goals)
+        {
+            decimal newAmount = CalculateInitialProgress(
+                goal.TargetAmount, goal.TargetYears,
+                userSavings, userSIPAmount, existingInvestments, goalCount);
+
+            // Only update if new calculation is higher (don't reduce progress)
+            if (newAmount > goal.CurrentAmount)
+            {
+                goal.CurrentAmount = newAmount;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Goals recalculated", count = goals.Count });
+    }
+
     [HttpPut("{goalId}/progress")]
     public async Task<IActionResult> UpdateProgress(int goalId, [FromBody] UpdateGoalProgressDTO dto)
     {
