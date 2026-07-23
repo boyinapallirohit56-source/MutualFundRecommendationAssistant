@@ -41,8 +41,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
-            "production": { "buildTarget": "mutual-fund-ui:build:production" },
-            "development": { "buildTarget": "mutual-fund-ui:build:development" }
+            "production": { "browserTarget": "mutual-fund-ui:build:production" },
+            "development": { "browserTarget": "mutual-fund-ui:build:development" }
           },
           "defaultConfiguration": "development"
         }
