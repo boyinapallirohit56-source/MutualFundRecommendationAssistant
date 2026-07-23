@@ -26,7 +26,37 @@ public class GoalController : ControllerBase
         var userId = GetUserId();
         var goals = await _context.Goals
             .Where(g => g.UserId == userId && g.IsActive)
-            .Select(g => new GoalResponseDTO
+            .ToListAsync();
+
+        if (!goals.Any())
+            return Ok(new List<GoalResponseDTO>());
+
+        // Always recalculate progress based on latest profile data
+        var profile = await _context.UserProfiles.FirstOrDefaultAsync(p => p.UserId == userId);
+        decimal userSavings = profile?.Savings ?? 0;
+        decimal userSIPAmount = profile?.SIPAmount ?? 0;
+        string existingInvestments = profile?.ExistingInvestments ?? "None";
+        int goalCount = goals.Count;
+
+        var response = new List<GoalResponseDTO>();
+        bool needsSave = false;
+
+        foreach (var g in goals)
+        {
+            // Recalculate if CurrentAmount is 0 and profile has data
+            if (g.CurrentAmount == 0 && (userSavings > 0 || userSIPAmount > 0 || (existingInvestments != "None" && existingInvestments != "")))
+            {
+                decimal calculated = CalculateInitialProgress(
+                    g.TargetAmount, g.TargetYears,
+                    userSavings, userSIPAmount, existingInvestments, goalCount);
+                if (calculated > 0)
+                {
+                    g.CurrentAmount = calculated;
+                    needsSave = true;
+                }
+            }
+
+            response.Add(new GoalResponseDTO
             {
                 Id = g.Id,
                 Name = g.Name,
@@ -36,10 +66,13 @@ public class GoalController : ControllerBase
                 MonthlySIP = g.MonthlySIP,
                 ProgressPercentage = g.TargetAmount > 0 ? Math.Round((g.CurrentAmount / g.TargetAmount) * 100, 1) : 0,
                 IsActive = g.IsActive
-            })
-            .ToListAsync();
+            });
+        }
 
-        return Ok(goals);
+        if (needsSave)
+            await _context.SaveChangesAsync();
+
+        return Ok(response);
     }
 
     [HttpPost]
