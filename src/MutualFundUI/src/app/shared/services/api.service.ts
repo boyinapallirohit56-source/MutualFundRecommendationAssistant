@@ -176,4 +176,8 @@ export class ApiService {
   updateGoalProgress(goalId: number, currentAmount: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/goals/${goalId}/progress`, { currentAmount });
   }
+
+  recalculateGoals(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/goals/recalculate`, {});
+  }
 }

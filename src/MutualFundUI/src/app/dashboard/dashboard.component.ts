@@ -69,9 +69,16 @@ export class DashboardComponent implements OnInit {
       next: (res) => {
         this.profile = res;
         this.buildSIPDates(res.sipAmount);
+        // Recalculate goal progress based on latest profile data, then load goals
+        this.apiService.recalculateGoals().subscribe({
+          next: () => this.loadGoals(),
+          error: () => this.loadGoals()
+        });
       }
     });
-    // Load real goals from backend
+  }
+
+  loadGoals() {
     this.apiService.getGoals().subscribe({
       next: (goals: any[]) => {
         this.goals = goals.map((g: any) => ({
