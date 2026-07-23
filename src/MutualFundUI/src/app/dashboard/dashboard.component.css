@@ -59,3 +59,39 @@
   .header-actions { width: 100%; }
   .loading-grid { grid-template-columns: 1fr 1fr; }
 }
+
+
+/* Trust Signal */
+.trust-signal {
+  font-size: 12px !important;
+  color: var(--text-tertiary, #94a3b8) !important;
+  margin-top: 8px !important;
+}
+
+/* AI Card Enhancements */
+.ai-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ai-confidence {
+  font-size: 12px;
+  color: var(--text-tertiary, #94a3b8);
+  font-style: italic;
+}
+
+/* Empty State Enhancement */
+.empty-hint {
+  font-size: 12px;
+  color: var(--text-tertiary, #94a3b8);
+}
+
+/* Semantic Colors */
+.text-gain { color: #10b981; }
+.text-loss { color: #ef4444; }
+.text-warning { color: #f59e0b; }
+.text-ai { color: #6366f1; }
+.bg-gain { background: rgba(16, 185, 129, 0.08); }
+.bg-loss { background: rgba(239, 68, 68, 0.08); }
+.bg-ai { background: rgba(99, 102, 241, 0.05); }

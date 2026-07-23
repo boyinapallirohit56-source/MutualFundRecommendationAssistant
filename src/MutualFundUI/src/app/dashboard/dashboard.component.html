@@ -2,13 +2,13 @@
   <!-- Header with greeting -->
   <div class="dashboard-header">
     <div>
-      <p class="greeting">Good {{ getTimeOfDay() }},</p>
-      <h1>{{ userName }}</h1>
-      <p class="header-sub">Here's your investment overview</p>
+      <p class="greeting">Good {{ getTimeOfDay() }}, {{ userName }}</p>
+      <h1>Your Portfolio Overview</h1>
+      <p class="header-sub trust-signal">📡 Data updated: {{ today | date:'dd MMM yyyy, h:mm a' }} • Source: AMFI • Market Status: Active</p>
     </div>
     <div class="header-actions">
-      <button class="btn btn-secondary" (click)="router.navigate(['/risk-assessment'])">Retake Assessment</button>
-      <button class="btn btn-primary" (click)="regenerate()">Update Recommendations</button>
+      <button class="btn btn-secondary btn-sm" (click)="router.navigate(['/risk-assessment'])">Retake Assessment</button>
+      <button class="btn btn-primary btn-sm" (click)="regenerate()">Update Recommendations</button>
     </div>
   </div>
 
@@ -20,9 +20,10 @@
   <!-- No Assessment -->
   <div *ngIf="!loading && !assessment" class="card empty-state animate-in">
     <div class="empty-icon">📊</div>
-    <h3>Start Your Investment Journey</h3>
-    <p>Complete the risk assessment to receive AI-powered mutual fund recommendations</p>
-    <button class="btn btn-primary btn-lg mt-6" (click)="router.navigate(['/risk-assessment'])">Take Risk Assessment</button>
+    <h3>Welcome to WealthAI</h3>
+    <p>Take a 2-minute risk assessment to unlock personalized mutual fund recommendations, portfolio insights, and AI-powered investment guidance.</p>
+    <button class="btn btn-primary btn-lg mt-6" (click)="router.navigate(['/risk-assessment'])">Start Risk Assessment →</button>
+    <p class="empty-hint mt-3">Takes only 2 minutes • 15 simple questions • No financial knowledge needed</p>
   </div>
 
   <!-- Dashboard Content -->
@@ -111,10 +112,16 @@
     <div class="grid-2 mb-6">
       <div class="card ai-card" *ngIf="recommendation?.aiExplanation">
         <div class="card-header-row">
-          <h3>🤖 AI Insight</h3>
+          <h3 style="color:#6366f1">🤖 AI Advisor Summary</h3>
+          <span class="badge badge-primary">Personalized</span>
         </div>
         <p class="ai-text">{{ recommendation.aiExplanation }}</p>
-        <button class="btn btn-ghost btn-sm mt-4" (click)="router.navigate(['/chat'])">Ask AI a question →</button>
+        <div class="ai-actions mt-4">
+          <button class="btn btn-ghost btn-sm" (click)="router.navigate(['/chat'])">💬 Ask a question</button>
+          <button class="btn btn-ghost btn-sm" (click)="router.navigate(['/stress-test'])">⚡ Run stress test</button>
+          <button class="btn btn-ghost btn-sm" (click)="router.navigate(['/reports'])">📄 View reports</button>
+        </div>
+        <p class="ai-confidence mt-3">🎯 Confidence: High • Based on your {{ assessment.riskProfile }} profile</p>
       </div>
 
       <div class="card">

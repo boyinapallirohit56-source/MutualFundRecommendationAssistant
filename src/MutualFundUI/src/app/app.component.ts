@@ -13,6 +13,7 @@ import { ApiService } from './shared/services/api.service';
 })
 export class AppComponent implements OnInit {
   showNotifications = false;
+  showMore = false;
   notifications: any[] = [];
   unreadCount = 0;
   isDarkMode = false;
