@@ -5,26 +5,33 @@
   <div class="navbar-links">
     <a routerLink="/dashboard">Dashboard</a>
     <a routerLink="/portfolio">Portfolio</a>
-    <a routerLink="/funds">Funds</a>
-    <a routerLink="/watchlist">Watchlist</a>
-    <a routerLink="/chat">AI Chat</a>
-    <a routerLink="/sip-calculator">Calculators</a>
-    <a routerLink="/what-if">What If</a>
-    <a routerLink="/tax-saving">Tax Saving</a>
-    <a routerLink="/financial-health">Health Score</a>
-    <a routerLink="/stress-test">Stress Test</a>
-    <a routerLink="/reports">Reports</a>
-    <a routerLink="/admin" *ngIf="isAdmin()">Admin</a>
+    <a routerLink="/funds">Discover</a>
+    <a routerLink="/chat">AI Advisor</a>
+    <a routerLink="/reports">Insights</a>
+
+    <!-- More dropdown -->
+    <div class="more-dropdown-wrapper" (click)="showMore = !showMore">
+      <a>More ▾</a>
+      <div class="more-dropdown" *ngIf="showMore">
+        <a routerLink="/sip-calculator" (click)="showMore = false">Calculators</a>
+        <a routerLink="/what-if" (click)="showMore = false">What If Simulator</a>
+        <a routerLink="/tax-saving" (click)="showMore = false">Tax Saving</a>
+        <a routerLink="/financial-health" (click)="showMore = false">Health Score</a>
+        <a routerLink="/stress-test" (click)="showMore = false">Stress Test</a>
+        <a routerLink="/watchlist" (click)="showMore = false">Watchlist</a>
+        <a routerLink="/onboarding" (click)="showMore = false">Edit Profile</a>
+        <a routerLink="/admin" *ngIf="isAdmin()" (click)="showMore = false">Admin</a>
+      </div>
+    </div>
 
     <!-- Dark Mode Toggle -->
-    <span class="dark-toggle" (click)="toggleDarkMode()">{{ isDarkMode ? '&#9728;' : '&#127769;' }}</span>
+    <span class="dark-toggle" (click)="toggleDarkMode()">{{ isDarkMode ? '☀' : '🌙' }}</span>
 
     <!-- Notification Bell -->
     <div class="notification-wrapper" (click)="toggleNotifications()">
-      <span class="bell-icon">&#128276;</span>
+      <span class="bell-icon">🔔</span>
       <span class="notif-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
 
-      <!-- Dropdown -->
       <div class="notif-dropdown" *ngIf="showNotifications">
         <div class="notif-header">
           <strong>Notifications</strong>
@@ -41,7 +48,7 @@
       </div>
     </div>
 
-    <a (click)="logout()" style="cursor:pointer;color:#dc2626">Logout</a>
+    <a (click)="logout()" style="cursor:pointer;color:#ef4444; font-weight:600">Logout</a>
   </div>
 </nav>
 <router-outlet></router-outlet>

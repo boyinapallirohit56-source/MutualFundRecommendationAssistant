@@ -13,3 +13,44 @@
 .notif-msg { font-size: 12px; color: #6b7280; margin-top: 2px; }
 .notif-time { font-size: 11px; color: #9ca3af; margin-top: 4px; }
 .notif-empty { padding: 24px; text-align: center; color: #6b7280; font-size: 13px; }
+
+
+/* More Dropdown */
+.more-dropdown-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.more-dropdown {
+  position: absolute;
+  top: 32px;
+  right: 0;
+  background: var(--surface-0, white);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  border: 1px solid var(--border, #e2e8f0);
+  padding: 8px;
+  min-width: 180px;
+  z-index: 300;
+  animation: scaleIn 0.15s ease;
+}
+
+.more-dropdown a {
+  display: block;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text-secondary, #475569);
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.more-dropdown a:hover {
+  background: var(--brand-accent-bg, rgba(99,102,241,0.08));
+  color: var(--brand-accent, #6366f1);
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}

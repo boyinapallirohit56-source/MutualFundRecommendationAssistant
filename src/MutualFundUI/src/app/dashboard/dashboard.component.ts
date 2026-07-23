@@ -23,6 +23,7 @@ export class DashboardComponent implements OnInit {
   goals: any[] = [];
   upcomingSIPs: any[] = [];
   recentActivity: any[] = [];
+  today = new Date();
 
   constructor(
     private apiService: ApiService,
@@ -150,11 +151,21 @@ export class DashboardComponent implements OnInit {
   }
 
   addActivity(text: string, detail: string, color: string) {
+    const now = new Date();
     this.recentActivity.push({
       text: `${text} — ${detail}`,
-      time: 'Recently',
+      time: this.getRelativeTime(now),
       color
     });
+  }
+
+  getRelativeTime(date: Date): string {
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)} mins ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+    return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
   }
 
   regenerate() {
