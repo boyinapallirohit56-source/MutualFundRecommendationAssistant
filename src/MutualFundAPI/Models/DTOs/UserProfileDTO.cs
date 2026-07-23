@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace MutualFundAPI.Models.DTOs;
 
 public class UserProfileDTO
@@ -18,12 +20,24 @@ public class UserProfileDTO
     // Investment
     public string ExistingInvestments { get; set; } = string.Empty;
     public string InvestmentType { get; set; } = "SIP"; // SIP, LumpSum, Both
+
+    [JsonPropertyName("sipAmount")]
     public decimal SIPAmount { get; set; }
+
+    [JsonPropertyName("sipFrequency")]
     public string SIPFrequency { get; set; } = "Monthly"; // Weekly, Monthly, Quarterly
+
+    [JsonPropertyName("sipDate")]
     public int SIPDate { get; set; } = 5; // Day of month or day of week
+
     public decimal LumpSumAmount { get; set; }
+
+    [JsonPropertyName("hasSWP")]
     public bool HasSWP { get; set; } = false;
+
+    [JsonPropertyName("swpAmount")]
     public decimal SWPAmount { get; set; }
+
     public int DurationInYears { get; set; }
 
     // Goals (comma-separated)
