@@ -29,3 +29,19 @@ h3 { font-size: 18px; font-weight: 600; }
   padding: 8px 12px;
   font-size: 13px;
 }
+
+
+.investment-section {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--surface-1, #f8fafc);
+  border-radius: 10px;
+  border: 1px solid var(--border-light, #f1f5f9);
+}
+
+.investment-section h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary, #0f172a);
+  margin-bottom: 12px;
+}

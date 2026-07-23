@@ -104,24 +104,48 @@ export class DashboardComponent implements OnInit {
 
   buildSIPDates(sipAmount: number) {
     if (!sipAmount || sipAmount <= 0) return;
+    if (!this.profile) return;
+
     const today = new Date();
+    const frequency = this.profile.sipFrequency || 'Monthly';
+    const sipDay = this.profile.sipDate || 5;
     this.upcomingSIPs = [];
-    for (let i = 0; i < 3; i++) {
-      const sipDate = new Date(today.getFullYear(), today.getMonth() + i, 5);
-      if (sipDate > today) {
+
+    if (frequency === 'Monthly') {
+      for (let i = 0; i < 3; i++) {
+        const sipDate = new Date(today.getFullYear(), today.getMonth() + i, sipDay);
+        if (sipDate > today) {
+          this.upcomingSIPs.push({
+            date: sipDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+            amount: sipAmount
+          });
+        }
+      }
+      if (!this.upcomingSIPs.length) {
+        const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, sipDay);
+        this.upcomingSIPs.push({
+          date: nextMonth.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+          amount: sipAmount
+        });
+      }
+    } else if (frequency === 'Weekly') {
+      const dayNames = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+      for (let i = 1; i <= 4; i++) {
+        const nextDate = new Date(today);
+        nextDate.setDate(today.getDate() + (i * 7));
+        this.upcomingSIPs.push({
+          date: `${dayNames[sipDay]}, ${nextDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}`,
+          amount: sipAmount
+        });
+      }
+    } else if (frequency === 'Quarterly') {
+      for (let i = 1; i <= 3; i++) {
+        const sipDate = new Date(today.getFullYear(), today.getMonth() + (i * 3), sipDay);
         this.upcomingSIPs.push({
           date: sipDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
           amount: sipAmount
         });
       }
-    }
-    // If no future dates yet, show next month
-    if (!this.upcomingSIPs.length) {
-      const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 5);
-      this.upcomingSIPs.push({
-        date: nextMonth.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
-        amount: sipAmount
-      });
     }
   }
 
