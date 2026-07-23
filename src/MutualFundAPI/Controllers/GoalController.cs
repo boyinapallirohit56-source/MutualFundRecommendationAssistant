@@ -140,6 +140,9 @@ public class GoalController : ControllerBase
 
         decimal initialAmount = 0;
 
+        // Normalize the investment type string for robust matching
+        string investmentType = (existingInvestments ?? "").Trim().ToLower();
+
         // Factor 1: Allocate a portion of existing savings toward this goal
         // (Split savings across all goals proportionally)
         if (userSavings > 0 && totalGoals > 0)
@@ -150,22 +153,31 @@ public class GoalController : ControllerBase
         }
 
         // Factor 2: If user has existing investments, they likely have some progress
-        decimal investmentMultiplier = existingInvestments switch
-        {
-            "Mutual Funds" => 0.10m,  // Already invests — assume 10% progress
-            "Stocks" => 0.08m,        // Stocks investor — assume 8%
-            "Multiple" => 0.15m,      // Diversified — assume 15% progress
-            "FD/RD" => 0.05m,         // Conservative — assume 5%
-            _ => 0m                    // No investments — start from 0
-        };
+        decimal investmentMultiplier = 0m;
+        if (investmentType.Contains("mutual"))
+            investmentMultiplier = 0.10m;      // Already invests in MFs — assume 10% progress
+        else if (investmentType.Contains("stock"))
+            investmentMultiplier = 0.08m;      // Stocks investor — assume 8%
+        else if (investmentType.Contains("multiple") || investmentType.Contains("diversi"))
+            investmentMultiplier = 0.15m;      // Diversified — assume 15% progress
+        else if (investmentType.Contains("fd") || investmentType.Contains("rd"))
+            investmentMultiplier = 0.05m;      // Conservative — assume 5%
+
         initialAmount += targetAmount * investmentMultiplier;
 
         // Factor 3: If user has SIP running, assume a few months already invested
         if (userSIPAmount > 0)
         {
             // Assume user has been investing for ~3-6 months before using this platform
-            decimal assumedMonths = existingInvestments == "None" ? 0 : 4;
+            bool hasInvestmentHistory = investmentType != "none" && investmentType != "";
+            decimal assumedMonths = hasInvestmentHistory ? 4 : 2;
             initialAmount += userSIPAmount * assumedMonths;
+        }
+
+        // Factor 4: If savings is 0 but SIP is significant, ensure minimum progress
+        if (userSavings == 0 && userSIPAmount > 0 && initialAmount < userSIPAmount * 2)
+        {
+            initialAmount = Math.Max(initialAmount, userSIPAmount * 2);
         }
 
         // Cap at 40% — don't show unrealistically high progress for new goals
