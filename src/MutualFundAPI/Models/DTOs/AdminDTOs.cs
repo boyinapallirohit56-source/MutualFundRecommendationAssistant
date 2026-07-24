@@ -64,3 +64,15 @@ public class AdminFundDTO
     public string? FundManager { get; set; }
     public decimal? Rating { get; set; }
 }
+
+
+public class UpdateAllocationRulesDTO
+{
+    public List<AllocationRuleItemDTO> Allocations { get; set; } = new();
+}
+
+public class AllocationRuleItemDTO
+{
+    public string AssetClass { get; set; } = string.Empty;
+    public decimal Percentage { get; set; }
+}
