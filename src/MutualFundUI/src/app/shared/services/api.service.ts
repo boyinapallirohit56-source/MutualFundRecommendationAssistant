@@ -146,6 +146,20 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/admin/analytics`);
   }
 
+  // Admin - AMFI Sync
+  syncAmfiData(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/admin/sync-amfi`, {});
+  }
+
+  // Admin - Allocation Rules
+  getAllocationRules(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admin/allocation-rules`);
+  }
+
+  updateAllocationRules(riskProfile: string, allocations: any[]): Observable<any> {
+    return this.http.put(`${this.apiUrl}/admin/allocation-rules/${riskProfile}`, { allocations });
+  }
+
   // Auth - Forgot Password
   forgotPassword(email: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/forgot-password`, { email });
