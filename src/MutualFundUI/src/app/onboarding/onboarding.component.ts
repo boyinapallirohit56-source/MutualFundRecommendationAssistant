@@ -84,7 +84,20 @@ export class OnboardingComponent implements OnInit {
   saveProfile() {
     this.saving = true;
     this.profile.goals = this.selectedGoals.join(',');
-    this.apiService.saveProfile(this.profile).subscribe({
+
+    // Send profile with both camelCase and PascalCase property names
+    // to ensure the backend receives the values regardless of JSON serializer config
+    const profilePayload: any = {
+      ...this.profile,
+      // Explicit duplicate keys for SIP/SWP fields (covers all serializer behaviors)
+      SIPAmount: this.profile.sipAmount,
+      SIPFrequency: this.profile.sipFrequency,
+      SIPDate: this.profile.sipDate,
+      HasSWP: this.profile.hasSWP,
+      SWPAmount: this.profile.swpAmount
+    };
+
+    this.apiService.saveProfile(profilePayload).subscribe({
       next: () => {
         // Save goals with target amounts to backend
         const goalsToSave = this.selectedGoals
