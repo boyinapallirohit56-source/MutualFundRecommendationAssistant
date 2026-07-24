@@ -352,93 +352,167 @@ public static class DatabaseSeeder
 
     private static void SeedDemoUsers(AppDbContext context, ILogger logger)
     {
-        // Seed Rohit demo account (check independently)
+        // === ACCOUNT 1: Rohit (main demo — Very Aggressive) ===
         if (!context.Users.Any(u => u.Email == "rohit@wealthai.com"))
         {
-            logger.LogInformation("Seeding: Rohit demo account");
             context.Users.Add(new User { Name = "Rohit Boyinapalli", Email = "rohit@wealthai.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Rohit@123"), Role = "User" });
             context.SaveChanges();
-
-            var rohit = context.Users.First(u => u.Email == "rohit@wealthai.com");
+        }
+        var rohit = context.Users.First(u => u.Email == "rohit@wealthai.com");
+        if (!context.UserProfiles.Any(p => p.UserId == rohit.Id))
+        {
+            logger.LogInformation("Seeding: Rohit profile + goals");
             context.UserProfiles.Add(new UserProfile
             {
-                UserId = rohit.Id,
-                Age = 24,
-                Occupation = "Software Developer",
-                Location = "Hyderabad",
-                MaritalStatus = "Single",
-                Dependents = 0,
-                MonthlyIncome = 120000,
-                MonthlyExpenses = 45000,
-                Savings = 800000,
-                Loans = 0,
-                ExistingInvestments = "Mutual Funds",
-                InvestmentType = "SIP",
-                SIPAmount = 50000,
-                SIPFrequency = "Monthly",
-                SIPDate = 1,
-                LumpSumAmount = 0,
-                HasSWP = true,
-                SWPAmount = 10000,
-                DurationInYears = 10,
+                UserId = rohit.Id, Age = 24, Occupation = "Software Developer", Location = "Hyderabad",
+                MaritalStatus = "Single", Dependents = 0, MonthlyIncome = 120000, MonthlyExpenses = 45000,
+                Savings = 800000, Loans = 0, ExistingInvestments = "Mutual Funds",
+                InvestmentType = "SIP", SIPAmount = 50000, SIPFrequency = "Monthly", SIPDate = 1,
+                HasSWP = true, SWPAmount = 10000, DurationInYears = 10,
                 Goals = "Wealth Creation,Retirement,Tax Saving,Emergency Fund"
             });
             context.SaveChanges();
         }
-
-        // Seed other demo accounts
-        if (!context.Users.Any(u => u.Email == "demo@test.com"))
+        if (!context.Goals.Any(g => g.UserId == rohit.Id))
         {
-            logger.LogInformation("Seeding: Demo Users (Development only)");
-
-            var demoUsers = new List<User>
-            {
-                new() { Name = "Demo User", Email = "demo@test.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Demo@123"), Role = "User" },
-                new() { Name = "Rahul Sharma", Email = "rahul@test.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Test@123"), Role = "User" },
-                new() { Name = "Priya Patel", Email = "priya@test.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Test@123"), Role = "User" }
-            };
-
-            context.Users.AddRange(demoUsers);
+            context.Goals.AddRange(
+                new Goal { UserId = rohit.Id, Name = "Wealth Creation", TargetAmount = 5000000, CurrentAmount = 900000, TargetYears = 10, MonthlySIP = 25000 },
+                new Goal { UserId = rohit.Id, Name = "Retirement", TargetAmount = 10000000, CurrentAmount = 1200000, TargetYears = 30, MonthlySIP = 15000 },
+                new Goal { UserId = rohit.Id, Name = "Tax Saving", TargetAmount = 150000, CurrentAmount = 52000, TargetYears = 1, MonthlySIP = 12500 },
+                new Goal { UserId = rohit.Id, Name = "Emergency Fund", TargetAmount = 500000, CurrentAmount = 200000, TargetYears = 2, MonthlySIP = 10000 }
+            );
             context.SaveChanges();
+        }
 
-            // Profile for demo user
-            var demo = context.Users.First(u => u.Email == "demo@test.com");
+        // === ACCOUNT 2: Rahul (Moderate investor, married, 5th SIP date) ===
+        if (!context.Users.Any(u => u.Email == "rahul@wealthai.com"))
+        {
+            context.Users.Add(new User { Name = "Rahul Sharma", Email = "rahul@wealthai.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Rahul@123"), Role = "User" });
+            context.SaveChanges();
+        }
+        var rahul = context.Users.First(u => u.Email == "rahul@wealthai.com");
+        if (!context.UserProfiles.Any(p => p.UserId == rahul.Id))
+        {
+            logger.LogInformation("Seeding: Rahul profile + goals");
             context.UserProfiles.Add(new UserProfile
             {
-                UserId = demo.Id,
-                Age = 28,
-                Occupation = "Software Engineer",
-                Location = "Bangalore",
-                MaritalStatus = "Single",
-                Dependents = 0,
-                MonthlyIncome = 80000,
-                MonthlyExpenses = 35000,
-                Savings = 500000,
-                Loans = 0,
-                ExistingInvestments = "FD/RD",
-                SIPAmount = 10000,
-                DurationInYears = 10,
-                Goals = "Wealth Creation,Retirement,Tax Saving"
+                UserId = rahul.Id, Age = 35, Occupation = "Product Manager", Location = "Mumbai",
+                MaritalStatus = "Married", Dependents = 1, MonthlyIncome = 180000, MonthlyExpenses = 75000,
+                Savings = 1500000, Loans = 30000, ExistingInvestments = "Stocks",
+                InvestmentType = "Both", SIPAmount = 40000, SIPFrequency = "Monthly", SIPDate = 5,
+                LumpSumAmount = 200000, HasSWP = false, SWPAmount = 0, DurationInYears = 15,
+                Goals = "Child Education,Home Purchase,Retirement"
             });
+            context.SaveChanges();
+        }
+        if (!context.Goals.Any(g => g.UserId == rahul.Id))
+        {
+            context.Goals.AddRange(
+                new Goal { UserId = rahul.Id, Name = "Child Education", TargetAmount = 3000000, CurrentAmount = 720000, TargetYears = 12, MonthlySIP = 20000 },
+                new Goal { UserId = rahul.Id, Name = "Home Purchase", TargetAmount = 8000000, CurrentAmount = 1600000, TargetYears = 7, MonthlySIP = 30000 },
+                new Goal { UserId = rahul.Id, Name = "Retirement", TargetAmount = 20000000, CurrentAmount = 2400000, TargetYears = 25, MonthlySIP = 25000 }
+            );
+            context.SaveChanges();
+        }
 
-            var rahul = context.Users.First(u => u.Email == "rahul@test.com");
+        // === ACCOUNT 3: Priya (Conservative investor, 10th SIP date) ===
+        if (!context.Users.Any(u => u.Email == "priya@wealthai.com"))
+        {
+            context.Users.Add(new User { Name = "Priya Patel", Email = "priya@wealthai.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Priya@123"), Role = "User" });
+            context.SaveChanges();
+        }
+        var priya = context.Users.First(u => u.Email == "priya@wealthai.com");
+        if (!context.UserProfiles.Any(p => p.UserId == priya.Id))
+        {
+            logger.LogInformation("Seeding: Priya profile + goals");
             context.UserProfiles.Add(new UserProfile
             {
-                UserId = rahul.Id,
-                Age = 45,
-                Occupation = "Business Owner",
-                Location = "Mumbai",
-                MaritalStatus = "Married",
-                Dependents = 2,
-                MonthlyIncome = 200000,
-                MonthlyExpenses = 80000,
-                Savings = 2000000,
-                Loans = 50000,
-                ExistingInvestments = "Mutual Funds",
-                SIPAmount = 50000,
-                DurationInYears = 15,
-                Goals = "Child Education,Retirement,Wealth Creation"
+                UserId = priya.Id, Age = 52, Occupation = "Doctor", Location = "Chennai",
+                MaritalStatus = "Married", Dependents = 2, MonthlyIncome = 250000, MonthlyExpenses = 100000,
+                Savings = 3000000, Loans = 0, ExistingInvestments = "Multiple",
+                InvestmentType = "SIP", SIPAmount = 75000, SIPFrequency = "Monthly", SIPDate = 10,
+                HasSWP = true, SWPAmount = 25000, DurationInYears = 8,
+                Goals = "Retirement,Wealth Creation,Tax Saving"
             });
+            context.SaveChanges();
+        }
+        if (!context.Goals.Any(g => g.UserId == priya.Id))
+        {
+            context.Goals.AddRange(
+                new Goal { UserId = priya.Id, Name = "Retirement", TargetAmount = 30000000, CurrentAmount = 9000000, TargetYears = 8, MonthlySIP = 50000 },
+                new Goal { UserId = priya.Id, Name = "Wealth Creation", TargetAmount = 5000000, CurrentAmount = 1750000, TargetYears = 5, MonthlySIP = 25000 },
+                new Goal { UserId = priya.Id, Name = "Tax Saving", TargetAmount = 150000, CurrentAmount = 112000, TargetYears = 1, MonthlySIP = 12500 }
+            );
+            context.SaveChanges();
+        }
+
+        // === Seed risk assessments for all demo accounts ===
+        SeedDemoRiskAssessments(context, logger);
+    }
+
+    private static void SeedDemoRiskAssessments(AppDbContext context, ILogger logger)
+    {
+        // Rohit — Very Aggressive
+        var rohit = context.Users.FirstOrDefault(u => u.Email == "rohit@wealthai.com");
+        if (rohit != null && !context.RiskAssessments.Any(a => a.UserId == rohit.Id))
+        {
+            var assessment = new RiskAssessment { UserId = rohit.Id, TotalScore = 78, RiskProfile = "Very Aggressive", CompletedAt = DateTime.UtcNow.AddDays(-5) };
+            context.RiskAssessments.Add(assessment);
+            context.SaveChanges();
+            var rec = new Recommendation { UserId = rohit.Id, RiskAssessmentId = assessment.Id, RiskProfile = "Very Aggressive", GeneratedAt = DateTime.UtcNow.AddDays(-5),
+                AIExplanation = "You have a high risk tolerance and a growth-focused approach. The allocation maximizes equity exposure across large, mid, and small-cap funds for maximum growth potential. International equity adds geographical diversification." };
+            context.Recommendations.Add(rec);
+            context.SaveChanges();
+            context.RecommendationAllocations.AddRange(
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Equity", Percentage = 80, SuggestedFunds = "Mirae Asset Large Cap Fund, Kotak Emerging Equity Fund, Nippon India Small Cap Fund" },
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Debt", Percentage = 5, SuggestedFunds = "Axis Banking & PSU Debt Fund" },
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Hybrid", Percentage = 5, SuggestedFunds = "Mirae Asset Hybrid Equity Fund" },
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Gold", Percentage = 5, SuggestedFunds = "Kotak Gold Fund" },
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "International", Percentage = 5, SuggestedFunds = "Motilal Oswal Nasdaq 100 Fund" }
+            );
+            context.SaveChanges();
+        }
+
+        // Rahul — Moderate
+        var rahul = context.Users.FirstOrDefault(u => u.Email == "rahul@wealthai.com");
+        if (rahul != null && !context.RiskAssessments.Any(a => a.UserId == rahul.Id))
+        {
+            var assessment = new RiskAssessment { UserId = rahul.Id, TotalScore = 48, RiskProfile = "Moderate", CompletedAt = DateTime.UtcNow.AddDays(-10) };
+            context.RiskAssessments.Add(assessment);
+            context.SaveChanges();
+            var rec = new Recommendation { UserId = rahul.Id, RiskAssessmentId = assessment.Id, RiskProfile = "Moderate", GeneratedAt = DateTime.UtcNow.AddDays(-10),
+                AIExplanation = "Your moderate risk profile suggests a balanced approach. The allocation splits between equity for growth and debt for stability. Hybrid funds provide automatic rebalancing during market fluctuations." };
+            context.Recommendations.Add(rec);
+            context.SaveChanges();
+            context.RecommendationAllocations.AddRange(
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Equity", Percentage = 40, SuggestedFunds = "SBI Bluechip Fund, HDFC Mid-Cap Opportunities Fund" },
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Debt", Percentage = 30, SuggestedFunds = "ICICI Prudential All Seasons Bond Fund, Kotak Corporate Bond Fund" },
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Hybrid", Percentage = 15, SuggestedFunds = "ICICI Prudential Balanced Advantage Fund" },
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Gold", Percentage = 10, SuggestedFunds = "SBI Gold Fund" },
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Liquid", Percentage = 5, SuggestedFunds = "HDFC Liquid Fund" }
+            );
+            context.SaveChanges();
+        }
+
+        // Priya — Conservative
+        var priya = context.Users.FirstOrDefault(u => u.Email == "priya@wealthai.com");
+        if (priya != null && !context.RiskAssessments.Any(a => a.UserId == priya.Id))
+        {
+            var assessment = new RiskAssessment { UserId = priya.Id, TotalScore = 22, RiskProfile = "Conservative", CompletedAt = DateTime.UtcNow.AddDays(-14) };
+            context.RiskAssessments.Add(assessment);
+            context.SaveChanges();
+            var rec = new Recommendation { UserId = priya.Id, RiskAssessmentId = assessment.Id, RiskProfile = "Conservative", GeneratedAt = DateTime.UtcNow.AddDays(-14),
+                AIExplanation = "Your conservative profile prioritizes capital preservation. The allocation emphasizes debt instruments and gold for stability, with limited equity exposure through large-cap funds for modest growth." };
+            context.Recommendations.Add(rec);
+            context.SaveChanges();
+            context.RecommendationAllocations.AddRange(
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Equity", Percentage = 20, SuggestedFunds = "Mirae Asset Large Cap Fund" },
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Debt", Percentage = 50, SuggestedFunds = "HDFC Short Term Debt Fund, Aditya Birla Sun Life Corporate Bond Fund" },
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Hybrid", Percentage = 15, SuggestedFunds = "Canara Robeco Equity Hybrid Fund" },
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Gold", Percentage = 10, SuggestedFunds = "Axis Gold Fund" },
+                new RecommendationAllocation { RecommendationId = rec.Id, AssetClass = "Liquid", Percentage = 5, SuggestedFunds = "SBI Liquid Fund" }
+            );
+            context.SaveChanges();
         }
     }
 

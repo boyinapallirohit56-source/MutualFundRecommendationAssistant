@@ -29,7 +29,13 @@ export class LoginComponent {
           this.error = res.message || 'Please verify your email before logging in.';
           return;
         }
-        this.router.navigate(['/dashboard']);
+        // Route admin to admin portal, regular users to dashboard
+        const user = this.authService.getUser();
+        if (user?.role === 'Admin') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
       },
       error: () => {
         this.loading = false;
