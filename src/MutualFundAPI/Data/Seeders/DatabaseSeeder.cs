@@ -352,84 +352,94 @@ public static class DatabaseSeeder
 
     private static void SeedDemoUsers(AppDbContext context, ILogger logger)
     {
-        if (context.Users.Any(u => u.Email == "demo@test.com")) return;
-        logger.LogInformation("Seeding: Demo Users (Development only)");
-
-        var demoUsers = new List<User>
+        // Seed Rohit demo account (check independently)
+        if (!context.Users.Any(u => u.Email == "rohit@wealthai.com"))
         {
-            new() { Name = "Demo User", Email = "demo@test.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Demo@123"), Role = "User" },
-            new() { Name = "Rohit Boyinapalli", Email = "rohit@wealthai.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Rohit@123"), Role = "User" },
-            new() { Name = "Rahul Sharma", Email = "rahul@test.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Test@123"), Role = "User" },
-            new() { Name = "Priya Patel", Email = "priya@test.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Test@123"), Role = "User" }
-        };
+            logger.LogInformation("Seeding: Rohit demo account");
+            context.Users.Add(new User { Name = "Rohit Boyinapalli", Email = "rohit@wealthai.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Rohit@123"), Role = "User" });
+            context.SaveChanges();
 
-        context.Users.AddRange(demoUsers);
-        context.SaveChanges();
+            var rohit = context.Users.First(u => u.Email == "rohit@wealthai.com");
+            context.UserProfiles.Add(new UserProfile
+            {
+                UserId = rohit.Id,
+                Age = 24,
+                Occupation = "Software Developer",
+                Location = "Hyderabad",
+                MaritalStatus = "Single",
+                Dependents = 0,
+                MonthlyIncome = 120000,
+                MonthlyExpenses = 45000,
+                Savings = 800000,
+                Loans = 0,
+                ExistingInvestments = "Mutual Funds",
+                InvestmentType = "SIP",
+                SIPAmount = 50000,
+                SIPFrequency = "Monthly",
+                SIPDate = 1,
+                LumpSumAmount = 0,
+                HasSWP = true,
+                SWPAmount = 10000,
+                DurationInYears = 10,
+                Goals = "Wealth Creation,Retirement,Tax Saving,Emergency Fund"
+            });
+            context.SaveChanges();
+        }
 
-        // Profile for demo user
-        var demo = context.Users.First(u => u.Email == "demo@test.com");
-        context.UserProfiles.Add(new UserProfile
+        // Seed other demo accounts
+        if (!context.Users.Any(u => u.Email == "demo@test.com"))
         {
-            UserId = demo.Id,
-            Age = 28,
-            Occupation = "Software Engineer",
-            Location = "Bangalore",
-            MaritalStatus = "Single",
-            Dependents = 0,
-            MonthlyIncome = 80000,
-            MonthlyExpenses = 35000,
-            Savings = 500000,
-            Loans = 0,
-            ExistingInvestments = "FD/RD",
-            SIPAmount = 10000,
-            DurationInYears = 10,
-            Goals = "Wealth Creation,Retirement,Tax Saving"
-        });
+            logger.LogInformation("Seeding: Demo Users (Development only)");
 
-        // Profile for Rohit (main demo account)
-        var rohit = context.Users.First(u => u.Email == "rohit@wealthai.com");
-        context.UserProfiles.Add(new UserProfile
-        {
-            UserId = rohit.Id,
-            Age = 24,
-            Occupation = "Software Developer",
-            Location = "Hyderabad",
-            MaritalStatus = "Single",
-            Dependents = 0,
-            MonthlyIncome = 120000,
-            MonthlyExpenses = 45000,
-            Savings = 800000,
-            Loans = 0,
-            ExistingInvestments = "Mutual Funds",
-            InvestmentType = "SIP",
-            SIPAmount = 50000,
-            SIPFrequency = "Monthly",
-            SIPDate = 1,
-            LumpSumAmount = 0,
-            HasSWP = true,
-            SWPAmount = 10000,
-            DurationInYears = 10,
-            Goals = "Wealth Creation,Retirement,Tax Saving,Emergency Fund"
-        });
+            var demoUsers = new List<User>
+            {
+                new() { Name = "Demo User", Email = "demo@test.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Demo@123"), Role = "User" },
+                new() { Name = "Rahul Sharma", Email = "rahul@test.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Test@123"), Role = "User" },
+                new() { Name = "Priya Patel", Email = "priya@test.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Test@123"), Role = "User" }
+            };
 
-        var rahul = context.Users.First(u => u.Email == "rahul@test.com");
-        context.UserProfiles.Add(new UserProfile
-        {
-            UserId = rahul.Id,
-            Age = 45,
-            Occupation = "Business Owner",
-            Location = "Mumbai",
-            MaritalStatus = "Married",
-            Dependents = 2,
-            MonthlyIncome = 200000,
-            MonthlyExpenses = 80000,
-            Savings = 2000000,
-            Loans = 50000,
-            ExistingInvestments = "Mutual Funds",
-            SIPAmount = 50000,
-            DurationInYears = 15,
-            Goals = "Child Education,Retirement,Wealth Creation"
-        });
+            context.Users.AddRange(demoUsers);
+            context.SaveChanges();
+
+            // Profile for demo user
+            var demo = context.Users.First(u => u.Email == "demo@test.com");
+            context.UserProfiles.Add(new UserProfile
+            {
+                UserId = demo.Id,
+                Age = 28,
+                Occupation = "Software Engineer",
+                Location = "Bangalore",
+                MaritalStatus = "Single",
+                Dependents = 0,
+                MonthlyIncome = 80000,
+                MonthlyExpenses = 35000,
+                Savings = 500000,
+                Loans = 0,
+                ExistingInvestments = "FD/RD",
+                SIPAmount = 10000,
+                DurationInYears = 10,
+                Goals = "Wealth Creation,Retirement,Tax Saving"
+            });
+
+            var rahul = context.Users.First(u => u.Email == "rahul@test.com");
+            context.UserProfiles.Add(new UserProfile
+            {
+                UserId = rahul.Id,
+                Age = 45,
+                Occupation = "Business Owner",
+                Location = "Mumbai",
+                MaritalStatus = "Married",
+                Dependents = 2,
+                MonthlyIncome = 200000,
+                MonthlyExpenses = 80000,
+                Savings = 2000000,
+                Loans = 50000,
+                ExistingInvestments = "Mutual Funds",
+                SIPAmount = 50000,
+                DurationInYears = 15,
+                Goals = "Child Education,Retirement,Wealth Creation"
+            });
+        }
     }
 
     private static void SeedSamplePortfolios(AppDbContext context, ILogger logger)
@@ -595,28 +605,28 @@ public static class DatabaseSeeder
 
     private static void SeedGoals(AppDbContext context, ILogger logger)
     {
-        var demo = context.Users.FirstOrDefault(u => u.Email == "demo@test.com");
-        if (demo == null) return;
-        if (context.Goals.Any(g => g.UserId == demo.Id)) return;
-        logger.LogInformation("Seeding: Goals (Development only)");
-
-        // Goals for demo user
-        context.Goals.AddRange(
-            new Goal { UserId = demo.Id, Name = "Retirement", TargetAmount = 5000000, CurrentAmount = 750000, TargetYears = 25, MonthlySIP = 10000 },
-            new Goal { UserId = demo.Id, Name = "Wealth Creation", TargetAmount = 2000000, CurrentAmount = 350000, TargetYears = 10, MonthlySIP = 15000 },
-            new Goal { UserId = demo.Id, Name = "Tax Saving", TargetAmount = 150000, CurrentAmount = 100000, TargetYears = 1, MonthlySIP = 12500 }
-        );
-
-        // Goals for Rohit (main demo account) — realistic progress based on profile
-        // SIP: ₹50,000/month, Savings: ₹8,00,000, Existing: Mutual Funds (10% multiplier)
+        // Goals for Rohit (main demo account)
         var rohit = context.Users.FirstOrDefault(u => u.Email == "rohit@wealthai.com");
         if (rohit != null && !context.Goals.Any(g => g.UserId == rohit.Id))
         {
+            logger.LogInformation("Seeding: Goals for Rohit (Development only)");
             context.Goals.AddRange(
-                new Goal { UserId = rohit.Id, Name = "Wealth Creation", TargetAmount = 5000000, CurrentAmount = 900000, TargetYears = 10, MonthlySIP = 50000 },   // 18%
-                new Goal { UserId = rohit.Id, Name = "Retirement", TargetAmount = 10000000, CurrentAmount = 1200000, TargetYears = 30, MonthlySIP = 50000 },       // 12%
-                new Goal { UserId = rohit.Id, Name = "Tax Saving", TargetAmount = 150000, CurrentAmount = 52000, TargetYears = 1, MonthlySIP = 12500 },            // 35%
-                new Goal { UserId = rohit.Id, Name = "Emergency Fund", TargetAmount = 500000, CurrentAmount = 200000, TargetYears = 2, MonthlySIP = 20000 }        // 40%
+                new Goal { UserId = rohit.Id, Name = "Wealth Creation", TargetAmount = 5000000, CurrentAmount = 900000, TargetYears = 10, MonthlySIP = 50000 },
+                new Goal { UserId = rohit.Id, Name = "Retirement", TargetAmount = 10000000, CurrentAmount = 1200000, TargetYears = 30, MonthlySIP = 50000 },
+                new Goal { UserId = rohit.Id, Name = "Tax Saving", TargetAmount = 150000, CurrentAmount = 52000, TargetYears = 1, MonthlySIP = 12500 },
+                new Goal { UserId = rohit.Id, Name = "Emergency Fund", TargetAmount = 500000, CurrentAmount = 200000, TargetYears = 2, MonthlySIP = 20000 }
+            );
+        }
+
+        // Goals for demo user
+        var demo = context.Users.FirstOrDefault(u => u.Email == "demo@test.com");
+        if (demo != null && !context.Goals.Any(g => g.UserId == demo.Id))
+        {
+            logger.LogInformation("Seeding: Goals for Demo User (Development only)");
+            context.Goals.AddRange(
+                new Goal { UserId = demo.Id, Name = "Retirement", TargetAmount = 5000000, CurrentAmount = 750000, TargetYears = 25, MonthlySIP = 10000 },
+                new Goal { UserId = demo.Id, Name = "Wealth Creation", TargetAmount = 2000000, CurrentAmount = 350000, TargetYears = 10, MonthlySIP = 15000 },
+                new Goal { UserId = demo.Id, Name = "Tax Saving", TargetAmount = 150000, CurrentAmount = 100000, TargetYears = 1, MonthlySIP = 12500 }
             );
         }
     }
