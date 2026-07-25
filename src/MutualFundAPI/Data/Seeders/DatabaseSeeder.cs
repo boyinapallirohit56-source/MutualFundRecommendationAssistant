@@ -518,21 +518,12 @@ public static class DatabaseSeeder
 
     private static void SeedSamplePortfolios(AppDbContext context, ILogger logger)
     {
-<<<<<<< HEAD
         var rohit = context.Users.FirstOrDefault(u => u.Email == "rohit@wealthai.com");
         if (rohit == null) return;
         if (context.Portfolios.Any(p => p.UserId == rohit.Id)) return;
         logger.LogInformation("Seeding: Sample Portfolios (Development only)");
 
         var portfolio = new Portfolio { UserId = rohit.Id, Name = "My Portfolio" };
-=======
-        var demo = context.Users.FirstOrDefault(u => u.Email == "demo@test.com");
-        if (demo == null) return;
-        if (context.Portfolios.Any(p => p.UserId == demo.Id)) return;
-        logger.LogInformation("Seeding: Sample Portfolios (Development only)");
-
-        var portfolio = new Portfolio { UserId = demo.Id, Name = "My Portfolio" };
->>>>>>> b480189 (Merge pull request #23 from boyinapallirohit56-source/feature/admin-complete)
         context.Portfolios.Add(portfolio);
         context.SaveChanges();
 
