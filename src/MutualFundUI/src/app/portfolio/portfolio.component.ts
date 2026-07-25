@@ -48,6 +48,18 @@ export class PortfolioComponent implements OnInit {
   }
 
   addHolding() {
+    if (!this.newHolding.mutualFundId) {
+      alert('Please select a fund from the dropdown');
+      return;
+    }
+    if (!this.newHolding.units || this.newHolding.units <= 0) {
+      alert('Please enter valid units');
+      return;
+    }
+    // Auto-calculate invested amount if not entered
+    if (!this.newHolding.investedAmount || this.newHolding.investedAmount <= 0) {
+      this.newHolding.investedAmount = this.newHolding.units * this.newHolding.purchaseNAV;
+    }
     this.adding = true;
     this.apiService.addHolding(this.newHolding).subscribe({
       next: () => {

@@ -315,7 +315,7 @@ public static class DatabaseSeeder
             new() { Name = "HDFC Short Term Debt Fund", Category = "Debt", SubCategory = "Short Duration", AMC = "HDFC", NAV = 28.5m, CAGR1Y = 7.2m, CAGR3Y = 6.8m, CAGR5Y = 7.1m, ExpenseRatio = 0.35m, AUM = 15000, FundManager = "Anil Bamboli", Rating = 4, SharpeRatio = 0.8m, Alpha = 0.5m, Beta = 0.15m, StandardDeviation = 2.1m, ExitLoad = 0, Benchmark = "CRISIL Short Term Bond", RollingReturns3Y = 6.5m },
             new() { Name = "ICICI Prudential All Seasons Bond Fund", Category = "Debt", SubCategory = "Corporate Bond", AMC = "ICICI", NAV = 32.1m, CAGR1Y = 7.8m, CAGR3Y = 7.1m, CAGR5Y = 7.5m, ExpenseRatio = 0.42m, AUM = 12000, FundManager = "Manish Banthia", Rating = 4.5m, SharpeRatio = 0.9m, Alpha = 0.8m, Beta = 0.12m, StandardDeviation = 1.8m, ExitLoad = 0, Benchmark = "CRISIL Composite Bond", RollingReturns3Y = 6.8m },
             new() { Name = "SBI Magnum Gilt Fund", Category = "Debt", SubCategory = "Govt Securities", AMC = "SBI", NAV = 35.8m, CAGR1Y = 8.1m, CAGR3Y = 6.5m, CAGR5Y = 7.8m, ExpenseRatio = 0.48m, AUM = 8000, FundManager = "Dinesh Ahuja", Rating = 4, SharpeRatio = 0.7m, Alpha = 0.3m, Beta = 0.10m, StandardDeviation = 3.5m, ExitLoad = 0, Benchmark = "CRISIL 10yr Gilt", RollingReturns3Y = 6.2m },
-            new() { Name = "ICICI Prudential Balanced Advantage Fund", Category = "Hybrid", SubCategory = "Balanced Advantage", AMC = "ICICI", NAV = 58.2m, CAGR1Y = 12.5m, CAGR3Y = 10.8m, CAGR5Y = 11.2m, ExpenseRatio = 0.95m, AUM = 52000, FundManager = "Sankaran Naren", Rating = 4.5m, SharpeRatio = 1.1m, Alpha = 2.0m, Beta = 0.65m, StandardDeviation = 10.2m, ExitLoad = 1.0m, Benchmark = "CRISIL Hybrid 35+65", RollingReturns3Y = 10.5m },
+            new() { Name = "ICICI Prudential Balanced Advantage Fund", Category = "Hybrid", SubCategory = "Balanced Advantage", AMC = "ICICI", NAV = 45.8m, CAGR1Y = 12.5m, CAGR3Y = 10.8m, CAGR5Y = 11.2m, ExpenseRatio = 0.95m, AUM = 52000, FundManager = "Sankaran Naren", Rating = 4.5m, SharpeRatio = 1.1m, Alpha = 2.0m, Beta = 0.65m, StandardDeviation = 10.2m, ExitLoad = 1.0m, Benchmark = "CRISIL Hybrid 35+65", RollingReturns3Y = 10.5m },
             new() { Name = "HDFC Balanced Advantage Fund", Category = "Hybrid", SubCategory = "Balanced Advantage", AMC = "HDFC", NAV = 42.3m, CAGR1Y = 13.1m, CAGR3Y = 11.2m, CAGR5Y = 11.8m, ExpenseRatio = 0.88m, AUM = 62000, FundManager = "Gopal Agrawal", Rating = 4, SharpeRatio = 1.0m, Alpha = 1.8m, Beta = 0.70m, StandardDeviation = 11.0m, ExitLoad = 1.0m, Benchmark = "CRISIL Hybrid 35+65", RollingReturns3Y = 10.8m },
             new() { Name = "SBI Gold Fund", Category = "Gold", SubCategory = "Gold ETF", AMC = "SBI", NAV = 18.5m, CAGR1Y = 15.2m, CAGR3Y = 12.8m, CAGR5Y = 11.5m, ExpenseRatio = 0.50m, AUM = 2500, FundManager = "Raviprakash Sharma", Rating = 4, SharpeRatio = 0.6m, Alpha = 0, Beta = 0.05m, StandardDeviation = 12.0m, ExitLoad = 0, Benchmark = "Gold Price (MCX)", RollingReturns3Y = 12.0m },
             new() { Name = "HDFC Gold Fund", Category = "Gold", SubCategory = "Gold ETF", AMC = "HDFC", NAV = 17.8m, CAGR1Y = 14.8m, CAGR3Y = 12.5m, CAGR5Y = 11.2m, ExpenseRatio = 0.45m, AUM = 2000, FundManager = "Krishan Daga", Rating = 4, SharpeRatio = 0.6m, Alpha = 0, Beta = 0.05m, StandardDeviation = 11.8m, ExitLoad = 0, Benchmark = "Gold Price (MCX)", RollingReturns3Y = 11.8m },
@@ -557,6 +557,48 @@ public static class DatabaseSeeder
 
             context.PortfolioHoldings.AddRange(holdings);
             context.SaveChanges();
+
+            // Rahul's portfolio (Moderate - mixed allocation)
+            var rahul = context.Users.FirstOrDefault(u => u.Email == "rahul@wealthai.com");
+            if (rahul != null && !context.Portfolios.Any(p => p.UserId == rahul.Id))
+            {
+                var rahulPortfolio = new Portfolio { UserId = rahul.Id, Name = "My Portfolio" };
+                context.Portfolios.Add(rahulPortfolio);
+                context.SaveChanges();
+
+                var mirae = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("Mirae Asset Large Cap"));
+                var kotakGold = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("Kotak Gold"));
+                var hdfcLiquid = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("HDFC Liquid"));
+
+                if (mirae != null)
+                    context.PortfolioHoldings.Add(new PortfolioHolding { PortfolioId = rahulPortfolio.Id, MutualFundId = mirae.Id, FundName = mirae.Name, Units = 200, PurchaseNAV = 75.0m, InvestedAmount = 15000, PurchaseDate = DateTime.UtcNow.AddMonths(-10) });
+                if (kotakGold != null)
+                    context.PortfolioHoldings.Add(new PortfolioHolding { PortfolioId = rahulPortfolio.Id, MutualFundId = kotakGold.Id, FundName = kotakGold.Name, Units = 150, PurchaseNAV = 12.5m, InvestedAmount = 1875, PurchaseDate = DateTime.UtcNow.AddMonths(-6) });
+                if (hdfcLiquid != null)
+                    context.PortfolioHoldings.Add(new PortfolioHolding { PortfolioId = rahulPortfolio.Id, MutualFundId = hdfcLiquid.Id, FundName = hdfcLiquid.Name, Units = 10, PurchaseNAV = 4200.0m, InvestedAmount = 42000, PurchaseDate = DateTime.UtcNow.AddMonths(-4) });
+                context.SaveChanges();
+            }
+
+            // Priya's portfolio (Conservative - debt heavy)
+            var priya = context.Users.FirstOrDefault(u => u.Email == "priya@wealthai.com");
+            if (priya != null && !context.Portfolios.Any(p => p.UserId == priya.Id))
+            {
+                var priyaPortfolio = new Portfolio { UserId = priya.Id, Name = "My Portfolio" };
+                context.Portfolios.Add(priyaPortfolio);
+                context.SaveChanges();
+
+                var axisPsu = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("Axis Banking"));
+                var sbiGold = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("SBI Gold"));
+                var canara = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("Canara Robeco"));
+
+                if (axisPsu != null)
+                    context.PortfolioHoldings.Add(new PortfolioHolding { PortfolioId = priyaPortfolio.Id, MutualFundId = axisPsu.Id, FundName = axisPsu.Name, Units = 800, PurchaseNAV = 25.0m, InvestedAmount = 20000, PurchaseDate = DateTime.UtcNow.AddMonths(-14) });
+                if (sbiGold != null)
+                    context.PortfolioHoldings.Add(new PortfolioHolding { PortfolioId = priyaPortfolio.Id, MutualFundId = sbiGold.Id, FundName = sbiGold.Name, Units = 500, PurchaseNAV = 14.0m, InvestedAmount = 7000, PurchaseDate = DateTime.UtcNow.AddMonths(-12) });
+                if (canara != null)
+                    context.PortfolioHoldings.Add(new PortfolioHolding { PortfolioId = priyaPortfolio.Id, MutualFundId = canara.Id, FundName = canara.Name, Units = 300, PurchaseNAV = 48.0m, InvestedAmount = 14400, PurchaseDate = DateTime.UtcNow.AddMonths(-9) });
+                context.SaveChanges();
+            }
         }
         catch (Exception ex)
         {
