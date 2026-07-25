@@ -46,7 +46,7 @@ export class DashboardComponent implements OnInit {
       next: (res) => {
         this.assessment = res;
         this.loadRecommendation();
-        this.addActivity('Completed risk assessment', res.riskProfile, '#2563eb');
+        this.addActivity('Completed risk assessment', res.riskProfile, '#2563eb', res.completedAt);
       },
       error: () => { this.loading = false; }
     });
@@ -57,7 +57,7 @@ export class DashboardComponent implements OnInit {
       next: (res) => {
         this.recommendation = res;
         this.buildChartData(res.allocations);
-        this.addActivity('Received fund recommendation', res.riskProfile + ' profile', '#10b981');
+        this.addActivity('Received fund recommendation', res.riskProfile + ' profile', '#10b981', res.generatedAt);
         this.loading = false;
       },
       error: () => { this.loading = false; }
@@ -172,13 +172,24 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  addActivity(text: string, detail: string, color: string) {
-    const now = new Date();
+  addActivity(text: string, detail: string, color: string, timestamp?: string) {
+    const date = timestamp ? new Date(timestamp) : new Date();
     this.recentActivity.push({
       text: `${text} — ${detail}`,
-      time: this.getRelativeTime(now),
+      time: this.formatDate(date),
       color
     });
+  }
+
+  formatDate(date: Date): string {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
   }
 
   getRelativeTime(date: Date): string {
