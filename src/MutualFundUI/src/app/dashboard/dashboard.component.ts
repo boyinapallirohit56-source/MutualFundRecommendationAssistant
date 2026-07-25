@@ -68,7 +68,6 @@ export class DashboardComponent implements OnInit {
     this.apiService.getProfile().subscribe({
       next: (res) => {
         this.profile = res;
-        this.buildSIPDates(res.sipAmount);
         // Recalculate goal progress based on latest profile data, then load goals
         this.apiService.recalculateGoals().subscribe({
           next: () => this.loadGoals(),
@@ -85,6 +84,10 @@ export class DashboardComponent implements OnInit {
           name: g.name,
           progress: g.progressPercentage
         }));
+        // Build SIP dates AFTER goals are loaded (SIP display depends on goals)
+        if (this.profile) {
+          this.buildSIPDates(this.profile.sipAmount);
+        }
       }
     });
   }
