@@ -9,31 +9,37 @@ public static class DatabaseSeeder
     {
         logger.LogInformation("Starting database seeding for environment: {Environment}", environment);
 
-        // 1. Production Seeders (always run)
-        SeedRoles(context, logger);
-        SeedRiskLevels(context, logger);
-        SeedGoalTypes(context, logger);
-        SeedFundCategories(context, logger);
-        SeedAssetClasses(context, logger);
-        SeedInvestmentTypes(context, logger);
-        SeedStressScenarios(context, logger);
-        SeedRiskQuestions(context, logger);
-        SeedAllocationRules(context, logger);
-        SeedMutualFunds(context, logger);
-
-        // 2. Dev/Test Seeders (only in Development)
-        if (environment == "Development")
+        try
         {
-            SeedDemoUsers(context, logger);
-            SeedSamplePortfolios(context, logger);
-            SeedTestRecommendations(context, logger);
-            SeedFundHoldings(context, logger);
-            SeedNAVHistory(context, logger);
-            SeedGoals(context, logger);
-        }
+            // 1. Production Seeders (always run)
+            SeedRoles(context, logger);
+            SeedRiskLevels(context, logger);
+            SeedGoalTypes(context, logger);
+            SeedFundCategories(context, logger);
+            SeedAssetClasses(context, logger);
+            SeedInvestmentTypes(context, logger);
+            SeedStressScenarios(context, logger);
+            SeedRiskQuestions(context, logger);
+            SeedAllocationRules(context, logger);
+            SeedMutualFunds(context, logger);
 
-        context.SaveChanges();
-        logger.LogInformation("Database seeding completed successfully");
+            // 2. Dev/Test Seeders (only in Development)
+            if (environment == "Development")
+            {
+                SeedDemoUsers(context, logger);
+                try { SeedSamplePortfolios(context, logger); } catch (Exception ex) { logger.LogWarning("Portfolio seeding skipped: {Msg}", ex.Message); }
+                try { SeedTestRecommendations(context, logger); } catch (Exception ex) { logger.LogWarning("Recommendations seeding skipped: {Msg}", ex.Message); }
+                try { SeedFundHoldings(context, logger); } catch (Exception ex) { logger.LogWarning("Fund holdings seeding skipped: {Msg}", ex.Message); }
+                try { SeedNAVHistory(context, logger); } catch (Exception ex) { logger.LogWarning("NAV history seeding skipped: {Msg}", ex.Message); }
+            }
+
+            context.SaveChanges();
+            logger.LogInformation("Database seeding completed successfully");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error during database seeding — app will continue");
+        }
     }
 
 
@@ -352,6 +358,8 @@ public static class DatabaseSeeder
 
     private static void SeedDemoUsers(AppDbContext context, ILogger logger)
     {
+      try
+      {
         // === ACCOUNT 1: Rohit (main demo — Very Aggressive) ===
         if (!context.Users.Any(u => u.Email == "rohit@wealthai.com"))
         {
@@ -448,6 +456,11 @@ public static class DatabaseSeeder
 
         // === Seed risk assessments for all demo accounts ===
         SeedDemoRiskAssessments(context, logger);
+      }
+      catch (Exception ex)
+      {
+        logger.LogWarning("Demo users seeding partially failed: {Msg}", ex.Message);
+      }
     }
 
     private static void SeedDemoRiskAssessments(AppDbContext context, ILogger logger)
