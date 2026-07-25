@@ -31,6 +31,7 @@ public class AmfiDataService
     public async Task<AmfiSyncResult> SyncNavData()
     {
         var result = new AmfiSyncResult();
+        var alreadyUpdated = new HashSet<int>(); // First match wins — don't overwrite
 
         try
         {
@@ -80,19 +81,18 @@ public class AmfiDataService
                 if (!decimal.TryParse(navStr, out var nav)) continue;
                 if (string.IsNullOrWhiteSpace(schemeName)) continue;
 
-                // Try to match with existing fund in database using smart matching
-                // Normalize names for comparison: lowercase, remove common suffixes
-                var normalizedAmfiName = NormalizeFundName(schemeName);
-
-                // Only process Direct Plan Growth schemes (most relevant for investors)
-                if (!schemeName.Contains("Direct") || !schemeName.Contains("Growth")) continue;
+                // Only process Direct Plan Growth schemes (skip IDCW/Dividend/Regular)
+                if (!schemeName.Contains("Direct")) continue;
+                if (!schemeName.Contains("Growth")) continue;
+                if (schemeName.Contains("IDCW") || schemeName.Contains("Dividend") || schemeName.Contains("Payout")) continue;
 
                 var existingFund = _context.MutualFunds.AsEnumerable()
-                    .FirstOrDefault(f => IsNameMatch(f.Name, schemeName));
+                    .FirstOrDefault(f => !alreadyUpdated.Contains(f.Id) && IsNameMatch(f.Name, schemeName));
 
                 if (existingFund != null)
                 {
                     existingFund.NAV = nav;
+                    alreadyUpdated.Add(existingFund.Id);
                     result.Updated++;
                 }
 
