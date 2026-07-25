@@ -355,7 +355,7 @@ public static class DatabaseSeeder
         // === ACCOUNT 1: Rohit (main demo — Very Aggressive) ===
         if (!context.Users.Any(u => u.Email == "rohit@wealthai.com"))
         {
-            context.Users.Add(new User { Name = "Rohit Boyinapalli", Email = "rohit@wealthai.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Rohit@123"), Role = "User" });
+            context.Users.Add(new User { Name = "Rohit Boyinapalli", Email = "rohit@wealthai.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Rohit@123"), Role = "User", IsEmailVerified = true });
             context.SaveChanges();
         }
         var rohit = context.Users.First(u => u.Email == "rohit@wealthai.com");
@@ -387,7 +387,7 @@ public static class DatabaseSeeder
         // === ACCOUNT 2: Rahul (Moderate investor, married, 5th SIP date) ===
         if (!context.Users.Any(u => u.Email == "rahul@wealthai.com"))
         {
-            context.Users.Add(new User { Name = "Rahul Sharma", Email = "rahul@wealthai.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Rahul@123"), Role = "User" });
+            context.Users.Add(new User { Name = "Rahul Sharma", Email = "rahul@wealthai.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Rahul@123"), Role = "User", IsEmailVerified = true });
             context.SaveChanges();
         }
         var rahul = context.Users.First(u => u.Email == "rahul@wealthai.com");
@@ -418,7 +418,7 @@ public static class DatabaseSeeder
         // === ACCOUNT 3: Priya (Conservative investor, 10th SIP date) ===
         if (!context.Users.Any(u => u.Email == "priya@wealthai.com"))
         {
-            context.Users.Add(new User { Name = "Priya Patel", Email = "priya@wealthai.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Priya@123"), Role = "User" });
+            context.Users.Add(new User { Name = "Priya Patel", Email = "priya@wealthai.com", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Priya@123"), Role = "User", IsEmailVerified = true });
             context.SaveChanges();
         }
         var priya = context.Users.First(u => u.Email == "priya@wealthai.com");
