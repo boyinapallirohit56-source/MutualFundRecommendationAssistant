@@ -1,7 +1,7 @@
 <div class="container" style="margin-top:24px">
   <div class="page-header">
     <h1>Admin Portal</h1>
-    <p>Manage users, questionnaire, funds, and view analytics</p>
+    <p>Manage users, funds, allocation rules, and sync live market data</p>
   </div>
 
   <!-- Tab Navigation -->
@@ -9,11 +9,13 @@
     <button class="tab" [class.active]="activeTab === 'analytics'" (click)="activeTab = 'analytics'">Analytics</button>
     <button class="tab" [class.active]="activeTab === 'users'" (click)="activeTab = 'users'; loadUsers()">Users</button>
     <button class="tab" [class.active]="activeTab === 'funds'" (click)="activeTab = 'funds'; loadFunds()">Funds</button>
+    <button class="tab" [class.active]="activeTab === 'allocations'" (click)="activeTab = 'allocations'; loadAllocationRules()">Allocation Rules</button>
+    <button class="tab" [class.active]="activeTab === 'sync'" (click)="activeTab = 'sync'">AMFI Sync</button>
   </div>
 
   <!-- Analytics Tab -->
   <div *ngIf="activeTab === 'analytics' && analytics">
-    <div class="grid-2" style="grid-template-columns:repeat(4,1fr); margin-bottom:20px">
+    <div class="stats-grid">
       <div class="card stat-card">
         <span class="stat-number">{{ analytics.totalUsers }}</span>
         <span class="stat-text">Total Users</span>
@@ -39,6 +41,7 @@
           <span>{{ item.key }}</span>
           <span class="dist-count">{{ item.value }}</span>
         </div>
+        <div *ngIf="!riskDistItems.length" class="empty-state">No assessments yet</div>
       </div>
       <div class="card">
         <h3 style="font-size:15px; margin-bottom:12px">Goal Distribution</h3>
@@ -46,6 +49,7 @@
           <span>{{ item.key }}</span>
           <span class="dist-count">{{ item.value }}</span>
         </div>
+        <div *ngIf="!goalDistItems.length" class="empty-state">No goals set yet</div>
       </div>
     </div>
 
@@ -114,10 +118,106 @@
             <td>{{ fund.subCategory }}</td>
             <td>{{ fund.amc }}</td>
             <td>{{ fund.cagr3Y }}%</td>
-            <td>{{ fund.rating }} ★</td>
+            <td>{{ fund.rating }} &#9733;</td>
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+
+  <!-- Allocation Rules Tab -->
+  <div *ngIf="activeTab === 'allocations'">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
+        <div>
+          <h3 style="font-size:15px; margin-bottom:4px">Allocation Rules</h3>
+          <p style="font-size:13px; color:#6b7280">Control how AI allocates assets for each risk profile</p>
+        </div>
+      </div>
+
+      <!-- Profile Selector -->
+      <div class="profile-tabs">
+        <button *ngFor="let p of riskProfiles"
+                class="profile-tab"
+                [class.active]="selectedProfile === p"
+                (click)="filterByProfile(p)">{{ p }}</button>
+      </div>
+
+      <!-- Allocation Sliders -->
+      <div class="allocations-editor" *ngIf="currentAllocations.length">
+        <div class="allocation-row" *ngFor="let rule of currentAllocations">
+          <div class="allocation-label">
+            <span class="asset-class-dot" [style.background]="getAssetColor(rule.assetClass)"></span>
+            <span>{{ rule.assetClass }}</span>
+          </div>
+          <div class="allocation-input-group">
+            <input type="range" min="0" max="100" step="5"
+                   [(ngModel)]="rule.percentage"
+                   class="allocation-slider">
+            <span class="allocation-value">{{ rule.percentage }}%</span>
+          </div>
+        </div>
+
+        <div class="allocation-total" [class.valid]="getTotalPercentage() === 100" [class.invalid]="getTotalPercentage() !== 100">
+          <span>Total:</span>
+          <span>{{ getTotalPercentage() }}% <span *ngIf="getTotalPercentage() !== 100">(must be 100%)</span></span>
+        </div>
+
+        <button class="btn btn-primary" style="margin-top:16px"
+                [disabled]="getTotalPercentage() !== 100 || savingRules"
+                (click)="saveAllocations()">
+          {{ savingRules ? 'Saving...' : 'Save Allocation Rules' }}
+        </button>
+        <span class="save-success" *ngIf="rulesSaved">Saved successfully!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AMFI Sync Tab -->
+  <div *ngIf="activeTab === 'sync'">
+    <div class="card">
+      <div class="sync-header">
+        <div>
+          <h3 style="font-size:15px; margin-bottom:4px">AMFI Data Sync</h3>
+          <p style="font-size:13px; color:#6b7280">Fetch live NAV data from Association of Mutual Funds in India</p>
+        </div>
+      </div>
+
+      <div class="sync-info">
+        <div class="info-row">
+          <span class="info-label">Source</span>
+          <span class="info-value">AMFI India (amfiindia.com)</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Data Type</span>
+          <span class="info-value">Net Asset Value (NAV) for all Indian Mutual Funds</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Update Frequency</span>
+          <span class="info-value">Daily (end of market hours)</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Funds in Database</span>
+          <span class="info-value">{{ funds.length || 33 }} funds</span>
+        </div>
+      </div>
+
+      <div class="sync-actions">
+        <button class="btn btn-primary sync-btn" (click)="syncAmfiData()" [disabled]="syncing">
+          <span *ngIf="!syncing">Sync Live NAV Data</span>
+          <span *ngIf="syncing">Syncing from AMFI...</span>
+        </button>
+      </div>
+
+      <div class="sync-result" *ngIf="syncResult" [class.success]="syncResult.success" [class.error]="!syncResult.success">
+        <span *ngIf="syncResult.success">{{ syncResult.message }}</span>
+        <span *ngIf="!syncResult.success">{{ syncResult.message }}</span>
+      </div>
+
+      <div class="sync-note">
+        <strong>How it works:</strong> Clicking "Sync Live NAV Data" fetches the latest fund prices from AMFI India's public database
+        and updates NAV values for all matching funds in the system. This ensures users see the most current fund prices.
+      </div>
     </div>
   </div>
 </div>

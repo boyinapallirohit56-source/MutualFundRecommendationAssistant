@@ -212,4 +212,35 @@ public class AdminService
             RecentActivity = recentAssessments
         };
     }
+
+    // --- Allocation Rules ---
+
+    public async Task<List<AllocationRule>> GetAllocationRules()
+    {
+        return await _context.AllocationRules
+            .OrderBy(r => r.RiskProfile)
+            .ThenBy(r => r.AssetClass)
+            .ToListAsync();
+    }
+
+    public async Task<bool> UpdateAllocationRules(string riskProfile, List<AllocationRuleItemDTO> allocations)
+    {
+        var existingRules = await _context.AllocationRules
+            .Where(r => r.RiskProfile == riskProfile)
+            .ToListAsync();
+
+        if (!existingRules.Any()) return false;
+
+        foreach (var rule in existingRules)
+        {
+            var updated = allocations.FirstOrDefault(a => a.AssetClass == rule.AssetClass);
+            if (updated != null)
+            {
+                rule.Percentage = updated.Percentage;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
 }

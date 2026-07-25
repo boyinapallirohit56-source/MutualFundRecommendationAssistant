@@ -124,4 +124,23 @@ public class AdminController : ControllerBase
 
         return Ok(new { message = $"Imported {result.Updated} funds for category: {category}" });
     }
+
+    // --- Allocation Rules ---
+
+    [HttpGet("allocation-rules")]
+    public async Task<IActionResult> GetAllocationRules()
+    {
+        var rules = await _adminService.GetAllocationRules();
+        return Ok(rules);
+    }
+
+    [HttpPut("allocation-rules/{riskProfile}")]
+    public async Task<IActionResult> UpdateAllocationRules(string riskProfile, [FromBody] UpdateAllocationRulesDTO dto)
+    {
+        var result = await _adminService.UpdateAllocationRules(riskProfile, dto.Allocations);
+        if (!result)
+            return NotFound(new { message = "No rules found for this profile" });
+
+        return Ok(new { message = $"Allocation rules updated for {riskProfile}" });
+    }
 }
