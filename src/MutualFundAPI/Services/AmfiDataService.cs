@@ -31,6 +31,7 @@ public class AmfiDataService
     public async Task<AmfiSyncResult> SyncNavData()
     {
         var result = new AmfiSyncResult();
+        var alreadyUpdated = new HashSet<int>();
 
         try
         {
@@ -80,15 +81,19 @@ public class AmfiDataService
                 if (!decimal.TryParse(navStr, out var nav)) continue;
                 if (string.IsNullOrWhiteSpace(schemeName)) continue;
 
-                // Try to match with existing fund in database
-                // Try partial match — AMFI uses full names like "SBI Blue Chip Fund - Direct Plan - Growth"
-                // Our DB has shorter names like "SBI Bluechip Fund"
-                var existingFund = await _context.MutualFunds
-                    .FirstOrDefaultAsync(f => schemeName.Contains(f.Name) || f.Name.Contains(schemeName));
+                // Try to match with existing fund in database using smart matching
+                // Only process Direct Plan Growth schemes (skip IDCW/Dividend/Regular)
+                if (!schemeName.Contains("Direct")) continue;
+                if (!schemeName.Contains("Growth")) continue;
+                if (schemeName.Contains("IDCW") || schemeName.Contains("Dividend") || schemeName.Contains("Payout")) continue;
 
-                if (existingFund != null)
+                var existingFund = _context.MutualFunds.AsEnumerable()
+                    .FirstOrDefault(f => IsNameMatch(f.Name, schemeName));
+
+                if (existingFund != null && !alreadyUpdated.Contains(existingFund.Id))
                 {
                     existingFund.NAV = nav;
+                    alreadyUpdated.Add(existingFund.Id);
                     result.Updated++;
                 }
 
@@ -201,6 +206,47 @@ public class AmfiDataService
     }
 
     // --- Helpers ---
+
+    /// <summary>
+    /// Smart matching: compares core fund name keywords between our DB and AMFI
+    /// "SBI Bluechip Fund" matches "SBI Blue Chip Fund - Direct Plan - Growth"
+    /// </summary>
+    private static bool IsNameMatch(string dbName, string amfiName)
+    {
+        var dbNormalized = NormalizeFundName(dbName);
+        var amfiNormalized = NormalizeFundName(amfiName);
+
+        // Check if all keywords from DB name exist in AMFI name
+        var dbWords = dbNormalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var amfiWords = amfiNormalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        // At least 3 core words must match
+        int matchCount = 0;
+        foreach (var word in dbWords)
+        {
+            if (word.Length < 3) continue; // Skip short words like "of", "in"
+            if (amfiWords.Any(aw => aw.Contains(word) || word.Contains(aw)))
+                matchCount++;
+        }
+
+        // Require at least 3 meaningful word matches AND first word (AMC name) must match
+        return matchCount >= 3 && dbWords.Length > 0 && amfiWords.Length > 0 &&
+               (amfiWords[0] == dbWords[0] || amfiWords[0].Contains(dbWords[0]) || dbWords[0].Contains(amfiWords[0]));
+    }
+
+    private static string NormalizeFundName(string name)
+    {
+        return name.ToLower()
+            .Replace("bluechip", "blue chip")
+            .Replace("-", " ")
+            .Replace("direct plan", "")
+            .Replace("regular plan", "")
+            .Replace("growth", "")
+            .Replace("dividend", "")
+            .Replace("fund", "")
+            .Replace("  ", " ")
+            .Trim();
+    }
 
     private static string ExtractCategory(string header)
     {
