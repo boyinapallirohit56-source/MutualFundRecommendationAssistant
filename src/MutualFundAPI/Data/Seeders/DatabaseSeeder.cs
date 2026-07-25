@@ -518,29 +518,37 @@ public static class DatabaseSeeder
 
     private static void SeedSamplePortfolios(AppDbContext context, ILogger logger)
     {
-        var rohit = context.Users.FirstOrDefault(u => u.Email == "rohit@wealthai.com");
-        if (rohit == null) return;
-        if (context.Portfolios.Any(p => p.UserId == rohit.Id)) return;
-        logger.LogInformation("Seeding: Sample Portfolios (Development only)");
+        try
+        {
+            var rohit = context.Users.FirstOrDefault(u => u.Email == "rohit@wealthai.com");
+            if (rohit == null) return;
+            if (context.Portfolios.Any(p => p.UserId == rohit.Id)) return;
+            logger.LogInformation("Seeding: Sample Portfolios (Development only)");
 
-        var portfolio = new Portfolio { UserId = rohit.Id, Name = "My Portfolio" };
-        context.Portfolios.Add(portfolio);
-        context.SaveChanges();
+            var portfolio = new Portfolio { UserId = rohit.Id, Name = "My Portfolio" };
+            context.Portfolios.Add(portfolio);
+            context.SaveChanges();
 
-        var sbi = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("SBI Bluechip"));
-        var hdfc = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("HDFC Mid-Cap"));
-        var icici = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("ICICI Prudential Balanced"));
+            var sbi = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("SBI Bluechip"));
+            var hdfc = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("HDFC Mid-Cap"));
+            var icici = context.MutualFunds.FirstOrDefault(f => f.Name.Contains("ICICI Prudential Balanced"));
 
-        var holdings = new List<PortfolioHolding>();
+            var holdings = new List<PortfolioHolding>();
 
-        if (sbi != null)
-            holdings.Add(new PortfolioHolding { PortfolioId = portfolio.Id, MutualFundId = sbi.Id, FundName = sbi.Name, Units = 500, PurchaseNAV = 42.5m, InvestedAmount = 21250, PurchaseDate = DateTime.UtcNow.AddMonths(-12) });
-        if (hdfc != null)
-            holdings.Add(new PortfolioHolding { PortfolioId = portfolio.Id, MutualFundId = hdfc.Id, FundName = hdfc.Name, Units = 300, PurchaseNAV = 55.2m, InvestedAmount = 16560, PurchaseDate = DateTime.UtcNow.AddMonths(-8) });
-        if (icici != null)
-            holdings.Add(new PortfolioHolding { PortfolioId = portfolio.Id, MutualFundId = icici.Id, FundName = icici.Name, Units = 400, PurchaseNAV = 38.0m, InvestedAmount = 15200, PurchaseDate = DateTime.UtcNow.AddMonths(-6) });
+            if (sbi != null)
+                holdings.Add(new PortfolioHolding { PortfolioId = portfolio.Id, MutualFundId = sbi.Id, FundName = sbi.Name, Units = 500, PurchaseNAV = 42.5m, InvestedAmount = 21250, PurchaseDate = DateTime.UtcNow.AddMonths(-12) });
+            if (hdfc != null)
+                holdings.Add(new PortfolioHolding { PortfolioId = portfolio.Id, MutualFundId = hdfc.Id, FundName = hdfc.Name, Units = 300, PurchaseNAV = 55.2m, InvestedAmount = 16560, PurchaseDate = DateTime.UtcNow.AddMonths(-8) });
+            if (icici != null)
+                holdings.Add(new PortfolioHolding { PortfolioId = portfolio.Id, MutualFundId = icici.Id, FundName = icici.Name, Units = 400, PurchaseNAV = 38.0m, InvestedAmount = 15200, PurchaseDate = DateTime.UtcNow.AddMonths(-6) });
 
-        context.PortfolioHoldings.AddRange(holdings);
+            context.PortfolioHoldings.AddRange(holdings);
+            context.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning("Portfolio seeding skipped: {Message}", ex.Message);
+        }
     }
 
     private static void SeedTestRecommendations(AppDbContext context, ILogger logger)
