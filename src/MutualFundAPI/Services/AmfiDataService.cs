@@ -206,45 +206,81 @@ public class AmfiDataService
 
     // --- Helpers ---
 
-    /// <summary>
-    /// Smart matching: compares core fund name keywords between our DB and AMFI
-    /// "SBI Bluechip Fund" matches "SBI Blue Chip Fund - Direct Plan - Growth"
-    /// </summary>
-    private static bool IsNameMatch(string dbName, string amfiName)
-    {
-        var dbNormalized = NormalizeFundName(dbName);
-        var amfiNormalized = NormalizeFundName(amfiName);
-
-        // Check if all keywords from DB name exist in AMFI name
-        var dbWords = dbNormalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        var amfiWords = amfiNormalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        // At least 3 core words must match
-        int matchCount = 0;
-        foreach (var word in dbWords)
-        {
-            if (word.Length < 3) continue; // Skip short words like "of", "in"
-            if (amfiWords.Any(aw => aw.Contains(word) || word.Contains(aw)))
-                matchCount++;
-        }
-
-        // Require at least 3 meaningful word matches AND first word (AMC name) must match
-        return matchCount >= 3 && dbWords.Length > 0 && amfiWords.Length > 0 &&
-               (amfiWords[0] == dbWords[0] || amfiWords[0].Contains(dbWords[0]) || dbWords[0].Contains(amfiWords[0]));
-    }
-
     private static string NormalizeFundName(string name)
     {
-        return name.ToLower()
+        var normalized = name.ToLower()
             .Replace("bluechip", "blue chip")
+            .Replace("mid-cap", "mid cap")
             .Replace("-", " ")
             .Replace("direct plan", "")
             .Replace("regular plan", "")
             .Replace("growth", "")
             .Replace("dividend", "")
             .Replace("fund", "")
+            .Replace("opportunities", "")
+            .Replace("savings", "")
             .Replace("  ", " ")
             .Trim();
+        return normalized;
+    }
+
+    /// <summary>
+    /// Known SEBI renames and aliases for matching
+    /// </summary>
+    private static readonly Dictionary<string, string[]> FundAliases = new()
+    {
+        { "sbi bluechip", new[] { "sbi blue chip", "sbi large cap" } },
+        { "sbi small cap", new[] { "sbi small cap" } },
+        { "hdfc mid-cap opportunities", new[] { "hdfc mid cap", "hdfc mid-cap" } },
+        { "icici prudential bluechip", new[] { "icici prudential bluechip", "icici prudential large cap" } },
+        { "mirae asset large cap", new[] { "mirae asset large cap", "mirae asset large & mid cap" } },
+        { "kotak emerging equity", new[] { "kotak emerging equity", "kotak mid cap" } },
+        { "nippon india small cap", new[] { "nippon india small cap" } },
+        { "franklin india feeder", new[] { "franklin india feeder", "franklin india opportunities" } },
+        { "motilal oswal nasdaq", new[] { "motilal oswal nasdaq", "motilal oswal s&p 500" } },
+        { "dsp global innovation", new[] { "dsp global", "dsp world" } },
+        { "kotak international reit", new[] { "kotak international", "kotak global" } },
+    };
+
+    /// <summary>
+    /// Smart matching with SEBI rename awareness
+    /// </summary>
+    private static bool IsNameMatch(string dbName, string amfiName)
+    {
+        var dbLower = dbName.ToLower();
+        var amfiLower = amfiName.ToLower();
+
+        // Check aliases first
+        foreach (var kvp in FundAliases)
+        {
+            if (dbLower.Contains(kvp.Key))
+            {
+                foreach (var alias in kvp.Value)
+                {
+                    if (amfiLower.Contains(alias)) return true;
+                }
+            }
+        }
+
+        // Standard matching: normalize and compare keywords
+        var dbNormalized = NormalizeFundName(dbName);
+        var amfiNormalized = NormalizeFundName(amfiName);
+
+        var dbWords = dbNormalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var amfiWords = amfiNormalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        // Count matching words
+        int matchCount = 0;
+        foreach (var word in dbWords)
+        {
+            if (word.Length < 3) continue;
+            if (amfiWords.Any(aw => aw.Contains(word) || word.Contains(aw)))
+                matchCount++;
+        }
+
+        // Require at least 2 meaningful word matches AND first word (AMC name) must match
+        return matchCount >= 2 && dbWords.Length > 0 && amfiWords.Length > 0 &&
+               (amfiWords[0] == dbWords[0] || amfiWords[0].Contains(dbWords[0]) || dbWords[0].Contains(amfiWords[0]));
     }
 
     private static string ExtractCategory(string header)
