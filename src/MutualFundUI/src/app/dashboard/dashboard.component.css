@@ -51,7 +51,9 @@
 
 .sip-list { display: flex; flex-direction: column; gap: 12px; }
 .sip-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--surface-1); border-radius: var(--radius-sm); }
+.sip-info { display: flex; flex-direction: column; gap: 2px; }
 .sip-date { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+.sip-label { font-size: 11px; color: var(--text-tertiary); font-style: italic; }
 .sip-amount { font-size: 14px; font-weight: 700; color: var(--brand-accent); }
 
 @media (max-width: 768px) {

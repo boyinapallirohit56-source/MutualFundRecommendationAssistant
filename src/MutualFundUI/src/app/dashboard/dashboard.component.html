@@ -168,7 +168,10 @@
         </div>
         <div class="sip-list" *ngIf="upcomingSIPs.length">
           <div class="sip-row" *ngFor="let sip of upcomingSIPs">
-            <span class="sip-date">{{ sip.date }}</span>
+            <div class="sip-info">
+              <span class="sip-date">{{ sip.date }}</span>
+              <span class="sip-label" *ngIf="sip.label">{{ sip.label }}</span>
+            </div>
             <span class="sip-amount">₹{{ sip.amount | number:'1.0-0' }}</span>
           </div>
         </div>
