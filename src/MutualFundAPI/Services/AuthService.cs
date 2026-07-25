@@ -27,25 +27,17 @@ public class AuthService
         if (await _context.Users.AnyAsync(u => u.Email == dto.Email))
             return null;
 
-        // Generate email verification token
-        var verificationToken = Guid.NewGuid().ToString("N");
-
         var user = new User
         {
             Name = dto.Name,
             Email = dto.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
             Role = "User",
-            IsEmailVerified = false,
-            EmailVerificationToken = verificationToken,
-            EmailVerificationExpiry = DateTime.UtcNow.AddHours(24)
+            IsEmailVerified = true // Auto-verified for development
         };
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
-
-        // Send verification email
-        await _emailService.SendVerificationEmail(user.Email, user.Name, verificationToken);
 
         return new AuthResponseDTO
         {
@@ -53,8 +45,7 @@ public class AuthService
             Name = user.Name,
             Email = user.Email,
             Role = user.Role,
-            IsEmailVerified = false,
-            Message = "Registration successful. Please check your email to verify your account."
+            IsEmailVerified = true
         };
     }
 
@@ -63,19 +54,6 @@ public class AuthService
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
         if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             return null;
-
-        if (!user.IsEmailVerified)
-        {
-            return new AuthResponseDTO
-            {
-                Token = "",
-                Name = user.Name,
-                Email = user.Email,
-                Role = user.Role,
-                IsEmailVerified = false,
-                Message = "Please verify your email before logging in. Check your inbox."
-            };
-        }
 
         return new AuthResponseDTO
         {
