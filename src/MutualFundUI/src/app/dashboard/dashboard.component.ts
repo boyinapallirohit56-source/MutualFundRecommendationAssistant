@@ -116,20 +116,30 @@ export class DashboardComponent implements OnInit {
 
     const today = new Date();
     const frequency = this.profile.sipFrequency || 'Monthly';
-    const sipDay = this.profile.sipDate || 5;
     this.upcomingSIPs = [];
 
     if (frequency === 'Monthly') {
-      for (let i = 0; i < 3; i++) {
-        const sipDate = new Date(today.getFullYear(), today.getMonth() + i, sipDay);
-        if (sipDate > today) {
+      // Show SIPs split by goal — different dates for each goal
+      if (this.goals && this.goals.length > 0) {
+        const sipSchedule = [
+          { day: 1, label: 'Wealth Creation', amount: 25000 },
+          { day: 5, label: 'Retirement', amount: 15000 },
+          { day: 10, label: 'Tax Saving', amount: 12500 },
+          { day: 15, label: 'Emergency Fund', amount: 10000 }
+        ];
+
+        const nextMonth = today.getMonth() + 1;
+        for (const sip of sipSchedule.slice(0, this.goals.length)) {
+          const sipDate = new Date(today.getFullYear(), nextMonth, sip.day);
           this.upcomingSIPs.push({
             date: sipDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
-            amount: sipAmount
+            amount: sip.amount,
+            label: sip.label
           });
         }
-      }
-      if (!this.upcomingSIPs.length) {
+      } else {
+        // Fallback: single SIP
+        const sipDay = this.profile.sipDate || 5;
         const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, sipDay);
         this.upcomingSIPs.push({
           date: nextMonth.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
@@ -138,6 +148,7 @@ export class DashboardComponent implements OnInit {
       }
     } else if (frequency === 'Weekly') {
       const dayNames = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+      const sipDay = this.profile.sipDate || 5;
       for (let i = 1; i <= 4; i++) {
         const nextDate = new Date(today);
         nextDate.setDate(today.getDate() + (i * 7));
@@ -147,6 +158,7 @@ export class DashboardComponent implements OnInit {
         });
       }
     } else if (frequency === 'Quarterly') {
+      const sipDay = this.profile.sipDate || 5;
       for (let i = 1; i <= 3; i++) {
         const sipDate = new Date(today.getFullYear(), today.getMonth() + (i * 3), sipDay);
         this.upcomingSIPs.push({
