@@ -518,12 +518,12 @@ public static class DatabaseSeeder
 
     private static void SeedSamplePortfolios(AppDbContext context, ILogger logger)
     {
-        var demo = context.Users.FirstOrDefault(u => u.Email == "demo@test.com");
-        if (demo == null) return;
-        if (context.Portfolios.Any(p => p.UserId == demo.Id)) return;
+        var rohit = context.Users.FirstOrDefault(u => u.Email == "rohit@wealthai.com");
+        if (rohit == null) return;
+        if (context.Portfolios.Any(p => p.UserId == rohit.Id)) return;
         logger.LogInformation("Seeding: Sample Portfolios (Development only)");
 
-        var portfolio = new Portfolio { UserId = demo.Id, Name = "My Portfolio" };
+        var portfolio = new Portfolio { UserId = rohit.Id, Name = "My Portfolio" };
         context.Portfolios.Add(portfolio);
         context.SaveChanges();
 
