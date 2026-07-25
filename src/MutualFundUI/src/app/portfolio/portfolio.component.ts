@@ -16,6 +16,7 @@ export class PortfolioComponent implements OnInit {
   loading = true;
   adding = false;
   inputMode = 'manual';
+  funds: any[] = [];
 
   // File upload
   isDragging = false;
@@ -23,7 +24,8 @@ export class PortfolioComponent implements OnInit {
   uploading = false;
   uploadResult: { success: boolean; message: string } | null = null;
 
-  newHolding = {
+  newHolding: any = {
+    mutualFundId: null,
     fundName: '',
     units: 0,
     purchaseNAV: 0,
@@ -35,6 +37,7 @@ export class PortfolioComponent implements OnInit {
 
   ngOnInit() {
     this.loadPortfolio();
+    this.apiService.listFunds().subscribe({ next: (f) => this.funds = f });
   }
 
   loadPortfolio() {
@@ -49,7 +52,7 @@ export class PortfolioComponent implements OnInit {
     this.apiService.addHolding(this.newHolding).subscribe({
       next: () => {
         this.adding = false;
-        this.newHolding = { fundName: '', units: 0, purchaseNAV: 0, investedAmount: 0, purchaseDate: '' };
+        this.newHolding = { mutualFundId: null, fundName: '', units: 0, purchaseNAV: 0, investedAmount: 0, purchaseDate: '' };
         this.loadPortfolio();
       },
       error: () => { this.adding = false; }
@@ -58,6 +61,14 @@ export class PortfolioComponent implements OnInit {
 
   removeHolding(id: number) {
     this.apiService.removeHolding(id).subscribe({ next: () => this.loadPortfolio() });
+  }
+
+  onFundSelect() {
+    const fund = this.funds.find(f => f.id === this.newHolding.mutualFundId);
+    if (fund) {
+      this.newHolding.fundName = fund.name;
+      this.newHolding.purchaseNAV = fund.nav || 0;
+    }
   }
 
   analyzePortfolio() {

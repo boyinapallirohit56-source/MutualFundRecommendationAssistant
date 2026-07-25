@@ -18,8 +18,11 @@
     <div *ngIf="inputMode === 'manual'">
       <div class="grid-2">
         <div class="form-group">
-          <label>Fund Name</label>
-          <input type="text" [(ngModel)]="newHolding.fundName" placeholder="e.g., SBI Bluechip Fund">
+          <label>Select Fund</label>
+          <select [(ngModel)]="newHolding.mutualFundId" (change)="onFundSelect()">
+            <option [ngValue]="null">-- Select a Fund --</option>
+            <option *ngFor="let fund of funds" [ngValue]="fund.id">{{ fund.name }} ({{ fund.category }})</option>
+          </select>
         </div>
         <div class="form-group">
           <label>Units</label>

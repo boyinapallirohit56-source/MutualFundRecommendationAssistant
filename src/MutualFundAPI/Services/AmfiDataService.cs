@@ -81,8 +81,10 @@ public class AmfiDataService
                 if (string.IsNullOrWhiteSpace(schemeName)) continue;
 
                 // Try to match with existing fund in database
+                // Try partial match — AMFI uses full names like "SBI Blue Chip Fund - Direct Plan - Growth"
+                // Our DB has shorter names like "SBI Bluechip Fund"
                 var existingFund = await _context.MutualFunds
-                    .FirstOrDefaultAsync(f => f.Name == schemeName);
+                    .FirstOrDefaultAsync(f => schemeName.Contains(f.Name) || f.Name.Contains(schemeName));
 
                 if (existingFund != null)
                 {
