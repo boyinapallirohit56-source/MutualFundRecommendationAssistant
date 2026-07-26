@@ -224,7 +224,12 @@ public class AdminController : ControllerBase
         if (!result.Success)
             return BadRequest(new { message = result.ErrorMessage });
 
-        return Ok(new { message = $"Sync complete. Processed: {result.Processed}, Updated: {result.Updated}" });
+        return Ok(new { 
+            message = $"Sync complete. Processed: {result.Processed}, Updated: {result.Updated}",
+            processed = result.Processed,
+            updated = result.Updated,
+            updatedFunds = result.UpdatedFundNames
+        });
     }
 
     [HttpPost("import-amfi/{category}")]
