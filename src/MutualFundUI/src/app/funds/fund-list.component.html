@@ -39,7 +39,7 @@
       <div style="display:flex; gap:24px; align-items:center; font-size:13px">
         <div class="fund-metric">
           <span class="metric-label">3Y CAGR</span>
-          <span class="metric-value" style="color:#10b981">{{ fund.cagr3Y !== null && fund.cagr3Y !== undefined ? fund.cagr3Y + '%' : 'N/A' }}</span>
+          <span class="metric-value" style="color:#10b981">{{ fund.cagR3Y !== null && fund.cagR3Y !== undefined && fund.cagR3Y !== 0 ? fund.cagR3Y + '%' : 'N/A' }}</span>
         </div>
         <div class="fund-metric">
           <span class="metric-label">Expense</span>

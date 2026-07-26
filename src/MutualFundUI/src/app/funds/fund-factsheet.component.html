@@ -3,8 +3,15 @@
     (click)="router.navigate(['/funds'])">Back to Funds</button>
 
   <div *ngIf="fund" class="card">
-    <h2 style="font-size:20px">{{ fund.name }}</h2>
-    <p style="color:#6b7280">{{ fund.amc }} | {{ fund.subCategory }}</p>
+    <div style="display:flex; justify-content:space-between; align-items:center">
+      <div>
+        <h2 style="font-size:20px">{{ fund.name }}</h2>
+        <p style="color:#6b7280">{{ fund.amc }} | {{ fund.subCategory }}</p>
+      </div>
+      <button class="btn btn-primary" (click)="addToWatchlist()" [disabled]="addingToWatchlist">
+        {{ addingToWatchlist ? 'Adding...' : '+ Watchlist' }}
+      </button>
+    </div>
 
     <div class="grid-2 mt-4" style="grid-template-columns:repeat(3,1fr)">
       <div class="stat-box">
@@ -25,15 +32,15 @@
     <div class="grid-2" style="grid-template-columns:repeat(3,1fr)">
       <div class="stat-box">
         <span class="stat-label">1 Year</span>
-        <span class="stat-value green">{{ fund.cagr1Y !== null && fund.cagr1Y !== undefined ? fund.cagr1Y + '%' : 'N/A' }}</span>
+        <span class="stat-value green">{{ fund.cagR1Y !== null && fund.cagR1Y !== undefined && fund.cagR1Y !== 0 ? fund.cagR1Y + '%' : 'N/A' }}</span>
       </div>
       <div class="stat-box">
         <span class="stat-label">3 Year</span>
-        <span class="stat-value green">{{ fund.cagr3Y !== null && fund.cagr3Y !== undefined ? fund.cagr3Y + '%' : 'N/A' }}</span>
+        <span class="stat-value green">{{ fund.cagR3Y !== null && fund.cagR3Y !== undefined && fund.cagR3Y !== 0 ? fund.cagR3Y + '%' : 'N/A' }}</span>
       </div>
       <div class="stat-box">
         <span class="stat-label">5 Year</span>
-        <span class="stat-value green">{{ fund.cagr5Y !== null && fund.cagr5Y !== undefined ? fund.cagr5Y + '%' : 'N/A' }}</span>
+        <span class="stat-value green">{{ fund.cagR5Y !== null && fund.cagR5Y !== undefined && fund.cagR5Y !== 0 ? fund.cagR5Y + '%' : 'N/A' }}</span>
       </div>
     </div>
 
@@ -80,7 +87,7 @@
           <span style="font-size:12px; color:#6b7280"> | {{ peer.amc }}</span>
         </div>
         <div style="font-size:13px">
-          3Y: {{ peer.cagr3Y !== null ? peer.cagr3Y + '%' : 'N/A' }} | Expense: {{ peer.expenseRatio }}% | {{ peer.rating }} ★
+          3Y: {{ peer.cagR3Y !== null && peer.cagR3Y !== undefined && peer.cagR3Y !== 0 ? peer.cagR3Y + '%' : 'N/A' }} | Expense: {{ peer.expenseRatio }}% | {{ peer.rating }} ★
         </div>
       </div>
     </div>
