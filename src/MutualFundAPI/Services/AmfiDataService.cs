@@ -245,8 +245,8 @@ public class AmfiDataService
     private static readonly Dictionary<string, string[]> ExactFundPatterns = new(StringComparer.OrdinalIgnoreCase)
     {
         // Equity - Large Cap
-        // SEBI renamed "SBI Bluechip" → "SBI Large Cap Fund". AMFI uses: "SBI Large Cap Fund - Direct Plan - Growth"
-        { "SBI Bluechip Fund", new[] { "sbi blue chip fund", "sbi bluechip fund", "sbi large cap fund" } },
+        // SEBI renamed "SBI Bluechip" → "SBI Large Cap Fund". AMFI uses: "SBI Large Cap FUND-DIRECT PLAN -GROWTH"
+        { "SBI Large Cap Fund", new[] { "sbi large cap fund", "sbi blue chip fund", "sbi bluechip fund" } },
         // AMFI: "ICICI Prudential Large Cap Fund (erstwhile Bluechip Fund) - Direct Plan - Growth"
         { "ICICI Prudential Bluechip Fund", new[] { "icici prudential large cap fund", "icici prudential bluechip" } },
         { "Mirae Asset Large Cap Fund", new[] { "mirae asset large cap fund" } },
@@ -262,9 +262,11 @@ public class AmfiDataService
         { "SBI Small Cap Fund", new[] { "sbi small cap fund" } },
 
         // Debt
-        { "HDFC Short Term Debt Fund", new[] { "hdfc short term debt fund", "hdfc short term debt" } },
+        // AMFI: "HDFC Corporate Bond Fund - Growth Option - Direct Plan"
+        { "HDFC Corporate Bond Fund", new[] { "hdfc corporate bond fund" } },
         { "ICICI Prudential All Seasons Bond Fund", new[] { "icici prudential all seasons bond" } },
-        { "SBI Magnum Gilt Fund", new[] { "sbi magnum gilt fund", "sbi magnum gilt", "sbi magnum constant maturity" } },
+        // AMFI: "HDFC Multi-Asset Active FOF - Growth Option -Direct Plan"
+        { "HDFC Multi-Asset Active FOF", new[] { "hdfc multi-asset active fof", "hdfc multi asset active fof" } },
         // AMFI: "Axis Banking & PSU Debt Fund - Direct Plan - Growth"
         { "Axis Banking & PSU Debt Fund", new[] { "axis banking & psu debt", "axis banking and psu debt" } },
         { "Kotak Corporate Bond Fund", new[] { "kotak corporate bond fund" } },
@@ -283,8 +285,8 @@ public class AmfiDataService
         // Gold
         // AMFI: "SBI Gold Fund - Direct Plan - Growth" or "SBI GOLD FUND- DIRECT PLAN - GROWTH"
         { "SBI Gold Fund", new[] { "sbi gold fund" } },
-        // AMFI: may be "HDFC Gold Fund" or "HDFC Gold ETF Fund of Fund"
-        { "HDFC Gold Fund", new[] { "hdfc gold fund", "hdfc gold etf" } },
+        // AMFI: "HDFC Gold ETF Fund of Fund - Direct Plan"
+        { "HDFC Gold ETF Fund of Fund", new[] { "hdfc gold etf fund of fund", "hdfc gold etf" } },
         // AMFI: "Kotak Gold Fund Growth - Direct"
         { "Kotak Gold Fund", new[] { "kotak gold fund" } },
         // AMFI: "Nippon India Gold Savings Fund"
