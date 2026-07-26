@@ -68,7 +68,7 @@ public class AdminController : ControllerBase
                 new() { Name = "Wealth Creation", TargetAmount = 5000000, CurrentAmount = 1750000, TargetYears = 5, MonthlySIP = 25000 },
                 new() { Name = "Tax Saving", TargetAmount = 150000, CurrentAmount = 112000, TargetYears = 1, MonthlySIP = 12500 }
             },
-            22, "Conservative",
+            25, "Conservative",
             "Your conservative profile prioritizes capital preservation. The allocation emphasizes debt instruments and gold for stability, with limited equity exposure for modest growth.",
             new Dictionary<string, int> { {"Equity", 20}, {"Debt", 50}, {"Hybrid", 15}, {"Gold", 10}, {"Liquid", 5} }
         ));
