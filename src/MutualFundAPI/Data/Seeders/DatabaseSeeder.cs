@@ -473,7 +473,8 @@ public static class DatabaseSeeder
             var assessment = new RiskAssessment { UserId = rohit.Id, TotalScore = 78, RiskProfile = "Very Aggressive", CompletedAt = DateTime.UtcNow.AddDays(-5) };
             context.RiskAssessments.Add(assessment);
             context.SaveChanges();
-            SeedRiskResponses(context, assessment.Id, new[] { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4 });
+            // Raw score: 3×4 + 11×3 + 1×2 = 12+33+2 = 47/60 → normalized 78%
+            SeedRiskResponses(context, assessment.Id, new[] { 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2 });
             var rec = new Recommendation { UserId = rohit.Id, RiskAssessmentId = assessment.Id, RiskProfile = "Very Aggressive", GeneratedAt = DateTime.UtcNow.AddDays(-5),
                 AIExplanation = "You have a high risk tolerance and a growth-focused approach. The allocation maximizes equity exposure across large, mid, and small-cap funds for maximum growth potential. International equity adds geographical diversification." };
             context.Recommendations.Add(rec);
@@ -495,7 +496,8 @@ public static class DatabaseSeeder
             var assessment = new RiskAssessment { UserId = rahul.Id, TotalScore = 48, RiskProfile = "Moderate", CompletedAt = DateTime.UtcNow.AddDays(-10) };
             context.RiskAssessments.Add(assessment);
             context.SaveChanges();
-            SeedRiskResponses(context, assessment.Id, new[] { 3, 3, 3, 2, 3, 3, 2, 3, 2, 2, 3, 3, 2, 2, 3 });
+            // Raw score: 14×2 + 1×1 = 28+1 = 29/60 → normalized 48%
+            SeedRiskResponses(context, assessment.Id, new[] { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1 });
             var rec = new Recommendation { UserId = rahul.Id, RiskAssessmentId = assessment.Id, RiskProfile = "Moderate", GeneratedAt = DateTime.UtcNow.AddDays(-10),
                 AIExplanation = "Your moderate risk profile suggests a balanced approach. The allocation splits between equity for growth and debt for stability. Hybrid funds provide automatic rebalancing during market fluctuations." };
             context.Recommendations.Add(rec);
@@ -514,10 +516,11 @@ public static class DatabaseSeeder
         var priya = context.Users.FirstOrDefault(u => u.Email == "priya@wealthai.com");
         if (priya != null && !context.RiskAssessments.Any(a => a.UserId == priya.Id))
         {
-            var assessment = new RiskAssessment { UserId = priya.Id, TotalScore = 22, RiskProfile = "Conservative", CompletedAt = DateTime.UtcNow.AddDays(-14) };
+            var assessment = new RiskAssessment { UserId = priya.Id, TotalScore = 25, RiskProfile = "Conservative", CompletedAt = DateTime.UtcNow.AddDays(-14) };
             context.RiskAssessments.Add(assessment);
             context.SaveChanges();
-            SeedRiskResponses(context, assessment.Id, new[] { 1, 2, 1, 1, 2, 3, 2, 1, 3, 1, 1, 1, 1, 1, 2 });
+            // Raw score: 15×1 = 15/60 → normalized 25% (Conservative: ≤25)
+            SeedRiskResponses(context, assessment.Id, new[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 });
             var rec = new Recommendation { UserId = priya.Id, RiskAssessmentId = assessment.Id, RiskProfile = "Conservative", GeneratedAt = DateTime.UtcNow.AddDays(-14),
                 AIExplanation = "Your conservative profile prioritizes capital preservation. The allocation emphasizes debt instruments and gold for stability, with limited equity exposure through large-cap funds for modest growth." };
             context.Recommendations.Add(rec);
