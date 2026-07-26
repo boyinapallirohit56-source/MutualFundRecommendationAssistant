@@ -72,13 +72,13 @@ public class FundService
             .Where(f => f.SubCategory == fund.SubCategory && f.IsActive)
             .ToListAsync();
 
-        var avgCAGR1Y = categoryFunds.Where(f => f.CAGR1Y.HasValue).Average(f => f.CAGR1Y!.Value);
-        var avgCAGR3Y = categoryFunds.Where(f => f.CAGR3Y.HasValue).Average(f => f.CAGR3Y!.Value);
+        var avgCAGR1Y = categoryFunds.Where(f => f.CAGR1Y > 0).Average(f => f.CAGR1Y);
+        var avgCAGR3Y = categoryFunds.Where(f => f.CAGR3Y > 0).Average(f => f.CAGR3Y);
         var avgExpenseRatio = categoryFunds.Where(f => f.ExpenseRatio.HasValue).Average(f => f.ExpenseRatio!.Value);
 
         // Calculate rank within category
         var rankByCAGR3Y = categoryFunds
-            .Where(f => f.CAGR3Y.HasValue)
+            .Where(f => f.CAGR3Y > 0)
             .OrderByDescending(f => f.CAGR3Y)
             .ToList()
             .FindIndex(f => f.Id == fund.Id) + 1;
@@ -152,15 +152,15 @@ public class FundService
         var winners = new Dictionary<string, string>();
 
         // Best CAGR 1Y
-        var best1Y = funds.Where(f => f.CAGR1Y.HasValue).OrderByDescending(f => f.CAGR1Y).FirstOrDefault();
+        var best1Y = funds.Where(f => f.CAGR1Y > 0).OrderByDescending(f => f.CAGR1Y).FirstOrDefault();
         if (best1Y != null) winners["CAGR1Y"] = best1Y.Name;
 
         // Best CAGR 3Y
-        var best3Y = funds.Where(f => f.CAGR3Y.HasValue).OrderByDescending(f => f.CAGR3Y).FirstOrDefault();
+        var best3Y = funds.Where(f => f.CAGR3Y > 0).OrderByDescending(f => f.CAGR3Y).FirstOrDefault();
         if (best3Y != null) winners["CAGR3Y"] = best3Y.Name;
 
         // Best CAGR 5Y
-        var best5Y = funds.Where(f => f.CAGR5Y.HasValue).OrderByDescending(f => f.CAGR5Y).FirstOrDefault();
+        var best5Y = funds.Where(f => f.CAGR5Y > 0).OrderByDescending(f => f.CAGR5Y).FirstOrDefault();
         if (best5Y != null) winners["CAGR5Y"] = best5Y.Name;
 
         // Lowest Expense Ratio (lower is better)
@@ -180,9 +180,9 @@ public class FundService
 
     private static string CalculatePerformanceRating(Models.Entities.MutualFund fund, decimal categoryAvg)
     {
-        if (!fund.CAGR3Y.HasValue) return "Insufficient data";
+        if (fund.CAGR3Y == 0) return "Insufficient data";
 
-        var diff = fund.CAGR3Y.Value - categoryAvg;
+        var diff = fund.CAGR3Y - categoryAvg;
         return diff switch
         {
             > 3 => "Significantly outperforming category average",
