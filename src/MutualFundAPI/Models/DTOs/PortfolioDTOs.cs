@@ -1,12 +1,21 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace MutualFundAPI.Models.DTOs;
 
 public class AddHoldingDTO
 {
     public string FundName { get; set; } = string.Empty;
     public int? MutualFundId { get; set; }
+
+    [Range(0.001, double.MaxValue, ErrorMessage = "Units must be greater than 0")]
     public decimal Units { get; set; }
+
+    [Range(0.01, double.MaxValue, ErrorMessage = "Purchase NAV must be greater than 0")]
     public decimal PurchaseNAV { get; set; }
+
+    [Range(0.01, double.MaxValue, ErrorMessage = "Invested Amount must be greater than 0")]
     public decimal InvestedAmount { get; set; }
+
     public DateTime PurchaseDate { get; set; }
 }
 
