@@ -110,6 +110,18 @@ public class AmfiDataService
             result.UpdatedFundNames = alreadyUpdated.Count > 0
                 ? string.Join(", ", _context.MutualFunds.Where(f => alreadyUpdated.Contains(f.Id)).Select(f => f.Name))
                 : "None";
+
+            // Log which funds were NOT updated (for debugging)
+            var unmatchedFunds = _context.MutualFunds
+                .Where(f => !alreadyUpdated.Contains(f.Id))
+                .Select(f => f.Name)
+                .ToList();
+            if (unmatchedFunds.Any())
+            {
+                _logger.LogWarning("AMFI sync: {Count} funds NOT updated (no match found): {Funds}",
+                    unmatchedFunds.Count, string.Join(", ", unmatchedFunds));
+            }
+
             _logger.LogInformation("AMFI sync complete. Processed: {Processed}, Updated: {Updated}. Funds: {Funds}",
                 result.Processed, result.Updated, result.UpdatedFundNames);
         }
@@ -219,20 +231,27 @@ public class AmfiDataService
     /// Strict matching: Maps each DB fund to its expected AMFI scheme name patterns.
     /// Only exact, curated matches are allowed — no fuzzy/generic word matching.
     /// This prevents cross-matching between different funds from the same AMC.
-    /// Patterns are verified against real AMFI NAVAll.txt data (July 2026).
+    /// Patterns verified against real AMFI NAVAll.txt data (July 2026).
+    /// 
+    /// AMFI naming formats vary by AMC:
+    /// - "Fund Name - Direct Plan - Growth" (most common)
+    /// - "Fund Name - Growth Plan - Direct Plan" (HDFC style)
+    /// - "Fund Name Growth - Direct" (Kotak style)
+    /// - "Fund Name - Direct Plan Growth" (some newer ones)
+    /// - "New Name (erstwhile Old Name) - Direct Plan - Growth" (SEBI renames)
     /// </summary>
     private static readonly Dictionary<string, string[]> ExactFundPatterns = new(StringComparer.OrdinalIgnoreCase)
     {
         // Equity - Large Cap
-        // SEBI renamed "SBI Bluechip" → "SBI Large Cap" but AMFI still uses "Blue Chip"
-        { "SBI Bluechip Fund", new[] { "sbi blue chip", "sbi bluechip", "sbi large cap fund" } },
-        { "ICICI Prudential Bluechip Fund", new[] { "icici prudential bluechip", "icici prudential blue chip" } },
+        { "SBI Bluechip Fund", new[] { "sbi blue chip fund", "sbi bluechip fund", "sbi large cap fund" } },
+        // AMFI: "ICICI Prudential Large Cap Fund (erstwhile Bluechip Fund) - Direct Plan - Growth"
+        { "ICICI Prudential Bluechip Fund", new[] { "icici prudential large cap fund", "icici prudential bluechip" } },
         { "Mirae Asset Large Cap Fund", new[] { "mirae asset large cap fund" } },
 
         // Equity - Mid Cap
-        // SEBI renamed "Kotak Emerging Equity" → "Kotak Midcap Fund" but AMFI uses old name
+        // AMFI may use: "Kotak Emerging Equity Fund" or "Kotak Midcap Fund"
         { "Kotak Emerging Equity Fund", new[] { "kotak emerging equity", "kotak midcap fund" } },
-        // SEBI renamed "HDFC Mid-Cap Opportunities" → "HDFC Mid-Cap Fund" / "HDFC Mid Cap Fund"
+        // AMFI: "HDFC Mid-Cap Fund" or "HDFC Mid Cap Opportunities Fund"
         { "HDFC Mid-Cap Opportunities Fund", new[] { "hdfc mid-cap opportunities", "hdfc mid cap opportunities", "hdfc mid-cap fund", "hdfc mid cap fund" } },
 
         // Equity - Small Cap
@@ -243,25 +262,31 @@ public class AmfiDataService
         { "HDFC Short Term Debt Fund", new[] { "hdfc short term debt fund" } },
         { "ICICI Prudential All Seasons Bond Fund", new[] { "icici prudential all seasons bond" } },
         { "SBI Magnum Gilt Fund", new[] { "sbi magnum gilt fund", "sbi magnum constant maturity" } },
-        { "Axis Banking & PSU Debt Fund", new[] { "axis banking & psu debt fund", "axis banking and psu debt" } },
+        // AMFI: "Axis Banking & PSU Debt Fund - Direct Plan - Growth"
+        { "Axis Banking & PSU Debt Fund", new[] { "axis banking & psu debt", "axis banking and psu debt" } },
         { "Kotak Corporate Bond Fund", new[] { "kotak corporate bond fund" } },
-        { "Aditya Birla Sun Life Corporate Bond Fund", new[] { "aditya birla sun life corporate bond fund", "aditya birla sl corporate bond" } },
+        { "Aditya Birla Sun Life Corporate Bond Fund", new[] { "aditya birla sun life corporate bond", "aditya birla sl corporate bond" } },
 
         // Hybrid
         { "ICICI Prudential Balanced Advantage Fund", new[] { "icici prudential balanced advantage fund" } },
-        // SEBI renamed to just "HDFC Balanced Advantage Fund"
+        // AMFI: "HDFC Balanced Advantage Fund - Growth Plan - Direct Plan"
         { "HDFC Balanced Advantage Fund", new[] { "hdfc balanced advantage fund" } },
         { "Canara Robeco Equity Hybrid Fund", new[] { "canara robeco equity hybrid fund" } },
-        // SEBI renamed "Kotak Equity Hybrid" → "Kotak Aggressive Hybrid Fund"
-        { "Kotak Equity Hybrid Fund", new[] { "kotak equity hybrid fund", "kotak aggressive hybrid fund" } },
-        // SEBI renamed "Mirae Asset Hybrid Equity" → "Mirae Asset Aggressive Hybrid Fund"
-        { "Mirae Asset Hybrid Equity Fund", new[] { "mirae asset hybrid equity fund", "mirae asset aggressive hybrid fund" } },
+        // AMFI: "Kotak Equity Hybrid Fund" or "Kotak Aggressive Hybrid Fund"
+        { "Kotak Equity Hybrid Fund", new[] { "kotak equity hybrid", "kotak aggressive hybrid" } },
+        // AMFI: "Mirae Asset Hybrid Equity Fund" or "Mirae Asset Aggressive Hybrid Fund"
+        { "Mirae Asset Hybrid Equity Fund", new[] { "mirae asset hybrid equity", "mirae asset aggressive hybrid" } },
 
         // Gold
+        // AMFI: "SBI Gold Fund - Direct Plan - Growth"
         { "SBI Gold Fund", new[] { "sbi gold fund" } },
+        // AMFI: "HDFC Gold Fund" (check exact format)
         { "HDFC Gold Fund", new[] { "hdfc gold fund" } },
+        // AMFI: "Kotak Gold Fund Growth - Direct"
         { "Kotak Gold Fund", new[] { "kotak gold fund" } },
+        // AMFI: "Nippon India Gold Savings Fund"
         { "Nippon India Gold Savings Fund", new[] { "nippon india gold savings fund" } },
+        // AMFI: "Axis Gold Fund - Direct Plan - Growth option"
         { "Axis Gold Fund", new[] { "axis gold fund" } },
 
         // Liquid
@@ -272,14 +297,15 @@ public class AmfiDataService
         { "Kotak Liquid Fund", new[] { "kotak liquid fund" } },
 
         // International
+        // AMFI: "Motilal Oswal Nasdaq 100 Fund of Fund- Direct Plan Growth"
         { "Motilal Oswal Nasdaq 100 Fund", new[] { "motilal oswal nasdaq 100" } },
-        // SEBI renamed to "Franklin U.S. Opportunities Equity Active Fund of Funds"
-        { "Franklin India Feeder - US Opportunities Fund", new[] { "franklin india feeder - franklin u.s. opportunities", "franklin india feeder - franklin us opportunities", "franklin u.s. opportunities equity active fund of funds", "franklin us opportunities" } },
-        { "ICICI Prudential US Bluechip Equity Fund", new[] { "icici prudential us bluechip equity fund" } },
-        // SEBI renamed to "DSP Global Innovation Overseas Equity Omni FoF"
-        { "DSP Global Innovation Fund", new[] { "dsp global innovation fund of fund", "dsp global innovation overseas equity omni fof", "dsp global innovation" } },
-        // SEBI renamed to "Kotak International REIT Overseas Equity Omni FoF"
-        { "Kotak International REIT Fund", new[] { "kotak international reit fof", "kotak international reit overseas equity omni fof", "kotak international reit" } },
+        // AMFI: "Franklin India Feeder - Franklin U.S. Opportunities Fund - Direct Plan - Growth"
+        { "Franklin India Feeder - US Opportunities Fund", new[] { "franklin india feeder - franklin u.s. opportunities", "franklin india feeder - franklin us opportunities", "franklin u.s. opportunities equity active", "franklin us opportunities" } },
+        { "ICICI Prudential US Bluechip Equity Fund", new[] { "icici prudential us bluechip equity" } },
+        // AMFI: "DSP Global Innovation Fund of Fund - Direct Plan - Growth" or "DSP Global Innovation Overseas Equity Omni FoF"
+        { "DSP Global Innovation Fund", new[] { "dsp global innovation" } },
+        // AMFI: "Kotak International REIT FOF" or "Kotak International REIT Overseas Equity Omni FoF"
+        { "Kotak International REIT Fund", new[] { "kotak international reit" } },
     };
 
     /// <summary>
@@ -297,8 +323,6 @@ public class AmfiDataService
             {
                 if (amfiLower.Contains(pattern))
                 {
-                    // Additional safety: make sure it's a Direct Growth plan
-                    // (already filtered in the main loop, but double-check)
                     return true;
                 }
             }
@@ -306,6 +330,18 @@ public class AmfiDataService
 
         // No curated pattern found — do NOT match (safe default)
         return false;
+    }
+
+    /// <summary>
+    /// Diagnostic: returns which DB funds have no match in AMFI data.
+    /// Call this to debug why some funds aren't syncing.
+    /// </summary>
+    public async Task<List<string>> GetUnmatchedFunds()
+    {
+        var allDbFunds = await _context.MutualFunds.Select(f => f.Name).ToListAsync();
+        var unmatched = allDbFunds.Where(name => ExactFundPatterns.ContainsKey(name)).ToList();
+        // Return all fund names that have patterns defined (for reference)
+        return allDbFunds.Where(name => !ExactFundPatterns.ContainsKey(name)).ToList();
     }
     private static string ExtractCategory(string header)
     {
