@@ -21,6 +21,15 @@ export class TaxSavingComponent implements OnInit {
   constructor(private apiService: ApiService) {}
 
   ngOnInit() {
+    // Auto-populate annual income from user profile
+    this.apiService.getProfile().subscribe({
+      next: (profile: any) => {
+        if (profile && profile.monthlyIncome > 0) {
+          this.annualIncome = profile.monthlyIncome * 12;
+          this.calcTax();
+        }
+      }
+    });
     this.calcTax();
     this.apiService.listFunds('Equity').subscribe({
       next: (funds) => { this.elssFunds = funds.slice(0, 5); }
