@@ -32,16 +32,16 @@
         <div class="grid-2" style="grid-template-columns:repeat(4,1fr); margin:16px 0">
           <div class="stat-box">
             <span class="stat-label">Current Value</span>
-            <span class="stat-value">Rs. {{ scenario.portfolioCurrentValue | number:'1.0-0' }}</span>
+            <span class="stat-value">₹{{ scenario.portfolioCurrentValue | number:'1.0-0' }}</span>
           </div>
           <div class="stat-box">
             <span class="stat-label">Post-Stress Value</span>
-            <span class="stat-value">Rs. {{ scenario.portfolioPostStressValue | number:'1.0-0' }}</span>
+            <span class="stat-value">₹{{ scenario.portfolioPostStressValue | number:'1.0-0' }}</span>
           </div>
           <div class="stat-box">
             <span class="stat-label">Impact</span>
             <span class="stat-value" [style.color]="scenario.portfolioImpact >= 0 ? '#10b981' : '#ef4444'">
-              {{ scenario.portfolioImpact >= 0 ? '+' : '' }}Rs. {{ scenario.portfolioImpact | number:'1.0-0' }}
+              {{ scenario.portfolioImpact >= 0 ? '+' : '' }}₹{{ scenario.portfolioImpact | number:'1.0-0' }}
             </span>
           </div>
           <div class="stat-box">
@@ -68,7 +68,7 @@
         {{ result.disclaimer }}
       </p>
 
-      <button class="btn btn-secondary mt-4" (click)="result = null">Run Again</button>
+      <button class="btn btn-primary mt-4" style="background:#4F46E5; color:white; border:none;" (click)="result = null">Run Stress Test Again</button>
     </div>
   </div>
 </div>
