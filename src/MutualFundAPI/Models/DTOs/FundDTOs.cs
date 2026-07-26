@@ -8,7 +8,7 @@ public class FundListItemDTO
     public string Category { get; set; } = string.Empty;
     public string SubCategory { get; set; } = string.Empty;
     public string AMC { get; set; } = string.Empty;
-    public decimal? CAGR3Y { get; set; }
+    public decimal CAGR3Y { get; set; }
     public decimal? ExpenseRatio { get; set; }
     public decimal? Rating { get; set; }
 }
@@ -34,9 +34,9 @@ public class FundComparisonItemDTO
     public string AMC { get; set; } = string.Empty;
     public decimal? NAV { get; set; }
     public decimal? ExpenseRatio { get; set; }
-    public decimal? CAGR1Y { get; set; }
-    public decimal? CAGR3Y { get; set; }
-    public decimal? CAGR5Y { get; set; }
+    public decimal CAGR1Y { get; set; }
+    public decimal CAGR3Y { get; set; }
+    public decimal CAGR5Y { get; set; }
     public decimal? AUM { get; set; }
     public string? FundManager { get; set; }
     public decimal? Rating { get; set; }
@@ -52,9 +52,9 @@ public class FundFactsheetDTO
     public string AMC { get; set; } = string.Empty;
     public decimal? NAV { get; set; }
     public decimal? ExpenseRatio { get; set; }
-    public decimal? CAGR1Y { get; set; }
-    public decimal? CAGR3Y { get; set; }
-    public decimal? CAGR5Y { get; set; }
+    public decimal CAGR1Y { get; set; }
+    public decimal CAGR3Y { get; set; }
+    public decimal CAGR5Y { get; set; }
     public decimal? AUM { get; set; }
     public string? FundManager { get; set; }
     public decimal? Rating { get; set; }
@@ -76,7 +76,7 @@ public class PeerFundDTO
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string AMC { get; set; } = string.Empty;
-    public decimal? CAGR3Y { get; set; }
+    public decimal CAGR3Y { get; set; }
     public decimal? ExpenseRatio { get; set; }
     public decimal? Rating { get; set; }
 }
