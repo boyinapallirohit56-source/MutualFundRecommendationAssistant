@@ -74,5 +74,54 @@ public class AppDbContext : DbContext
             .HasOne(h => h.Portfolio)
             .WithMany(p => p.Holdings)
             .HasForeignKey(h => h.PortfolioId);
+
+        // Configure decimal precision for all monetary/percentage fields
+        modelBuilder.Entity<MutualFund>(entity =>
+        {
+            entity.Property(f => f.NAV).HasPrecision(18, 4);
+            entity.Property(f => f.CAGR1Y).HasPrecision(10, 2);
+            entity.Property(f => f.CAGR3Y).HasPrecision(10, 2);
+            entity.Property(f => f.CAGR5Y).HasPrecision(10, 2);
+            entity.Property(f => f.ExpenseRatio).HasPrecision(10, 4);
+            entity.Property(f => f.AUM).HasPrecision(18, 2);
+            entity.Property(f => f.Rating).HasPrecision(5, 2);
+            entity.Property(f => f.SharpeRatio).HasPrecision(10, 4);
+            entity.Property(f => f.Alpha).HasPrecision(10, 4);
+            entity.Property(f => f.Beta).HasPrecision(10, 4);
+            entity.Property(f => f.StandardDeviation).HasPrecision(10, 4);
+            entity.Property(f => f.ExitLoad).HasPrecision(10, 4);
+            entity.Property(f => f.RollingReturns3Y).HasPrecision(10, 2);
+        });
+
+        modelBuilder.Entity<PortfolioHolding>(entity =>
+        {
+            entity.Property(h => h.Units).HasPrecision(18, 4);
+            entity.Property(h => h.PurchaseNAV).HasPrecision(18, 4);
+            entity.Property(h => h.InvestedAmount).HasPrecision(18, 2);
+        });
+
+        modelBuilder.Entity<UserProfile>(entity =>
+        {
+            entity.Property(p => p.MonthlyIncome).HasPrecision(18, 2);
+            entity.Property(p => p.MonthlyExpenses).HasPrecision(18, 2);
+            entity.Property(p => p.Savings).HasPrecision(18, 2);
+            entity.Property(p => p.Loans).HasPrecision(18, 2);
+            entity.Property(p => p.SIPAmount).HasPrecision(18, 2);
+            entity.Property(p => p.LumpSumAmount).HasPrecision(18, 2);
+            entity.Property(p => p.SWPAmount).HasPrecision(18, 2);
+        });
+
+        modelBuilder.Entity<Goal>(entity =>
+        {
+            entity.Property(g => g.TargetAmount).HasPrecision(18, 2);
+            entity.Property(g => g.CurrentAmount).HasPrecision(18, 2);
+            entity.Property(g => g.MonthlySIP).HasPrecision(18, 2);
+        });
+
+        modelBuilder.Entity<AllocationRule>().Property(r => r.Percentage).HasPrecision(10, 2);
+        modelBuilder.Entity<RecommendationAllocation>().Property(a => a.Percentage).HasPrecision(10, 2);
+        modelBuilder.Entity<FundHolding>().Property(h => h.Percentage).HasPrecision(10, 4);
+        modelBuilder.Entity<FundNAVHistory>().Property(n => n.NAV).HasPrecision(18, 4);
+        modelBuilder.Entity<StressScenario>().Property(s => s.PercentageChange).HasPrecision(10, 2);
     }
 }
