@@ -86,6 +86,19 @@ export class OnboardingComponent implements OnInit {
   }
 
   saveProfile() {
+    // Validation: expenses cannot exceed income
+    if (this.profile.monthlyExpenses > this.profile.monthlyIncome && this.profile.monthlyIncome > 0) {
+      alert('Monthly Expenses cannot be greater than Monthly Income. Please correct your entries.');
+      this.saving = false;
+      return;
+    }
+    // Validation: loans + expenses should not exceed income
+    if ((this.profile.monthlyExpenses + this.profile.loans) > this.profile.monthlyIncome && this.profile.monthlyIncome > 0) {
+      alert('Monthly Expenses + Loans/EMIs exceed your Monthly Income. Please review your entries.');
+      this.saving = false;
+      return;
+    }
+
     this.saving = true;
     this.profile.goals = this.selectedGoals.join(',');
 
