@@ -9,7 +9,7 @@
       <h3 class="card-title">Set Parameters</h3>
       <div class="form-group">
         <label>Monthly SIP (Rs.)</label>
-        <input type="number" [(ngModel)]="monthly" (ngModelChange)="calculate()">
+        <input type="number" [(ngModel)]="monthly" (ngModelChange)="calculate()" min="100">
       </div>
       <div class="form-group">
         <label>If I had started {{ yearsAgo }} years ago</label>
