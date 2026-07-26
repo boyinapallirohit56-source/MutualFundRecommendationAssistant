@@ -1,14 +1,19 @@
 <div class="container page-wrapper">
-  <!-- Header with greeting -->
+  <!-- Header -->
   <div class="dashboard-header">
     <div>
       <p class="greeting">Good {{ getTimeOfDay() }}, {{ userName }}</p>
       <h1>Your Portfolio Overview</h1>
-      <p class="header-sub trust-signal">📡 Data updated: {{ today | date:'dd MMM yyyy, h:mm a' }} • Source: AMFI • Market Status: Active</p>
+      <div class="amfi-status">
+        <span class="material-symbols-rounded amfi-icon">check_circle</span>
+        <span>Latest AMFI NAV Sync • {{ today | date:'dd MMM yyyy' }} • {{ today | date:'h:mm a' }} • Market Status: Active</span>
+      </div>
     </div>
     <div class="header-actions">
-      <button class="btn btn-secondary btn-sm" (click)="router.navigate(['/risk-assessment'])">Retake Assessment</button>
-      <button class="btn btn-primary btn-sm" (click)="regenerate()">Update Recommendations</button>
+      <button class="btn btn-primary btn-sm" (click)="regenerate()">
+        <span class="material-symbols-rounded btn-icon">refresh</span>
+        Refresh Recommendations
+      </button>
     </div>
   </div>
 
@@ -19,7 +24,7 @@
 
   <!-- No Assessment -->
   <div *ngIf="!loading && !assessment" class="card empty-state animate-in">
-    <div class="empty-icon">📊</div>
+    <span class="material-symbols-rounded empty-icon">assessment</span>
     <h3>Welcome to WealthAI</h3>
     <p>Take a 2-minute risk assessment to unlock personalized mutual fund recommendations, portfolio insights, and AI-powered investment guidance.</p>
     <button class="btn btn-primary btn-lg mt-6" (click)="router.navigate(['/risk-assessment'])">Start Risk Assessment →</button>
@@ -28,48 +33,63 @@
 
   <!-- Dashboard Content -->
   <div *ngIf="!loading && assessment" class="animate-in">
-    <!-- Top Stats - Always show 4 cards -->
+    <!-- Top Stats -->
     <div class="grid-4 stagger mb-6">
       <div class="stat-card">
-        <div class="stat-card-icon" style="background:rgba(99,102,241,0.1); color:#6366f1">📊</div>
+        <div class="stat-card-icon" style="background:rgba(99,102,241,0.1); color:#6366f1">
+          <span class="material-symbols-rounded">speed</span>
+        </div>
         <div class="stat-card-info">
           <span class="stat-card-label">Risk Score</span>
           <span class="stat-card-value">{{ assessment.normalizedScore }}/100</span>
+          <span class="stat-card-sub">{{ getRiskLabel() }}</span>
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-icon" style="background:rgba(16,185,129,0.1); color:#10b981">🎯</div>
+        <div class="stat-card-icon" style="background:rgba(16,185,129,0.1); color:#10b981">
+          <span class="material-symbols-rounded">person</span>
+        </div>
         <div class="stat-card-info">
           <span class="stat-card-label">Profile</span>
           <span class="stat-card-value">{{ assessment.riskProfile }}</span>
+          <span class="stat-card-sub clickable" (click)="router.navigate(['/risk-assessment'])">Retake Assessment</span>
         </div>
       </div>
       <div class="stat-card" *ngIf="portfolio">
-        <div class="stat-card-icon" style="background:rgba(245,158,11,0.1); color:#f59e0b">💰</div>
+        <div class="stat-card-icon" style="background:rgba(245,158,11,0.1); color:#f59e0b">
+          <span class="material-symbols-rounded">account_balance_wallet</span>
+        </div>
         <div class="stat-card-info">
           <span class="stat-card-label">Portfolio Value</span>
-          <span class="stat-card-value">₹{{ portfolio.currentValue | number:'1.0-0' }}</span>
+          <span class="stat-card-value stat-card-value-lg">₹{{ portfolio.currentValue | number:'1.0-0' }}</span>
+          <span class="stat-card-sub">Based on Latest AMFI NAV • {{ portfolio.totalHoldings }} Funds</span>
         </div>
       </div>
       <div class="stat-card" *ngIf="portfolio">
-        <div class="stat-card-icon" [style.background]="portfolio.totalReturns >= 0 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)'" [style.color]="portfolio.totalReturns >= 0 ? '#10b981' : '#ef4444'">📈</div>
+        <div class="stat-card-icon" [style.background]="portfolio.totalReturns >= 0 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)'" [style.color]="portfolio.totalReturns >= 0 ? '#10b981' : '#ef4444'">
+          <span class="material-symbols-rounded">trending_up</span>
+        </div>
         <div class="stat-card-info">
-          <span class="stat-card-label">Returns</span>
+          <span class="stat-card-label">Overall Portfolio Return</span>
           <span class="stat-card-value" [style.color]="portfolio.totalReturns >= 0 ? '#10b981' : '#ef4444'">{{ portfolio.returnsPercentage }}%</span>
         </div>
       </div>
       <div class="stat-card" *ngIf="!portfolio">
-        <div class="stat-card-icon" style="background:rgba(245,158,11,0.1); color:#f59e0b">📅</div>
+        <div class="stat-card-icon" style="background:rgba(245,158,11,0.1); color:#f59e0b">
+          <span class="material-symbols-rounded">event</span>
+        </div>
         <div class="stat-card-info">
           <span class="stat-card-label">Assessment Date</span>
           <span class="stat-card-value">{{ assessment.completedAt | date:'dd MMM' }}</span>
         </div>
       </div>
       <div class="stat-card" *ngIf="!portfolio">
-        <div class="stat-card-icon" style="background:rgba(6,182,212,0.1); color:#06b6d4">⏱️</div>
+        <div class="stat-card-icon" style="background:rgba(6,182,212,0.1); color:#06b6d4">
+          <span class="material-symbols-rounded">arrow_forward</span>
+        </div>
         <div class="stat-card-info">
           <span class="stat-card-label">Next Step</span>
-          <span class="stat-card-value" style="font-size:14px; cursor:pointer; color:#6366f1" (click)="router.navigate(['/portfolio'])">Add Portfolio →</span>
+          <span class="stat-card-value clickable" style="font-size:14px; color:#6366f1" (click)="router.navigate(['/portfolio'])">Add Portfolio →</span>
         </div>
       </div>
     </div>
@@ -78,7 +98,7 @@
     <div class="grid-2 mb-6" *ngIf="recommendation">
       <div class="card">
         <div class="card-header-row">
-          <h3>📊 Asset Allocation</h3>
+          <h3><span class="material-symbols-rounded card-title-icon">donut_large</span> Asset Allocation</h3>
           <span class="badge badge-primary">{{ assessment.riskProfile }}</span>
         </div>
         <div style="display:flex; justify-content:center; padding:20px 0">
@@ -88,7 +108,7 @@
 
       <div class="card">
         <div class="card-header-row">
-          <h3>💼 Recommended Funds</h3>
+          <h3><span class="material-symbols-rounded card-title-icon">recommend</span> Recommended Funds</h3>
         </div>
         <div class="allocation-list">
           <div class="alloc-item" *ngFor="let alloc of recommendation.allocations">
@@ -112,21 +132,35 @@
     <div class="grid-2 mb-6">
       <div class="card ai-card" *ngIf="recommendation?.aiExplanation">
         <div class="card-header-row">
-          <h3 style="color:#6366f1">🤖 AI Advisor Summary</h3>
+          <h3><span class="material-symbols-rounded card-title-icon" style="color:#6366f1">smart_toy</span> AI Advisor Summary</h3>
           <span class="badge badge-primary">Personalized</span>
         </div>
-        <p class="ai-text">{{ recommendation.aiExplanation }}</p>
-        <div class="ai-actions mt-4">
-          <button class="btn btn-ghost btn-sm" (click)="router.navigate(['/chat'])">💬 Ask a question</button>
-          <button class="btn btn-ghost btn-sm" (click)="router.navigate(['/stress-test'])">⚡ Run stress test</button>
-          <button class="btn btn-ghost btn-sm" (click)="router.navigate(['/reports'])">📄 View reports</button>
+        <div class="ai-insights">
+          <div class="ai-insight-item" *ngFor="let insight of getAIInsights()">
+            <span class="material-symbols-rounded ai-check">check_circle</span>
+            <span>{{ insight }}</span>
+          </div>
         </div>
-        <p class="ai-confidence mt-3">🎯 Confidence: High • Based on your {{ assessment.riskProfile }} profile</p>
+        <div class="ai-actions mt-4">
+          <button class="btn btn-ghost btn-sm" (click)="router.navigate(['/chat'])">
+            <span class="material-symbols-rounded btn-icon">chat</span> Ask a question
+          </button>
+          <button class="btn btn-ghost btn-sm" (click)="router.navigate(['/stress-test'])">
+            <span class="material-symbols-rounded btn-icon">bolt</span> Run stress test
+          </button>
+          <button class="btn btn-ghost btn-sm" (click)="router.navigate(['/reports'])">
+            <span class="material-symbols-rounded btn-icon">description</span> View reports
+          </button>
+        </div>
+        <p class="ai-confidence mt-3">
+          <span class="material-symbols-rounded" style="font-size:14px; vertical-align:middle">verified</span>
+          Confidence: High • Based on your {{ assessment.riskProfile }} profile
+        </p>
       </div>
 
       <div class="card">
         <div class="card-header-row">
-          <h3>🎯 Goal Progress</h3>
+          <h3><span class="material-symbols-rounded card-title-icon">flag</span> Goal Progress</h3>
         </div>
         <div class="goals-list" *ngIf="goals.length">
           <div class="goal-row" *ngFor="let goal of goals">
@@ -150,13 +184,15 @@
     <div class="grid-2">
       <div class="card">
         <div class="card-header-row">
-          <h3>🕐 Recent Activity</h3>
+          <h3><span class="material-symbols-rounded card-title-icon">history</span> Recent Activity</h3>
         </div>
-        <div class="activity-list" *ngIf="recentActivity.length">
-          <div class="activity-row" *ngFor="let a of recentActivity">
-            <div class="activity-dot" [style.background]="a.color"></div>
-            <span class="activity-text">{{ a.text }}</span>
-            <span class="activity-time">{{ a.time }}</span>
+        <div class="timeline" *ngIf="recentActivity.length">
+          <div class="timeline-item" *ngFor="let a of recentActivity">
+            <div class="timeline-dot" [style.background]="a.color"></div>
+            <div class="timeline-content">
+              <span class="timeline-text">{{ a.text }}</span>
+              <span class="timeline-time">{{ a.time }}</span>
+            </div>
           </div>
         </div>
         <p *ngIf="!recentActivity.length" style="color:var(--text-tertiary); font-size:13px">No activity yet.</p>
@@ -164,12 +200,13 @@
 
       <div class="card">
         <div class="card-header-row">
-          <h3>📆 Upcoming SIP</h3>
+          <h3><span class="material-symbols-rounded card-title-icon">calendar_month</span> Upcoming SIP</h3>
         </div>
         <div class="sip-list" *ngIf="upcomingSIPs.length">
           <div class="sip-row" *ngFor="let sip of upcomingSIPs">
             <div class="sip-info">
               <span class="sip-date">{{ sip.date }}</span>
+              <span class="sip-remaining">{{ getDaysRemaining(sip.date) }}</span>
               <span class="sip-label" *ngIf="sip.label">{{ sip.label }}</span>
             </div>
             <span class="sip-amount">₹{{ sip.amount | number:'1.0-0' }}</span>

@@ -228,4 +228,30 @@ export class DashboardComponent implements OnInit {
     if (hour < 17) return 'afternoon';
     return 'evening';
   }
+
+  getRiskLabel(): string {
+    const score = this.assessment?.normalizedScore || 0;
+    if (score >= 76) return 'High Growth';
+    if (score >= 51) return 'Growth Oriented';
+    if (score >= 26) return 'Balanced';
+    return 'Capital Preservation';
+  }
+
+  getAIInsights(): string[] {
+    if (!this.recommendation?.aiExplanation) return [];
+    const text = this.recommendation.aiExplanation;
+    // Split long paragraph into bullet points
+    const sentences = text.split('.').filter((s: string) => s.trim().length > 10);
+    return sentences.slice(0, 4).map((s: string) => s.trim() + '.');
+  }
+
+  getDaysRemaining(dateStr: string): string {
+    const sipDate = new Date(dateStr);
+    const today = new Date();
+    const diffTime = sipDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if (diffDays <= 0) return 'Today';
+    if (diffDays === 1) return '1 day remaining';
+    return `${diffDays} days remaining`;
+  }
 }
