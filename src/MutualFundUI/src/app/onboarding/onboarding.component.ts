@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../shared/services/api.service';
+import { AuthService } from '../shared/services/auth.service';
 
 @Component({
   selector: 'app-onboarding',
@@ -14,7 +15,8 @@ import { ApiService } from '../shared/services/api.service';
 export class OnboardingComponent implements OnInit {
   step = 1;
   saving = false;
-  directStep = false; // true if user came directly to a specific step
+  directStep = false;
+  userName = '';
 
   profile = {
     age: 0,
@@ -43,9 +45,11 @@ export class OnboardingComponent implements OnInit {
   goalTargets: { [key: string]: number } = {};
   goalYears: { [key: string]: number } = {};
 
-  constructor(private apiService: ApiService, private router: Router, private route: ActivatedRoute) {}
+  constructor(private apiService: ApiService, private router: Router, private route: ActivatedRoute, private authService: AuthService) {}
 
   ngOnInit() {
+    const user = this.authService.getUser();
+    this.userName = user?.name || '';
     // Check if user came directly to a specific step (from dashboard buttons)
     this.route.queryParams.subscribe(params => {
       const stepParam = params['step'];

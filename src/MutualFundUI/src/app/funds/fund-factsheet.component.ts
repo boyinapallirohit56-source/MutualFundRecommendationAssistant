@@ -12,6 +12,7 @@ import { ApiService } from '../shared/services/api.service';
 })
 export class FundFactsheetComponent implements OnInit {
   fund: any = null;
+  addingToWatchlist = false;
 
   constructor(
     private apiService: ApiService,
@@ -25,6 +26,21 @@ export class FundFactsheetComponent implements OnInit {
       this.apiService.getFundFactsheet(id).subscribe({
         next: (res) => { this.fund = res; }
       });
+    });
+  }
+
+  addToWatchlist() {
+    if (!this.fund) return;
+    this.addingToWatchlist = true;
+    this.apiService.addToWatchlist(this.fund.id).subscribe({
+      next: () => {
+        this.addingToWatchlist = false;
+        alert('Added to watchlist!');
+      },
+      error: () => {
+        this.addingToWatchlist = false;
+        alert('Already in watchlist or failed to add.');
+      }
     });
   }
 }
