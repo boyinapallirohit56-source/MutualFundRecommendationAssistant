@@ -106,15 +106,34 @@ export class PortfolioComponent implements OnInit {
     this.isDragging = false;
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
-      this.selectedFile = files[0];
+      const file = files[0];
+      if (this.isValidFileType(file)) {
+        this.selectedFile = file;
+        this.uploadResult = null;
+      } else {
+        this.uploadResult = { success: false, message: 'Only .csv and .xlsx files are supported.' };
+        this.selectedFile = null;
+      }
     }
   }
 
   onFileSelected(event: any) {
     const files = event.target.files;
     if (files && files.length > 0) {
-      this.selectedFile = files[0];
+      const file = files[0];
+      if (this.isValidFileType(file)) {
+        this.selectedFile = file;
+        this.uploadResult = null;
+      } else {
+        this.uploadResult = { success: false, message: 'Only .csv and .xlsx files are supported.' };
+        this.selectedFile = null;
+      }
     }
+  }
+
+  isValidFileType(file: File): boolean {
+    const name = file.name.toLowerCase();
+    return name.endsWith('.csv') || name.endsWith('.xlsx');
   }
 
   uploadFile() {

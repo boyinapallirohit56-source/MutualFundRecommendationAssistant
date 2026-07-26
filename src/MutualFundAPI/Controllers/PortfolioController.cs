@@ -66,23 +66,30 @@ public class PortfolioController : ControllerBase
             return BadRequest(new { message = "No file uploaded" });
 
         if (!file.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
-            return BadRequest(new { message = "Please upload a .csv file" });
+            return BadRequest(new { message = "Only .csv and .xlsx files are supported." });
 
         var userId = GetUserId();
         using var stream = file.OpenReadStream();
-        var holdings = await fileService.ParseCsvFile(stream);
+        var result = await fileService.ParseCsvFile(stream);
 
-        if (!holdings.Any())
-            return BadRequest(new { message = "No valid holdings found in file" });
+        if (!result.Holdings.Any() && !result.SkippedFunds.Any())
+            return BadRequest(new { message = "No valid holdings found in file. Check columns: FundName, Units, PurchaseNAV, InvestedAmount, PurchaseDate" });
+
+        if (!result.Holdings.Any() && result.SkippedFunds.Any())
+            return BadRequest(new { message = $"None of the funds in your file match our database. Skipped: {string.Join(", ", result.SkippedFunds)}" });
 
         var added = new List<HoldingDTO>();
-        foreach (var h in holdings)
+        foreach (var h in result.Holdings)
         {
-            var result = await _portfolioService.AddHolding(userId, h);
-            added.Add(result);
+            var holding = await _portfolioService.AddHolding(userId, h);
+            added.Add(holding);
         }
 
-        return Ok(new { message = $"{added.Count} holdings imported successfully", holdings = added });
+        var msg = $"{added.Count} holding(s) imported successfully.";
+        if (result.SkippedFunds.Any())
+            msg += $" Skipped {result.SkippedFunds.Count} fund(s) not in database: {string.Join(", ", result.SkippedFunds)}";
+
+        return Ok(new { message = msg, holdings = added, skipped = result.SkippedFunds });
     }
 
     [HttpPost("upload/excel")]
@@ -92,23 +99,30 @@ public class PortfolioController : ControllerBase
             return BadRequest(new { message = "No file uploaded" });
 
         if (!file.FileName.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
-            return BadRequest(new { message = "Please upload a .xlsx file" });
+            return BadRequest(new { message = "Only .csv and .xlsx files are supported." });
 
         var userId = GetUserId();
         using var stream = file.OpenReadStream();
-        var holdings = await fileService.ParseExcelFile(stream);
+        var result = await fileService.ParseExcelFile(stream);
 
-        if (!holdings.Any())
-            return BadRequest(new { message = "No valid holdings found in file" });
+        if (!result.Holdings.Any() && !result.SkippedFunds.Any())
+            return BadRequest(new { message = "No valid holdings found in file. Check columns: FundName, Units, PurchaseNAV, InvestedAmount, PurchaseDate" });
+
+        if (!result.Holdings.Any() && result.SkippedFunds.Any())
+            return BadRequest(new { message = $"None of the funds in your file match our database. Skipped: {string.Join(", ", result.SkippedFunds)}" });
 
         var added = new List<HoldingDTO>();
-        foreach (var h in holdings)
+        foreach (var h in result.Holdings)
         {
-            var result = await _portfolioService.AddHolding(userId, h);
-            added.Add(result);
+            var holding = await _portfolioService.AddHolding(userId, h);
+            added.Add(holding);
         }
 
-        return Ok(new { message = $"{added.Count} holdings imported successfully", holdings = added });
+        var msg = $"{added.Count} holding(s) imported successfully.";
+        if (result.SkippedFunds.Any())
+            msg += $" Skipped {result.SkippedFunds.Count} fund(s) not in database: {string.Join(", ", result.SkippedFunds)}";
+
+        return Ok(new { message = msg, holdings = added, skipped = result.SkippedFunds });
     }
 
     private int GetUserId()
