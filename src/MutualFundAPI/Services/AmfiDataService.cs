@@ -83,9 +83,11 @@ public class AmfiDataService
                 if (string.IsNullOrWhiteSpace(schemeName)) continue;
 
                 // Only process Direct Plan Growth schemes (skip IDCW/Dividend/Regular)
-                if (!schemeName.Contains("Direct")) continue;
-                if (!schemeName.Contains("Growth")) continue;
-                if (schemeName.Contains("IDCW") || schemeName.Contains("Dividend") || schemeName.Contains("Payout")) continue;
+                if (!schemeName.Contains("Direct", StringComparison.OrdinalIgnoreCase)) continue;
+                if (!schemeName.Contains("Growth", StringComparison.OrdinalIgnoreCase)) continue;
+                if (schemeName.Contains("IDCW", StringComparison.OrdinalIgnoreCase) || 
+                    schemeName.Contains("Dividend", StringComparison.OrdinalIgnoreCase) || 
+                    schemeName.Contains("Payout", StringComparison.OrdinalIgnoreCase)) continue;
 
                 var existingFund = _context.MutualFunds.AsEnumerable()
                     .FirstOrDefault(f => !alreadyUpdated.Contains(f.Id) && IsNameMatch(f.Name, schemeName));
@@ -243,6 +245,7 @@ public class AmfiDataService
     private static readonly Dictionary<string, string[]> ExactFundPatterns = new(StringComparer.OrdinalIgnoreCase)
     {
         // Equity - Large Cap
+        // SEBI renamed "SBI Bluechip" → "SBI Large Cap Fund". AMFI uses: "SBI Large Cap Fund - Direct Plan - Growth"
         { "SBI Bluechip Fund", new[] { "sbi blue chip fund", "sbi bluechip fund", "sbi large cap fund" } },
         // AMFI: "ICICI Prudential Large Cap Fund (erstwhile Bluechip Fund) - Direct Plan - Growth"
         { "ICICI Prudential Bluechip Fund", new[] { "icici prudential large cap fund", "icici prudential bluechip" } },
@@ -259,9 +262,9 @@ public class AmfiDataService
         { "SBI Small Cap Fund", new[] { "sbi small cap fund" } },
 
         // Debt
-        { "HDFC Short Term Debt Fund", new[] { "hdfc short term debt fund" } },
+        { "HDFC Short Term Debt Fund", new[] { "hdfc short term debt fund", "hdfc short term debt" } },
         { "ICICI Prudential All Seasons Bond Fund", new[] { "icici prudential all seasons bond" } },
-        { "SBI Magnum Gilt Fund", new[] { "sbi magnum gilt fund", "sbi magnum constant maturity" } },
+        { "SBI Magnum Gilt Fund", new[] { "sbi magnum gilt fund", "sbi magnum gilt", "sbi magnum constant maturity" } },
         // AMFI: "Axis Banking & PSU Debt Fund - Direct Plan - Growth"
         { "Axis Banking & PSU Debt Fund", new[] { "axis banking & psu debt", "axis banking and psu debt" } },
         { "Kotak Corporate Bond Fund", new[] { "kotak corporate bond fund" } },
@@ -278,10 +281,10 @@ public class AmfiDataService
         { "Mirae Asset Hybrid Equity Fund", new[] { "mirae asset hybrid equity", "mirae asset aggressive hybrid" } },
 
         // Gold
-        // AMFI: "SBI Gold Fund - Direct Plan - Growth"
+        // AMFI: "SBI Gold Fund - Direct Plan - Growth" or "SBI GOLD FUND- DIRECT PLAN - GROWTH"
         { "SBI Gold Fund", new[] { "sbi gold fund" } },
-        // AMFI: "HDFC Gold Fund" (check exact format)
-        { "HDFC Gold Fund", new[] { "hdfc gold fund" } },
+        // AMFI: may be "HDFC Gold Fund" or "HDFC Gold ETF Fund of Fund"
+        { "HDFC Gold Fund", new[] { "hdfc gold fund", "hdfc gold etf" } },
         // AMFI: "Kotak Gold Fund Growth - Direct"
         { "Kotak Gold Fund", new[] { "kotak gold fund" } },
         // AMFI: "Nippon India Gold Savings Fund"
