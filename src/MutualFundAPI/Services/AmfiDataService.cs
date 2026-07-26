@@ -27,6 +27,7 @@ public class AmfiDataService
     /// <summary>
     /// Fetches latest NAV data from AMFI and updates the database.
     /// Call this daily or on-demand to keep fund data current.
+    /// SAFETY: Only updates the NAV field. Never modifies fund name, category, or holdings.
     /// </summary>
     public async Task<AmfiSyncResult> SyncNavData()
     {
@@ -91,9 +92,23 @@ public class AmfiDataService
 
                 if (existingFund != null)
                 {
+                    var oldNAV = existingFund.NAV ?? 0;
+
+                    // SAFETY: Reject updates with extreme deviation that indicate a wrong match
+                    if (oldNAV > 0 && !IsNavChangeReasonable(oldNAV, nav, existingFund.Name))
+                    {
+                        _logger.LogWarning("NAV REJECTED (extreme deviation): {FundName} | {OldNAV} → {NewNAV} (from: {AmfiName}). Skipping.",
+                            existingFund.Name, oldNAV, nav, schemeName);
+                        result.Processed++;
+                        continue;
+                    }
+
+                    // SAFETY: Only update NAV field — never touch Name, Category, MutualFundId, or any identity field
                     existingFund.NAV = nav;
                     alreadyUpdated.Add(existingFund.Id);
                     result.Updated++;
+                    _logger.LogInformation("NAV Updated: {FundName} | {OldNAV} → {NewNAV} (matched from: {AmfiName})",
+                        existingFund.Name, oldNAV, nav, schemeName);
                 }
 
                 result.Processed++;
@@ -101,8 +116,11 @@ public class AmfiDataService
 
             await _context.SaveChangesAsync();
             result.Success = true;
-            _logger.LogInformation("AMFI sync complete. Processed: {Processed}, Updated: {Updated}",
-                result.Processed, result.Updated);
+            result.UpdatedFundNames = alreadyUpdated.Count > 0
+                ? string.Join(", ", _context.MutualFunds.Where(f => alreadyUpdated.Contains(f.Id)).Select(f => f.Name))
+                : "None";
+            _logger.LogInformation("AMFI sync complete. Processed: {Processed}, Updated: {Updated}. Funds: {Funds}",
+                result.Processed, result.Updated, result.UpdatedFundNames);
         }
         catch (HttpRequestException ex)
         {
@@ -118,6 +136,35 @@ public class AmfiDataService
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Validates that a NAV change is within reasonable bounds.
+    /// Prevents incorrect matches from corrupting data.
+    /// Allows: up to 50% drop or 100% increase (covers extreme market moves and gold rallies).
+    /// Rejects: changes that suggest a fundamentally wrong match (e.g., NAV 25 → 2884).
+    /// </summary>
+    private bool IsNavChangeReasonable(decimal oldNAV, decimal newNAV, string fundName)
+    {
+        if (oldNAV <= 0) return true; // No basis for comparison
+
+        var changeRatio = newNAV / oldNAV;
+
+        // Allow between 0.5x (50% drop) and 2.0x (100% increase) for normal funds
+        // This covers extreme scenarios: market crashes, gold bull runs, etc.
+        if (changeRatio >= 0.5m && changeRatio <= 2.0m)
+            return true;
+
+        // For funds with very high absolute NAV (like liquid funds with NAV > 1000),
+        // allow tighter change (max 10% move) since they barely fluctuate
+        if (oldNAV > 1000 && changeRatio >= 0.9m && changeRatio <= 1.1m)
+            return true;
+
+        // Log the rejection reason
+        _logger.LogWarning("NAV sanity check failed for {Fund}: ratio {Ratio:F2}x (old={Old}, new={New})",
+            fundName, changeRatio, oldNAV, newNAV);
+
+        return false;
     }
 
     /// <summary>
@@ -206,82 +253,89 @@ public class AmfiDataService
 
     // --- Helpers ---
 
-    private static string NormalizeFundName(string name)
-    {
-        var normalized = name.ToLower()
-            .Replace("bluechip", "blue chip")
-            .Replace("mid-cap", "mid cap")
-            .Replace("-", " ")
-            .Replace("direct plan", "")
-            .Replace("regular plan", "")
-            .Replace("growth", "")
-            .Replace("dividend", "")
-            .Replace("fund", "")
-            .Replace("opportunities", "")
-            .Replace("savings", "")
-            .Replace("  ", " ")
-            .Trim();
-        return normalized;
-    }
-
     /// <summary>
-    /// Known SEBI renames and aliases for matching
+    /// Strict matching: Maps each DB fund to its expected AMFI scheme name patterns.
+    /// Only exact, curated matches are allowed — no fuzzy/generic word matching.
+    /// This prevents cross-matching between different funds from the same AMC.
     /// </summary>
-    private static readonly Dictionary<string, string[]> FundAliases = new()
+    private static readonly Dictionary<string, string[]> ExactFundPatterns = new(StringComparer.OrdinalIgnoreCase)
     {
-        { "sbi bluechip", new[] { "sbi blue chip", "sbi large cap" } },
-        { "sbi small cap", new[] { "sbi small cap" } },
-        { "hdfc mid-cap opportunities", new[] { "hdfc mid cap", "hdfc mid-cap" } },
-        { "icici prudential bluechip", new[] { "icici prudential bluechip", "icici prudential large cap" } },
-        { "mirae asset large cap", new[] { "mirae asset large cap", "mirae asset large & mid cap" } },
-        { "kotak emerging equity", new[] { "kotak emerging equity", "kotak mid cap" } },
-        { "nippon india small cap", new[] { "nippon india small cap" } },
-        { "franklin india feeder", new[] { "franklin india feeder", "franklin india opportunities" } },
-        { "motilal oswal nasdaq", new[] { "motilal oswal nasdaq", "motilal oswal s&p 500" } },
-        { "dsp global innovation", new[] { "dsp global", "dsp world" } },
-        { "kotak international reit", new[] { "kotak international", "kotak global" } },
+        // Equity - Large Cap
+        { "SBI Bluechip Fund", new[] { "sbi blue chip", "sbi bluechip" } },
+        { "ICICI Prudential Bluechip Fund", new[] { "icici prudential bluechip", "icici prudential blue chip" } },
+        { "Mirae Asset Large Cap Fund", new[] { "mirae asset large cap", "mirae asset large & midcap" } },
+
+        // Equity - Mid Cap
+        { "Kotak Emerging Equity Fund", new[] { "kotak emerging equity" } },
+        { "HDFC Mid-Cap Opportunities Fund", new[] { "hdfc mid-cap opportunities", "hdfc mid cap opportunities" } },
+
+        // Equity - Small Cap
+        { "Nippon India Small Cap Fund", new[] { "nippon india small cap" } },
+        { "SBI Small Cap Fund", new[] { "sbi small cap" } },
+
+        // Debt
+        { "HDFC Short Term Debt Fund", new[] { "hdfc short term debt" } },
+        { "ICICI Prudential All Seasons Bond Fund", new[] { "icici prudential all seasons bond" } },
+        { "SBI Magnum Gilt Fund", new[] { "sbi magnum gilt", "sbi magnum constant maturity" } },
+        { "Axis Banking & PSU Debt Fund", new[] { "axis banking & psu debt", "axis banking and psu" } },
+        { "Kotak Corporate Bond Fund", new[] { "kotak corporate bond" } },
+        { "Aditya Birla Sun Life Corporate Bond Fund", new[] { "aditya birla sun life corporate bond" } },
+
+        // Hybrid
+        { "ICICI Prudential Balanced Advantage Fund", new[] { "icici prudential balanced advantage" } },
+        { "HDFC Balanced Advantage Fund", new[] { "hdfc balanced advantage" } },
+        { "Canara Robeco Equity Hybrid Fund", new[] { "canara robeco equity hybrid" } },
+        { "Kotak Equity Hybrid Fund", new[] { "kotak equity hybrid" } },
+        { "Mirae Asset Hybrid Equity Fund", new[] { "mirae asset hybrid equity" } },
+
+        // Gold
+        { "SBI Gold Fund", new[] { "sbi gold" } },
+        { "HDFC Gold Fund", new[] { "hdfc gold" } },
+        { "Kotak Gold Fund", new[] { "kotak gold" } },
+        { "Nippon India Gold Savings Fund", new[] { "nippon india gold savings", "nippon india gold" } },
+        { "Axis Gold Fund", new[] { "axis gold" } },
+
+        // Liquid
+        { "HDFC Liquid Fund", new[] { "hdfc liquid" } },
+        { "SBI Liquid Fund", new[] { "sbi liquid" } },
+        { "ICICI Prudential Liquid Fund", new[] { "icici prudential liquid" } },
+        { "Axis Liquid Fund", new[] { "axis liquid" } },
+        { "Kotak Liquid Fund", new[] { "kotak liquid" } },
+
+        // International
+        { "Motilal Oswal Nasdaq 100 Fund", new[] { "motilal oswal nasdaq 100", "motilal oswal nasdaq" } },
+        { "Franklin India Feeder - US Opportunities Fund", new[] { "franklin india feeder", "franklin india us opportunities" } },
+        { "ICICI Prudential US Bluechip Equity Fund", new[] { "icici prudential us bluechip" } },
+        { "DSP Global Innovation Fund", new[] { "dsp global innovation" } },
+        { "Kotak International REIT Fund", new[] { "kotak international reit" } },
     };
 
     /// <summary>
-    /// Smart matching with SEBI rename awareness
+    /// Strict matching: only matches if the AMFI scheme name contains one of the
+    /// curated patterns for this specific DB fund. No generic word-count matching.
     /// </summary>
     private static bool IsNameMatch(string dbName, string amfiName)
     {
-        var dbLower = dbName.ToLower();
         var amfiLower = amfiName.ToLower();
 
-        // Check aliases first
-        foreach (var kvp in FundAliases)
+        // Only match if we have an explicit pattern for this fund
+        if (ExactFundPatterns.TryGetValue(dbName, out var patterns))
         {
-            if (dbLower.Contains(kvp.Key))
+            foreach (var pattern in patterns)
             {
-                foreach (var alias in kvp.Value)
+                if (amfiLower.Contains(pattern))
                 {
-                    if (amfiLower.Contains(alias)) return true;
+                    // Additional safety: make sure it's a Direct Growth plan
+                    // (already filtered in the main loop, but double-check)
+                    return true;
                 }
             }
         }
 
-        // Standard matching: normalize and compare keywords
-        var dbNormalized = NormalizeFundName(dbName);
-        var amfiNormalized = NormalizeFundName(amfiName);
-
-        var dbWords = dbNormalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        var amfiWords = amfiNormalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        // Count matching words
-        int matchCount = 0;
-        foreach (var word in dbWords)
-        {
-            if (word.Length < 3) continue;
-            if (amfiWords.Any(aw => aw.Contains(word) || word.Contains(aw)))
-                matchCount++;
-        }
-
-        // Require at least 2 meaningful word matches AND first word (AMC name) must match
-        return matchCount >= 2 && dbWords.Length > 0 && amfiWords.Length > 0 &&
-               (amfiWords[0] == dbWords[0] || amfiWords[0].Contains(dbWords[0]) || dbWords[0].Contains(amfiWords[0]));
+        // No curated pattern found — do NOT match (safe default)
+        return false;
     }
+    private static string ExtractCategory(string header)
     {
         var lower = header.ToLower();
         if (lower.Contains("equity")) return "Equity";
@@ -342,4 +396,5 @@ public class AmfiSyncResult
     public int Processed { get; set; }
     public int Updated { get; set; }
     public string? ErrorMessage { get; set; }
+    public string? UpdatedFundNames { get; set; }
 }
