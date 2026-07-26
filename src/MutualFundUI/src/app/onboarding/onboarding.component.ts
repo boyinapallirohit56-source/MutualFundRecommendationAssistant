@@ -17,6 +17,7 @@ export class OnboardingComponent implements OnInit {
   saving = false;
   directStep = false;
   userName = '';
+  validationError = '';
 
   profile = {
     age: 0,
@@ -88,17 +89,22 @@ export class OnboardingComponent implements OnInit {
   saveProfile() {
     // Validation: expenses cannot exceed income
     if (this.profile.monthlyExpenses > this.profile.monthlyIncome && this.profile.monthlyIncome > 0) {
-      alert('Monthly Expenses cannot be greater than Monthly Income. Please correct your entries.');
-      this.saving = false;
+      this.validationError = 'Monthly Expenses cannot be greater than Monthly Income.';
       return;
     }
-    // Validation: loans + expenses should not exceed income
     if ((this.profile.monthlyExpenses + this.profile.loans) > this.profile.monthlyIncome && this.profile.monthlyIncome > 0) {
-      alert('Monthly Expenses + Loans/EMIs exceed your Monthly Income. Please review your entries.');
-      this.saving = false;
+      this.validationError = 'Monthly Expenses + Loans/EMIs exceed your Monthly Income.';
       return;
     }
-
+    if (this.profile.age < 18 || this.profile.age > 100) {
+      this.validationError = 'Age must be between 18 and 100.';
+      return;
+    }
+    if (this.profile.monthlyIncome <= 0) {
+      this.validationError = 'Monthly Income is required.';
+      return;
+    }
+    this.validationError = '';
     this.saving = true;
     this.profile.goals = this.selectedGoals.join(',');
 
