@@ -1,10 +1,18 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace MutualFundAPI.Models.DTOs;
 
 public class CreateGoalDTO
 {
     public string Name { get; set; } = string.Empty;
+
+    [Range(1, double.MaxValue, ErrorMessage = "Target Amount must be greater than 0")]
     public decimal TargetAmount { get; set; }
+
+    [Range(1, 50, ErrorMessage = "Target Years must be between 1 and 50")]
     public int TargetYears { get; set; }
+
+    [Range(0, double.MaxValue, ErrorMessage = "Monthly SIP cannot be negative")]
     public decimal MonthlySIP { get; set; }
 }
 
@@ -22,5 +30,6 @@ public class GoalResponseDTO
 
 public class UpdateGoalProgressDTO
 {
+    [Range(0, double.MaxValue, ErrorMessage = "Current Amount cannot be negative")]
     public decimal CurrentAmount { get; set; }
 }

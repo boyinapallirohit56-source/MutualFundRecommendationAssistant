@@ -19,7 +19,7 @@
         <p class="card-desc">How much will my SIP grow to?</p>
         <div class="form-group">
           <label>Monthly Investment (Rs.)</label>
-          <input type="number" [(ngModel)]="sip.monthly" (ngModelChange)="calcSIP()">
+          <input type="number" [(ngModel)]="sip.monthly" (ngModelChange)="calcSIP()" min="100">
           <input type="range" [(ngModel)]="sip.monthly" min="500" max="100000" step="500" class="range-slider" (ngModelChange)="calcSIP()">
         </div>
         <div class="form-group">
@@ -59,7 +59,7 @@
         <p class="card-desc">How much should I invest monthly to reach my goal?</p>
         <div class="form-group">
           <label>Target Amount (Rs.)</label>
-          <input type="number" [(ngModel)]="goal.target" (ngModelChange)="calcGoal()">
+          <input type="number" [(ngModel)]="goal.target" (ngModelChange)="calcGoal()" min="1">
         </div>
         <div class="form-group">
           <label>Time to Achieve: {{ goal.years }} years</label>
@@ -100,7 +100,7 @@
         <p class="card-desc">What if you invested your idle money instead of keeping it in savings?</p>
         <div class="form-group">
           <label>Monthly Amount (Rs.)</label>
-          <input type="number" [(ngModel)]="emi.monthly" (ngModelChange)="calcEMI()">
+          <input type="number" [(ngModel)]="emi.monthly" (ngModelChange)="calcEMI()" min="100">
         </div>
         <div class="form-group">
           <label>Duration: {{ emi.years }} years</label>
