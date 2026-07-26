@@ -257,57 +257,67 @@ public class AmfiDataService
     /// Strict matching: Maps each DB fund to its expected AMFI scheme name patterns.
     /// Only exact, curated matches are allowed — no fuzzy/generic word matching.
     /// This prevents cross-matching between different funds from the same AMC.
+    /// Patterns are verified against real AMFI NAVAll.txt data (July 2026).
     /// </summary>
     private static readonly Dictionary<string, string[]> ExactFundPatterns = new(StringComparer.OrdinalIgnoreCase)
     {
         // Equity - Large Cap
-        { "SBI Bluechip Fund", new[] { "sbi blue chip", "sbi bluechip" } },
+        // SEBI renamed "SBI Bluechip" → "SBI Large Cap" but AMFI still uses "Blue Chip"
+        { "SBI Bluechip Fund", new[] { "sbi blue chip", "sbi bluechip", "sbi large cap fund" } },
         { "ICICI Prudential Bluechip Fund", new[] { "icici prudential bluechip", "icici prudential blue chip" } },
-        { "Mirae Asset Large Cap Fund", new[] { "mirae asset large cap", "mirae asset large & midcap" } },
+        { "Mirae Asset Large Cap Fund", new[] { "mirae asset large cap fund" } },
 
         // Equity - Mid Cap
-        { "Kotak Emerging Equity Fund", new[] { "kotak emerging equity" } },
-        { "HDFC Mid-Cap Opportunities Fund", new[] { "hdfc mid-cap opportunities", "hdfc mid cap opportunities" } },
+        // SEBI renamed "Kotak Emerging Equity" → "Kotak Midcap Fund" but AMFI uses old name
+        { "Kotak Emerging Equity Fund", new[] { "kotak emerging equity", "kotak midcap fund" } },
+        // SEBI renamed "HDFC Mid-Cap Opportunities" → "HDFC Mid-Cap Fund" / "HDFC Mid Cap Fund"
+        { "HDFC Mid-Cap Opportunities Fund", new[] { "hdfc mid-cap opportunities", "hdfc mid cap opportunities", "hdfc mid-cap fund", "hdfc mid cap fund" } },
 
         // Equity - Small Cap
-        { "Nippon India Small Cap Fund", new[] { "nippon india small cap" } },
-        { "SBI Small Cap Fund", new[] { "sbi small cap" } },
+        { "Nippon India Small Cap Fund", new[] { "nippon india small cap fund" } },
+        { "SBI Small Cap Fund", new[] { "sbi small cap fund" } },
 
         // Debt
-        { "HDFC Short Term Debt Fund", new[] { "hdfc short term debt" } },
+        { "HDFC Short Term Debt Fund", new[] { "hdfc short term debt fund" } },
         { "ICICI Prudential All Seasons Bond Fund", new[] { "icici prudential all seasons bond" } },
-        { "SBI Magnum Gilt Fund", new[] { "sbi magnum gilt", "sbi magnum constant maturity" } },
-        { "Axis Banking & PSU Debt Fund", new[] { "axis banking & psu debt", "axis banking and psu" } },
-        { "Kotak Corporate Bond Fund", new[] { "kotak corporate bond" } },
-        { "Aditya Birla Sun Life Corporate Bond Fund", new[] { "aditya birla sun life corporate bond" } },
+        { "SBI Magnum Gilt Fund", new[] { "sbi magnum gilt fund", "sbi magnum constant maturity" } },
+        { "Axis Banking & PSU Debt Fund", new[] { "axis banking & psu debt fund", "axis banking and psu debt" } },
+        { "Kotak Corporate Bond Fund", new[] { "kotak corporate bond fund" } },
+        { "Aditya Birla Sun Life Corporate Bond Fund", new[] { "aditya birla sun life corporate bond fund", "aditya birla sl corporate bond" } },
 
         // Hybrid
-        { "ICICI Prudential Balanced Advantage Fund", new[] { "icici prudential balanced advantage" } },
-        { "HDFC Balanced Advantage Fund", new[] { "hdfc balanced advantage" } },
-        { "Canara Robeco Equity Hybrid Fund", new[] { "canara robeco equity hybrid" } },
-        { "Kotak Equity Hybrid Fund", new[] { "kotak equity hybrid" } },
-        { "Mirae Asset Hybrid Equity Fund", new[] { "mirae asset hybrid equity" } },
+        { "ICICI Prudential Balanced Advantage Fund", new[] { "icici prudential balanced advantage fund" } },
+        // SEBI renamed to just "HDFC Balanced Advantage Fund"
+        { "HDFC Balanced Advantage Fund", new[] { "hdfc balanced advantage fund" } },
+        { "Canara Robeco Equity Hybrid Fund", new[] { "canara robeco equity hybrid fund" } },
+        // SEBI renamed "Kotak Equity Hybrid" → "Kotak Aggressive Hybrid Fund"
+        { "Kotak Equity Hybrid Fund", new[] { "kotak equity hybrid fund", "kotak aggressive hybrid fund" } },
+        // SEBI renamed "Mirae Asset Hybrid Equity" → "Mirae Asset Aggressive Hybrid Fund"
+        { "Mirae Asset Hybrid Equity Fund", new[] { "mirae asset hybrid equity fund", "mirae asset aggressive hybrid fund" } },
 
         // Gold
-        { "SBI Gold Fund", new[] { "sbi gold" } },
-        { "HDFC Gold Fund", new[] { "hdfc gold" } },
-        { "Kotak Gold Fund", new[] { "kotak gold" } },
-        { "Nippon India Gold Savings Fund", new[] { "nippon india gold savings", "nippon india gold" } },
-        { "Axis Gold Fund", new[] { "axis gold" } },
+        { "SBI Gold Fund", new[] { "sbi gold fund" } },
+        { "HDFC Gold Fund", new[] { "hdfc gold fund" } },
+        { "Kotak Gold Fund", new[] { "kotak gold fund" } },
+        { "Nippon India Gold Savings Fund", new[] { "nippon india gold savings fund" } },
+        { "Axis Gold Fund", new[] { "axis gold fund" } },
 
         // Liquid
-        { "HDFC Liquid Fund", new[] { "hdfc liquid" } },
-        { "SBI Liquid Fund", new[] { "sbi liquid" } },
-        { "ICICI Prudential Liquid Fund", new[] { "icici prudential liquid" } },
-        { "Axis Liquid Fund", new[] { "axis liquid" } },
-        { "Kotak Liquid Fund", new[] { "kotak liquid" } },
+        { "HDFC Liquid Fund", new[] { "hdfc liquid fund" } },
+        { "SBI Liquid Fund", new[] { "sbi liquid fund" } },
+        { "ICICI Prudential Liquid Fund", new[] { "icici prudential liquid fund" } },
+        { "Axis Liquid Fund", new[] { "axis liquid fund" } },
+        { "Kotak Liquid Fund", new[] { "kotak liquid fund" } },
 
         // International
-        { "Motilal Oswal Nasdaq 100 Fund", new[] { "motilal oswal nasdaq 100", "motilal oswal nasdaq" } },
-        { "Franklin India Feeder - US Opportunities Fund", new[] { "franklin india feeder", "franklin india us opportunities" } },
-        { "ICICI Prudential US Bluechip Equity Fund", new[] { "icici prudential us bluechip" } },
-        { "DSP Global Innovation Fund", new[] { "dsp global innovation" } },
-        { "Kotak International REIT Fund", new[] { "kotak international reit" } },
+        { "Motilal Oswal Nasdaq 100 Fund", new[] { "motilal oswal nasdaq 100" } },
+        // SEBI renamed to "Franklin U.S. Opportunities Equity Active Fund of Funds"
+        { "Franklin India Feeder - US Opportunities Fund", new[] { "franklin india feeder - franklin u.s. opportunities", "franklin india feeder - franklin us opportunities", "franklin u.s. opportunities equity active fund of funds", "franklin us opportunities" } },
+        { "ICICI Prudential US Bluechip Equity Fund", new[] { "icici prudential us bluechip equity fund" } },
+        // SEBI renamed to "DSP Global Innovation Overseas Equity Omni FoF"
+        { "DSP Global Innovation Fund", new[] { "dsp global innovation fund of fund", "dsp global innovation overseas equity omni fof", "dsp global innovation" } },
+        // SEBI renamed to "Kotak International REIT Overseas Equity Omni FoF"
+        { "Kotak International REIT Fund", new[] { "kotak international reit fof", "kotak international reit overseas equity omni fof", "kotak international reit" } },
     };
 
     /// <summary>
