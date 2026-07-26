@@ -36,7 +36,7 @@
     <!-- Top Stats -->
     <div class="grid-4 stagger mb-6">
       <div class="stat-card">
-        <div class="stat-card-icon" style="background:rgba(99,102,241,0.1); color:#6366f1">
+        <div class="stat-card-icon" style="background:#FEF3C7; color:#D97706">
           <span class="material-symbols-rounded">speed</span>
         </div>
         <div class="stat-card-info">
@@ -46,7 +46,7 @@
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-icon" style="background:rgba(16,185,129,0.1); color:#10b981">
+        <div class="stat-card-icon" style="background:#F3E8FF; color:#7C3AED">
           <span class="material-symbols-rounded">person</span>
         </div>
         <div class="stat-card-info">
@@ -56,7 +56,7 @@
         </div>
       </div>
       <div class="stat-card" *ngIf="portfolio">
-        <div class="stat-card-icon" style="background:rgba(245,158,11,0.1); color:#f59e0b">
+        <div class="stat-card-icon" style="background:#EEF2FF; color:#4F46E5">
           <span class="material-symbols-rounded">account_balance_wallet</span>
         </div>
         <div class="stat-card-info">
@@ -66,7 +66,7 @@
         </div>
       </div>
       <div class="stat-card" *ngIf="portfolio">
-        <div class="stat-card-icon" [style.background]="portfolio.totalReturns >= 0 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)'" [style.color]="portfolio.totalReturns >= 0 ? '#10b981' : '#ef4444'">
+        <div class="stat-card-icon" style="background:#ECFDF5; color:#059669">
           <span class="material-symbols-rounded">trending_up</span>
         </div>
         <div class="stat-card-info">
@@ -101,8 +101,8 @@
           <h3><span class="material-symbols-rounded card-title-icon">donut_large</span> Asset Allocation</h3>
           <span class="badge badge-primary">{{ assessment.riskProfile }}</span>
         </div>
-        <div style="display:flex; justify-content:center; padding:20px 0">
-          <app-pie-chart [data]="chartData" [size]="240" [showLegend]="true"></app-pie-chart>
+        <div class="chart-container">
+          <app-pie-chart [data]="chartData" [size]="256" [showLegend]="true"></app-pie-chart>
         </div>
       </div>
 
