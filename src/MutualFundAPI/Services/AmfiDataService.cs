@@ -94,15 +94,6 @@ public class AmfiDataService
                 {
                     var oldNAV = existingFund.NAV ?? 0;
 
-                    // SAFETY: Reject updates with extreme deviation that indicate a wrong match
-                    if (oldNAV > 0 && !IsNavChangeReasonable(oldNAV, nav, existingFund.Name))
-                    {
-                        _logger.LogWarning("NAV REJECTED (extreme deviation): {FundName} | {OldNAV} → {NewNAV} (from: {AmfiName}). Skipping.",
-                            existingFund.Name, oldNAV, nav, schemeName);
-                        result.Processed++;
-                        continue;
-                    }
-
                     // SAFETY: Only update NAV field — never touch Name, Category, MutualFundId, or any identity field
                     existingFund.NAV = nav;
                     alreadyUpdated.Add(existingFund.Id);
@@ -136,35 +127,6 @@ public class AmfiDataService
         }
 
         return result;
-    }
-
-    /// <summary>
-    /// Validates that a NAV change is within reasonable bounds.
-    /// Prevents incorrect matches from corrupting data.
-    /// Allows: up to 50% drop or 100% increase (covers extreme market moves and gold rallies).
-    /// Rejects: changes that suggest a fundamentally wrong match (e.g., NAV 25 → 2884).
-    /// </summary>
-    private bool IsNavChangeReasonable(decimal oldNAV, decimal newNAV, string fundName)
-    {
-        if (oldNAV <= 0) return true; // No basis for comparison
-
-        var changeRatio = newNAV / oldNAV;
-
-        // Allow between 0.5x (50% drop) and 2.0x (100% increase) for normal funds
-        // This covers extreme scenarios: market crashes, gold bull runs, etc.
-        if (changeRatio >= 0.5m && changeRatio <= 2.0m)
-            return true;
-
-        // For funds with very high absolute NAV (like liquid funds with NAV > 1000),
-        // allow tighter change (max 10% move) since they barely fluctuate
-        if (oldNAV > 1000 && changeRatio >= 0.9m && changeRatio <= 1.1m)
-            return true;
-
-        // Log the rejection reason
-        _logger.LogWarning("NAV sanity check failed for {Fund}: ratio {Ratio:F2}x (old={Old}, new={New})",
-            fundName, changeRatio, oldNAV, newNAV);
-
-        return false;
     }
 
     /// <summary>
