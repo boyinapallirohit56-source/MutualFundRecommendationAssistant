@@ -1,103 +1,143 @@
 /* ========================================
    DASHBOARD - Premium FinTech UI
+   Visual Polish Pass
    ======================================== */
 
-/* Header */
-.dashboard-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
-.greeting { font-size: 13px; color: var(--text-tertiary); font-weight: 500; margin-bottom: 2px; }
-.dashboard-header h1 { font-size: 28px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.8px; margin-bottom: 8px; }
+/* === 1. PAGE BACKGROUND === */
+:host { display: block; background: #F8FAFC; min-height: 100vh; }
+
+/* === HEADER === */
+.dashboard-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+/* 6. Greeting readability - use secondary text color instead of tertiary */
+.greeting { font-size: 13px; color: var(--text-secondary, #475569); font-weight: 500; margin-bottom: 2px; }
+.dashboard-header h1 { font-size: 28px; font-weight: 800; color: var(--text-primary, #111827); letter-spacing: -0.8px; margin-bottom: 6px; }
 .header-actions { display: flex; gap: 10px; }
 
-.amfi-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-tertiary); }
-.amfi-icon { font-size: 14px; color: #10b981; }
+.amfi-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-tertiary, #6B7280); }
+.amfi-icon { font-size: 14px; color: #059669; }
 
-/* Loading */
+/* === LOADING === */
 .loading-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.skeleton-card { height: 100px; background: var(--surface-2); border-radius: 16px; animation: pulse 1.5s infinite; }
+.skeleton-card { height: 100px; background: var(--surface-2, #f1f5f9); border-radius: 16px; animation: pulse 1.5s infinite; }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-/* Empty State */
+/* === EMPTY STATE === */
 .empty-state { text-align: center; padding: 64px 32px; }
-.empty-icon { font-size: 48px; color: var(--brand-accent); margin-bottom: 16px; opacity: 0.8; }
+.empty-icon { font-size: 48px; color: var(--brand-accent, #6366f1); margin-bottom: 16px; opacity: 0.8; }
 .empty-state h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-.empty-state p { color: var(--text-secondary); max-width: 400px; margin: 0 auto; }
-.empty-hint { font-size: 12px; color: var(--text-tertiary); }
+.empty-state p { color: var(--text-secondary, #475569); max-width: 400px; margin: 0 auto; }
+.empty-hint { font-size: 12px; color: var(--text-tertiary, #6B7280); }
 
-/* Stat Cards */
-.stat-card { display: flex; align-items: center; gap: 14px; padding: 20px; background: var(--surface-0); border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03); transition: all 0.2s ease; }
-.stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
-.stat-card-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+/* === 2. KPI STAT CARDS (Semantic Icon Colors) === */
+.stat-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 20px 22px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02);
+  transition: all 0.2s ease;
+}
+.stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); transform: translateY(-1px); }
+.stat-card-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
 .stat-card-icon .material-symbols-rounded { font-size: 22px; }
-.stat-card-label { display: block; font-size: 11px; color: var(--text-tertiary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-.stat-card-value { display: block; font-size: 20px; font-weight: 800; color: var(--text-primary); margin-top: 2px; letter-spacing: -0.3px; }
+/* Semantic KPI colors (applied via inline styles in HTML) */
+.stat-card-label { display: block; font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-card-value { display: block; font-size: 20px; font-weight: 800; color: #111827; margin-top: 3px; letter-spacing: -0.3px; }
 .stat-card-value-lg { font-size: 24px; font-weight: 800; }
-.stat-card-sub { display: block; font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
-.stat-card-sub.clickable { color: var(--brand-accent); cursor: pointer; font-weight: 500; }
+.stat-card-sub { display: block; font-size: 11px; color: #6B7280; margin-top: 3px; }
+.stat-card-sub.clickable { color: #4F46E5; cursor: pointer; font-weight: 500; }
 .stat-card-sub.clickable:hover { text-decoration: underline; }
 
-/* Card Styling */
-.card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.card-header-row h3 { font-size: 15px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
-.card-title-icon { font-size: 20px; color: var(--text-tertiary); }
+/* === 8. STANDARDIZED CARD SPACING === */
+.card-header-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #F3F4F6;
+}
+.card-header-row h3 { font-size: 14px; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 8px; }
+.card-title-icon { font-size: 18px; color: #6B7280; }
 
-/* Allocation */
-.allocation-list { display: flex; flex-direction: column; gap: 14px; }
+/* === 3. ASSET ALLOCATION CARD (Extra bottom padding) === */
+.chart-container { display: flex; justify-content: center; padding: 24px 0 32px 0; }
+
+/* === 4. RECOMMENDED FUNDS (Increased spacing) === */
+.allocation-list { display: flex; flex-direction: column; gap: 18px; }
 .alloc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 .alloc-info { display: flex; align-items: center; gap: 8px; }
 .alloc-dot { width: 10px; height: 10px; border-radius: 3px; }
-.alloc-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
-.alloc-pct { font-size: 14px; font-weight: 800; color: var(--brand-accent); }
-.alloc-bar-track { height: 6px; background: var(--surface-2); border-radius: 100px; overflow: hidden; }
+.alloc-name { font-size: 14px; font-weight: 600; color: #111827; }
+.alloc-pct { font-size: 14px; font-weight: 800; color: #4F46E5; }
+.alloc-bar-track { height: 6px; background: #F1F5F9; border-radius: 100px; overflow: hidden; }
 .alloc-bar-fill { height: 100%; border-radius: 100px; transition: width 0.6s ease; }
-.alloc-funds { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; }
+.alloc-funds { font-size: 12px; color: #6B7280; margin-top: 5px; }
 
-/* AI Card */
+/* === AI CARD === */
 .ai-card { background: linear-gradient(135deg, rgba(99,102,241,0.02), rgba(6,182,212,0.02)); border: 1px solid rgba(99,102,241,0.08); }
 .ai-insights { display: flex; flex-direction: column; gap: 10px; }
-.ai-insight-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
-.ai-check { font-size: 16px; color: #10b981; flex-shrink: 0; margin-top: 1px; }
-.ai-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.ai-confidence { font-size: 12px; color: var(--text-tertiary); }
+.ai-insight-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #475569; line-height: 1.6; }
+.ai-check { font-size: 16px; color: #059669; flex-shrink: 0; margin-top: 1px; }
+.ai-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.ai-confidence { font-size: 12px; color: #6B7280; margin-top: 12px; }
 
-/* Ghost Button */
-.btn-ghost { background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
-.btn-ghost:hover { background: var(--brand-accent); color: white; border-color: var(--brand-accent); }
+/* === GHOST BUTTON === */
+.btn-ghost {
+  background: #ffffff;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px; font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-ghost:hover { background: #4F46E5; color: white; border-color: #4F46E5; box-shadow: 0 2px 8px rgba(79,70,229,0.3); }
 .btn-ghost .material-symbols-rounded, .btn-icon { font-size: 16px; }
 
-/* Goals */
+/* === 7. GOAL PROGRESS BARS (6px thickness) === */
 .goals-list { display: flex; flex-direction: column; gap: 16px; }
 .goal-info { display: flex; justify-content: space-between; margin-bottom: 6px; }
-.goal-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-.goal-pct { font-size: 13px; font-weight: 700; color: var(--brand-accent); }
-.goal-bar-track { height: 6px; background: var(--surface-2); border-radius: 100px; }
-.goal-bar-fill { height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 100px; transition: width 0.5s; }
+.goal-name { font-size: 13px; font-weight: 600; color: #111827; }
+.goal-pct { font-size: 13px; font-weight: 700; color: #4F46E5; }
+.goal-bar-track { height: 6px; background: #F1F5F9; border-radius: 100px; }
+.goal-bar-fill { height: 100%; background: linear-gradient(90deg, #059669, #34d399); border-radius: 100px; transition: width 0.5s; }
 
-/* Timeline Activity */
+/* === TIMELINE ACTIVITY === */
 .timeline { display: flex; flex-direction: column; gap: 0; }
-.timeline-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-left: 2px solid var(--surface-2); margin-left: 4px; padding-left: 16px; position: relative; }
+.timeline-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-left: 2px solid #E5E7EB; margin-left: 5px; padding-left: 18px; position: relative; }
 .timeline-item:last-child { border-left-color: transparent; }
-.timeline-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; position: absolute; left: -6px; top: 16px; }
-.timeline-content { display: flex; flex-direction: column; gap: 2px; }
-.timeline-text { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-.timeline-time { font-size: 11px; color: var(--text-tertiary); }
+.timeline-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; position: absolute; left: -6px; top: 18px; box-shadow: 0 0 0 3px #F8FAFC; }
+.timeline-content { display: flex; flex-direction: column; gap: 3px; }
+.timeline-text { font-size: 13px; color: #475569; font-weight: 500; }
+.timeline-time { font-size: 11px; color: #9CA3AF; }
 
-/* SIP */
+/* === SIP === */
 .sip-list { display: flex; flex-direction: column; gap: 10px; }
-.sip-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--surface-1); border-radius: 12px; border: 1px solid var(--border-light); }
+.sip-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #ffffff; border-radius: 12px; border: 1px solid #E5E7EB; }
 .sip-info { display: flex; flex-direction: column; gap: 2px; }
-.sip-date { font-size: 13px; color: var(--text-primary); font-weight: 600; }
-.sip-remaining { font-size: 11px; color: var(--brand-accent); font-weight: 500; }
-.sip-label { font-size: 11px; color: var(--text-tertiary); }
-.sip-amount { font-size: 15px; font-weight: 700; color: var(--brand-accent); }
+.sip-date { font-size: 13px; color: #111827; font-weight: 600; }
+.sip-remaining { font-size: 11px; color: #4F46E5; font-weight: 500; }
+.sip-label { font-size: 11px; color: #6B7280; }
+.sip-amount { font-size: 15px; font-weight: 700; color: #4F46E5; }
 
-/* Button icon */
+/* === BUTTON ICON === */
 .btn .material-symbols-rounded, .btn-icon { font-size: 16px; vertical-align: middle; margin-right: 4px; }
 
-/* Clickable text */
+/* === CLICKABLE === */
 .clickable { cursor: pointer; }
 .clickable:hover { opacity: 0.8; }
 
-/* Responsive */
+/* === 5. RECENT ACTIVITY - Natural height === */
+.timeline { min-height: auto; }
+
+/* === RESPONSIVE === */
 @media (max-width: 768px) {
   .dashboard-header { flex-direction: column; gap: 16px; }
   .header-actions { width: 100%; }
