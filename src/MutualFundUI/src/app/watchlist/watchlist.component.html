@@ -5,10 +5,9 @@
   </div>
 
   <div class="card" *ngIf="!items.length && !loading">
-    <p class="text-center" style="color:#6b7280">
-      Your watchlist is empty. Browse funds and add them here.
-    </p>
-    <div class="text-center mt-4">
+    <div class="text-center" style="padding:32px 0">
+      <span class="material-symbols-rounded" style="font-size:48px; color:#9CA3AF; margin-bottom:12px; display:block">bookmark</span>
+      <p style="color:#6b7280; margin-bottom:16px">Your watchlist is empty. Browse funds and add them here.</p>
       <button class="btn btn-primary" (click)="router.navigate(['/funds'])">Browse Funds</button>
     </div>
   </div>
@@ -22,17 +21,19 @@
       <div class="item-metrics">
         <div class="metric">
           <span class="metric-label">NAV</span>
-          <span class="metric-value">{{ item.nav || 'N/A' }}</span>
+          <span class="metric-value">₹{{ item.nav | number:'1.2-2' }}</span>
         </div>
         <div class="metric">
           <span class="metric-label">3Y CAGR</span>
-          <span class="metric-value" style="color:#10b981">{{ item.cagr3Y || 'N/A' }}%</span>
+          <span class="metric-value" style="color:#10b981">{{ item.cagR3Y && item.cagR3Y !== 0 ? item.cagR3Y + '%' : 'Not Available' }}</span>
         </div>
         <div class="metric">
           <span class="metric-label">Rating</span>
           <span class="metric-value">{{ item.rating || 'N/A' }} ★</span>
         </div>
-        <button class="btn-remove" (click)="remove(item.id)">Remove</button>
+        <button class="btn-remove" (click)="remove(item.id)" style="display:inline-flex; align-items:center; gap:4px">
+          <span class="material-symbols-rounded" style="font-size:14px">delete</span> Remove
+        </button>
       </div>
     </div>
   </div>

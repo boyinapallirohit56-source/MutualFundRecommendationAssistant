@@ -1,6 +1,6 @@
 <div class="container" style="margin-top:24px; max-width:800px">
   <div class="page-header">
-    <h1>What If I Had Started Earlier?</h1>
+    <h1>What If You Started Earlier?</h1>
     <p>See how much you'd have today if you started investing in the past</p>
   </div>
 
@@ -8,7 +8,7 @@
     <div class="card">
       <h3 class="card-title">Set Parameters</h3>
       <div class="form-group">
-        <label>Monthly SIP (Rs.)</label>
+        <label>Monthly SIP (₹)</label>
         <input type="number" [(ngModel)]="monthly" (ngModelChange)="calculate()" min="100">
       </div>
       <div class="form-group">
@@ -20,29 +20,29 @@
         <input type="range" [(ngModel)]="returnRate" min="8" max="20" step="0.5" class="range-slider" (ngModelChange)="calculate()">
       </div>
       <div class="presets">
-        <button (click)="setPreset(5000, 3)">Rs.5K, 3 yrs ago</button>
-        <button (click)="setPreset(10000, 5)">Rs.10K, 5 yrs ago</button>
-        <button (click)="setPreset(10000, 10)">Rs.10K, 10 yrs ago</button>
-        <button (click)="setPreset(25000, 15)">Rs.25K, 15 yrs ago</button>
+        <button (click)="setPreset(5000, 3)">₹5K, 3 yrs ago</button>
+        <button (click)="setPreset(10000, 5)">₹10K, 5 yrs ago</button>
+        <button (click)="setPreset(10000, 10)">₹10K, 10 yrs ago</button>
+        <button (click)="setPreset(25000, 15)">₹25K, 15 yrs ago</button>
       </div>
     </div>
 
     <div class="card result-card">
       <div class="whatif-result">
-        <p class="whatif-intro">If you had started a SIP of Rs.{{ monthly | number:'1.0-0' }}/month</p>
+        <p class="whatif-intro">If you had started a SIP of ₹{{ monthly | number:'1.0-0' }}/month</p>
         <p class="whatif-ago">{{ yearsAgo }} years ago...</p>
         <div class="whatif-value">
           <span class="label">You'd have today</span>
-          <span class="value">Rs. {{ futureValue | number:'1.0-0' }}</span>
+          <span class="value">₹{{ futureValue | number:'1.0-0' }}</span>
         </div>
         <div class="whatif-details">
           <div class="detail-row">
             <span>Total invested</span>
-            <span>Rs. {{ totalInvested | number:'1.0-0' }}</span>
+            <span>₹{{ totalInvested | number:'1.0-0' }}</span>
           </div>
           <div class="detail-row gain">
-            <span>Market would've added</span>
-            <span>Rs. {{ gained | number:'1.0-0' }}</span>
+            <span>Investment Growth</span>
+            <span>₹{{ gained | number:'1.0-0' }}</span>
           </div>
         </div>
         <div class="whatif-moral">
@@ -50,8 +50,8 @@
           <p><strong>The second best time is today.</strong></p>
         </div>
         <div class="start-today">
-          <p>If you start today with Rs.{{ monthly | number:'1.0-0' }}/month:</p>
-          <p>In {{ yearsAgo }} years you'll have <strong>Rs. {{ futureIfStartNow | number:'1.0-0' }}</strong></p>
+          <p>If you start today with ₹{{ monthly | number:'1.0-0' }}/month:</p>
+          <p>In {{ yearsAgo }} years you'll have <strong>₹{{ futureIfStartNow | number:'1.0-0' }}</strong></p>
         </div>
       </div>
     </div>
