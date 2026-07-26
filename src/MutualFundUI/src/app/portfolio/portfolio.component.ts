@@ -48,14 +48,8 @@ export class PortfolioComponent implements OnInit {
   }
 
   addHolding() {
-    if (!this.newHolding.mutualFundId) {
-      alert('Please select a fund from the dropdown');
-      return;
-    }
-    if (!this.newHolding.units || this.newHolding.units <= 0) {
-      alert('Please enter valid units');
-      return;
-    }
+    if (!this.isHoldingValid()) return;
+
     // Auto-calculate invested amount if not entered
     if (!this.newHolding.investedAmount || this.newHolding.investedAmount <= 0) {
       this.newHolding.investedAmount = this.newHolding.units * this.newHolding.purchaseNAV;
@@ -69,6 +63,13 @@ export class PortfolioComponent implements OnInit {
       },
       error: () => { this.adding = false; }
     });
+  }
+
+  isHoldingValid(): boolean {
+    return this.newHolding.mutualFundId &&
+           this.newHolding.units > 0 &&
+           this.newHolding.purchaseNAV > 0 &&
+           this.newHolding.investedAmount >= 0;
   }
 
   removeHolding(id: number) {
