@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MutualFundAPI.Models.Entities;
 
@@ -472,6 +473,10 @@ public static class DatabaseSeeder
             var assessment = new RiskAssessment { UserId = rohit.Id, TotalScore = 78, RiskProfile = "Very Aggressive", CompletedAt = DateTime.UtcNow.AddDays(-5) };
             context.RiskAssessments.Add(assessment);
             context.SaveChanges();
+
+            // Seed question responses (mostly option 4 = aggressive)
+            SeedRiskResponses(context, assessment.Id, new[] { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4 });
+
             var rec = new Recommendation { UserId = rohit.Id, RiskAssessmentId = assessment.Id, RiskProfile = "Very Aggressive", GeneratedAt = DateTime.UtcNow.AddDays(-5),
                 AIExplanation = "You have a high risk tolerance and a growth-focused approach. The allocation maximizes equity exposure across large, mid, and small-cap funds for maximum growth potential. International equity adds geographical diversification." };
             context.Recommendations.Add(rec);
@@ -493,6 +498,10 @@ public static class DatabaseSeeder
             var assessment = new RiskAssessment { UserId = rahul.Id, TotalScore = 48, RiskProfile = "Moderate", CompletedAt = DateTime.UtcNow.AddDays(-10) };
             context.RiskAssessments.Add(assessment);
             context.SaveChanges();
+
+            // Seed question responses (mix of 2 and 3 = moderate)
+            SeedRiskResponses(context, assessment.Id, new[] { 3, 3, 3, 2, 3, 3, 2, 3, 2, 2, 3, 3, 2, 2, 3 });
+
             var rec = new Recommendation { UserId = rahul.Id, RiskAssessmentId = assessment.Id, RiskProfile = "Moderate", GeneratedAt = DateTime.UtcNow.AddDays(-10),
                 AIExplanation = "Your moderate risk profile suggests a balanced approach. The allocation splits between equity for growth and debt for stability. Hybrid funds provide automatic rebalancing during market fluctuations." };
             context.Recommendations.Add(rec);
@@ -514,6 +523,10 @@ public static class DatabaseSeeder
             var assessment = new RiskAssessment { UserId = priya.Id, TotalScore = 22, RiskProfile = "Conservative", CompletedAt = DateTime.UtcNow.AddDays(-14) };
             context.RiskAssessments.Add(assessment);
             context.SaveChanges();
+
+            // Seed question responses (mostly option 1 = conservative)
+            SeedRiskResponses(context, assessment.Id, new[] { 1, 2, 1, 1, 2, 3, 2, 1, 3, 1, 1, 1, 1, 1, 2 });
+
             var rec = new Recommendation { UserId = priya.Id, RiskAssessmentId = assessment.Id, RiskProfile = "Conservative", GeneratedAt = DateTime.UtcNow.AddDays(-14),
                 AIExplanation = "Your conservative profile prioritizes capital preservation. The allocation emphasizes debt instruments and gold for stability, with limited equity exposure through large-cap funds for modest growth." };
             context.Recommendations.Add(rec);
@@ -527,6 +540,39 @@ public static class DatabaseSeeder
             );
             context.SaveChanges();
         }
+    }
+
+    /// <summary>
+    /// Seeds risk assessment question responses for a given assessment.
+    /// optionNumbers[i] = which option (1-4) was selected for question i+1.
+    /// </summary>
+    private static void SeedRiskResponses(AppDbContext context, int assessmentId, int[] optionNumbers)
+    {
+        var questions = context.RiskQuestions
+            .Where(q => q.IsActive)
+            .OrderBy(q => q.OrderNumber)
+            .Include(q => q.Options)
+            .ToList();
+
+        for (int i = 0; i < Math.Min(questions.Count, optionNumbers.Length); i++)
+        {
+            var question = questions[i];
+            var selectedOption = question.Options
+                .OrderBy(o => o.Score)
+                .Skip(optionNumbers[i] - 1)
+                .FirstOrDefault();
+
+            if (selectedOption != null)
+            {
+                context.RiskResponses.Add(new RiskResponse
+                {
+                    AssessmentId = assessmentId,
+                    QuestionId = question.Id,
+                    SelectedOptionId = selectedOption.Id
+                });
+            }
+        }
+        context.SaveChanges();
     }
 
     private static void SeedSamplePortfolios(AppDbContext context, ILogger logger)
