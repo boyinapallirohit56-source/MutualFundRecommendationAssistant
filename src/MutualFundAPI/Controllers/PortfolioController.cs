@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MutualFundAPI.Data;
 using MutualFundAPI.Models.DTOs;
 using MutualFundAPI.Services;
 
@@ -12,10 +14,12 @@ namespace MutualFundAPI.Controllers;
 public class PortfolioController : ControllerBase
 {
     private readonly PortfolioService _portfolioService;
+    private readonly AppDbContext _context;
 
-    public PortfolioController(PortfolioService portfolioService)
+    public PortfolioController(PortfolioService portfolioService, AppDbContext context)
     {
         _portfolioService = portfolioService;
+        _context = context;
     }
 
     [HttpGet]
@@ -76,20 +80,24 @@ public class PortfolioController : ControllerBase
             return BadRequest(new { message = "No valid holdings found in file. Check columns: FundName, Units, PurchaseNAV, InvestedAmount, PurchaseDate" });
 
         if (!result.Holdings.Any() && result.SkippedFunds.Any())
-            return BadRequest(new { message = $"None of the funds in your file match our database. Skipped: {string.Join(", ", result.SkippedFunds)}" });
+            return BadRequest(new { message = $"None of the funds in your file are currently supported. Skipped: {string.Join(", ", result.SkippedFunds)}. Browse supported funds in Discover." });
 
+        // Check for duplicates and add holdings
         var added = new List<HoldingDTO>();
+        var duplicates = new List<string>();
         foreach (var h in result.Holdings)
         {
+            if (await IsDuplicateHolding(userId, h))
+            {
+                duplicates.Add(h.FundName);
+                continue;
+            }
             var holding = await _portfolioService.AddHolding(userId, h);
             added.Add(holding);
         }
 
-        var msg = $"{added.Count} holding(s) imported successfully.";
-        if (result.SkippedFunds.Any())
-            msg += $" Skipped {result.SkippedFunds.Count} fund(s) not in database: {string.Join(", ", result.SkippedFunds)}";
-
-        return Ok(new { message = msg, holdings = added, skipped = result.SkippedFunds });
+        var msg = BuildResponseMessage(added.Count, result.SkippedFunds, duplicates);
+        return Ok(new { message = msg, holdings = added, skipped = result.SkippedFunds, duplicates });
     }
 
     [HttpPost("upload/excel")]
@@ -109,20 +117,57 @@ public class PortfolioController : ControllerBase
             return BadRequest(new { message = "No valid holdings found in file. Check columns: FundName, Units, PurchaseNAV, InvestedAmount, PurchaseDate" });
 
         if (!result.Holdings.Any() && result.SkippedFunds.Any())
-            return BadRequest(new { message = $"None of the funds in your file match our database. Skipped: {string.Join(", ", result.SkippedFunds)}" });
+            return BadRequest(new { message = $"None of the funds in your file are currently supported. Skipped: {string.Join(", ", result.SkippedFunds)}. Browse supported funds in Discover." });
 
+        // Check for duplicates and add holdings
         var added = new List<HoldingDTO>();
+        var duplicates = new List<string>();
         foreach (var h in result.Holdings)
         {
+            if (await IsDuplicateHolding(userId, h))
+            {
+                duplicates.Add(h.FundName);
+                continue;
+            }
             var holding = await _portfolioService.AddHolding(userId, h);
             added.Add(holding);
         }
 
-        var msg = $"{added.Count} holding(s) imported successfully.";
-        if (result.SkippedFunds.Any())
-            msg += $" Skipped {result.SkippedFunds.Count} fund(s) not in database: {string.Join(", ", result.SkippedFunds)}";
+        var msg = BuildResponseMessage(added.Count, result.SkippedFunds, duplicates);
+        return Ok(new { message = msg, holdings = added, skipped = result.SkippedFunds, duplicates });
+    }
 
-        return Ok(new { message = msg, holdings = added, skipped = result.SkippedFunds });
+    private async Task<bool> IsDuplicateHolding(int userId, AddHoldingDTO dto)
+    {
+        var portfolio = await _context.Portfolios.FirstOrDefaultAsync(p => p.UserId == userId);
+        if (portfolio == null) return false;
+
+        return await _context.PortfolioHoldings.AnyAsync(h =>
+            h.PortfolioId == portfolio.Id &&
+            h.MutualFundId == dto.MutualFundId &&
+            h.Units == dto.Units &&
+            h.PurchaseNAV == dto.PurchaseNAV &&
+            h.InvestedAmount == dto.InvestedAmount &&
+            h.PurchaseDate.Date == dto.PurchaseDate.Date);
+    }
+
+    private static string BuildResponseMessage(int addedCount, List<string> skipped, List<string> duplicates)
+    {
+        var parts = new List<string>();
+
+        if (addedCount > 0)
+            parts.Add($"{addedCount} holding(s) imported successfully.");
+
+        if (skipped.Any())
+            parts.Add($"Skipped {skipped.Count} fund(s) not currently supported: {string.Join(", ", skipped)}. Browse supported funds in Discover.");
+
+        if (duplicates.Any())
+            parts.Add($"{duplicates.Count} duplicate(s) skipped: {string.Join(", ", duplicates)} (already exists with same details).");
+
+        if (!parts.Any())
+            parts.Add("No holdings were imported.");
+
+        return string.Join(" ", parts);
     }
 
     private int GetUserId()

@@ -147,6 +147,7 @@ public class FileUploadResult
 {
     public List<AddHoldingDTO> Holdings { get; set; } = new();
     public List<string> SkippedFunds { get; set; } = new();
+    public List<string> DuplicateFunds { get; set; } = new();
 }
 
 // CSV mapping class
