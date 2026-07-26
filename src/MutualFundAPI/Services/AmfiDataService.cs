@@ -84,10 +84,19 @@ public class AmfiDataService
 
                 // Only process Direct Plan Growth schemes (skip IDCW/Dividend/Regular)
                 if (!schemeName.Contains("Direct", StringComparison.OrdinalIgnoreCase)) continue;
-                if (!schemeName.Contains("Growth", StringComparison.OrdinalIgnoreCase)) continue;
                 if (schemeName.Contains("IDCW", StringComparison.OrdinalIgnoreCase) || 
                     schemeName.Contains("Dividend", StringComparison.OrdinalIgnoreCase) || 
                     schemeName.Contains("Payout", StringComparison.OrdinalIgnoreCase)) continue;
+                // Allow schemes without "Growth" only if they match a known fund pattern
+                // (some ETF/FoF schemes like "HDFC Gold ETF Fund of Fund - Direct Plan" don't have "Growth")
+                bool hasGrowth = schemeName.Contains("Growth", StringComparison.OrdinalIgnoreCase);
+                if (!hasGrowth)
+                {
+                    // Only proceed if this matches one of our known funds (allows ETF/FoF without "Growth")
+                    var possibleMatch = _context.MutualFunds.AsEnumerable()
+                        .FirstOrDefault(f => !alreadyUpdated.Contains(f.Id) && IsNameMatch(f.Name, schemeName));
+                    if (possibleMatch == null) continue;
+                }
 
                 var existingFund = _context.MutualFunds.AsEnumerable()
                     .FirstOrDefault(f => !alreadyUpdated.Contains(f.Id) && IsNameMatch(f.Name, schemeName));
