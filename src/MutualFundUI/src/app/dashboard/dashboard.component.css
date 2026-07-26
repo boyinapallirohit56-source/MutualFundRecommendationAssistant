@@ -64,8 +64,8 @@
 .card-header-row h3 { font-size: 14px; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 8px; }
 .card-title-icon { font-size: 18px; color: #6B7280; }
 
-/* === 3. ASSET ALLOCATION CARD (Extra bottom padding) === */
-.chart-container { display: flex; justify-content: center; padding: 24px 0 32px 0; }
+/* === 3. ASSET ALLOCATION CARD (Chart centered vertically) === */
+.chart-container { display: flex; justify-content: center; padding: 16px 0 28px 0; }
 
 /* === 4. RECOMMENDED FUNDS (Increased spacing) === */
 .allocation-list { display: flex; flex-direction: column; gap: 18px; }
@@ -86,20 +86,25 @@
 .ai-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
 .ai-confidence { font-size: 12px; color: #6B7280; margin-top: 12px; }
 
-/* === GHOST BUTTON === */
+/* === AMFI STATUS ROW === */
+.amfi-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-tertiary, #6B7280); line-height: 1.5; }
+.amfi-icon { font-size: 14px; color: #059669; }
+
+/* Ghost Button - Matches global button system */
 .btn-ghost {
   background: #ffffff;
-  border: 1px solid #E5E7EB;
-  border-radius: 8px;
-  padding: 8px 14px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 10px 16px;
+  height: 40px;
   font-size: 13px; font-weight: 500;
   color: #475569;
   cursor: pointer;
   transition: all 0.2s ease;
-  display: inline-flex; align-items: center; gap: 6px;
+  display: inline-flex; align-items: center; gap: 8px;
 }
-.btn-ghost:hover { background: #4F46E5; color: white; border-color: #4F46E5; box-shadow: 0 2px 8px rgba(79,70,229,0.3); }
-.btn-ghost .material-symbols-rounded, .btn-icon { font-size: 16px; }
+.btn-ghost:hover { background: #4F46E5; color: white; border-color: #4F46E5; box-shadow: 0 2px 8px rgba(79,70,229,0.25); }
+.btn-ghost .material-symbols-rounded, .btn-icon { font-size: 18px; }
 
 /* === 7. GOAL PROGRESS BARS (6px thickness) === */
 .goals-list { display: flex; flex-direction: column; gap: 16px; }
@@ -109,13 +114,13 @@
 .goal-bar-track { height: 6px; background: #F1F5F9; border-radius: 100px; }
 .goal-bar-fill { height: 100%; background: linear-gradient(90deg, #059669, #34d399); border-radius: 100px; transition: width 0.5s; }
 
-/* === TIMELINE ACTIVITY === */
+/* === TIMELINE ACTIVITY (Aligned) === */
 .timeline { display: flex; flex-direction: column; gap: 0; }
-.timeline-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-left: 2px solid #E5E7EB; margin-left: 5px; padding-left: 18px; position: relative; }
+.timeline-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-left: 2px solid #E5E7EB; margin-left: 5px; padding-left: 20px; position: relative; }
 .timeline-item:last-child { border-left-color: transparent; }
 .timeline-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; position: absolute; left: -6px; top: 18px; box-shadow: 0 0 0 3px #F8FAFC; }
 .timeline-content { display: flex; flex-direction: column; gap: 3px; }
-.timeline-text { font-size: 13px; color: #475569; font-weight: 500; }
+.timeline-text { font-size: 13px; color: #374151; font-weight: 500; }
 .timeline-time { font-size: 11px; color: #9CA3AF; }
 
 /* === SIP === */
