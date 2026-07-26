@@ -1,22 +1,27 @@
 using System.Globalization;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
+using MutualFundAPI.Data;
 using MutualFundAPI.Models.DTOs;
 
 namespace MutualFundAPI.Services;
 
 public class FileUploadService
 {
-    public FileUploadService()
+    private readonly AppDbContext _context;
+
+    public FileUploadService(AppDbContext context)
     {
+        _context = context;
         // EPPlus license for non-commercial use
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
     }
 
-    public async Task<List<AddHoldingDTO>> ParseCsvFile(Stream fileStream)
+    public async Task<FileUploadResult> ParseAndValidateCsvFile(Stream fileStream)
     {
-        var holdings = new List<AddHoldingDTO>();
+        var result = new FileUploadResult();
 
         using var reader = new StreamReader(fileStream);
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -27,15 +32,25 @@ public class FileUploadService
         };
 
         using var csv = new CsvReader(reader, config);
-        var records = csv.GetRecords<CsvHoldingRecord>();
+        var records = csv.GetRecords<CsvHoldingRecord>().ToList();
 
         foreach (var record in records)
         {
             if (string.IsNullOrWhiteSpace(record.FundName)) continue;
 
-            holdings.Add(new AddHoldingDTO
+            var fundName = record.FundName.Trim();
+            var matchedFund = await FindFundByName(fundName);
+
+            if (matchedFund == null)
             {
-                FundName = record.FundName.Trim(),
+                result.SkippedFunds.Add(fundName);
+                continue;
+            }
+
+            result.Holdings.Add(new AddHoldingDTO
+            {
+                FundName = matchedFund.Name,
+                MutualFundId = matchedFund.Id,
                 Units = record.Units,
                 PurchaseNAV = record.PurchaseNAV,
                 InvestedAmount = record.InvestedAmount > 0
@@ -47,17 +62,17 @@ public class FileUploadService
             });
         }
 
-        return holdings;
+        return result;
     }
 
-    public async Task<List<AddHoldingDTO>> ParseExcelFile(Stream fileStream)
+    public async Task<FileUploadResult> ParseAndValidateExcelFile(Stream fileStream)
     {
-        var holdings = new List<AddHoldingDTO>();
+        var result = new FileUploadResult();
 
         using var package = new ExcelPackage(fileStream);
         var worksheet = package.Workbook.Worksheets.FirstOrDefault();
 
-        if (worksheet == null) return holdings;
+        if (worksheet == null) return result;
 
         var rowCount = worksheet.Dimension?.Rows ?? 0;
 
@@ -67,6 +82,14 @@ public class FileUploadService
             var fundName = worksheet.Cells[row, 1].Text?.Trim();
             if (string.IsNullOrWhiteSpace(fundName)) continue;
 
+            var matchedFund = await FindFundByName(fundName);
+
+            if (matchedFund == null)
+            {
+                result.SkippedFunds.Add(fundName);
+                continue;
+            }
+
             var units = decimal.TryParse(worksheet.Cells[row, 2].Text, out var u) ? u : 0;
             var purchaseNAV = decimal.TryParse(worksheet.Cells[row, 3].Text, out var nav) ? nav : 0;
             var investedAmount = decimal.TryParse(worksheet.Cells[row, 4].Text, out var amt) ? amt : 0;
@@ -75,9 +98,10 @@ public class FileUploadService
             if (investedAmount == 0 && units > 0 && purchaseNAV > 0)
                 investedAmount = units * purchaseNAV;
 
-            holdings.Add(new AddHoldingDTO
+            result.Holdings.Add(new AddHoldingDTO
             {
-                FundName = fundName,
+                FundName = matchedFund.Name,
+                MutualFundId = matchedFund.Id,
                 Units = units,
                 PurchaseNAV = purchaseNAV,
                 InvestedAmount = investedAmount,
@@ -85,8 +109,65 @@ public class FileUploadService
             });
         }
 
-        return holdings;
+        return result;
     }
+
+    /// <summary>
+    /// Finds a fund in the database by name (case-insensitive, partial match).
+    /// Tries exact match first, then contains match.
+    /// </summary>
+    private async Task<FundMatch?> FindFundByName(string fundName)
+    {
+        var lowerName = fundName.ToLower();
+
+        // Try exact match first
+        var exactMatch = await _context.MutualFunds
+            .Where(f => f.IsActive && f.Name.ToLower() == lowerName)
+            .Select(f => new FundMatch { Id = f.Id, Name = f.Name })
+            .FirstOrDefaultAsync();
+
+        if (exactMatch != null) return exactMatch;
+
+        // Try contains match (e.g., "SBI Large Cap" matches "SBI Large Cap Fund")
+        var containsMatch = await _context.MutualFunds
+            .Where(f => f.IsActive)
+            .ToListAsync();
+
+        var match = containsMatch.FirstOrDefault(f =>
+            f.Name.ToLower().Contains(lowerName) || lowerName.Contains(f.Name.ToLower()));
+
+        if (match != null)
+            return new FundMatch { Id = match.Id, Name = match.Name };
+
+        return null;
+    }
+
+    // Keep old methods for backward compatibility but mark as obsolete
+    [Obsolete("Use ParseAndValidateCsvFile instead")]
+    public async Task<List<AddHoldingDTO>> ParseCsvFile(Stream fileStream)
+    {
+        var result = await ParseAndValidateCsvFile(fileStream);
+        return result.Holdings;
+    }
+
+    [Obsolete("Use ParseAndValidateExcelFile instead")]
+    public async Task<List<AddHoldingDTO>> ParseExcelFile(Stream fileStream)
+    {
+        var result = await ParseAndValidateExcelFile(fileStream);
+        return result.Holdings;
+    }
+}
+
+public class FundMatch
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+}
+
+public class FileUploadResult
+{
+    public List<AddHoldingDTO> Holdings { get; set; } = new();
+    public List<string> SkippedFunds { get; set; } = new();
 }
 
 // CSV mapping class
