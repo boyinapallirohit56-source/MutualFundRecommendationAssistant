@@ -140,7 +140,7 @@ public class AIChatService
 
             var requestBody = new
             {
-                model = "gpt-3.5-turbo",
+                model = "gpt-4o-mini",
                 messages = messages,
                 max_tokens = 300,
                 temperature = 0.7
@@ -169,10 +169,13 @@ public class AIChatService
                 return reply ?? "I apologize, I couldn't generate a response. Please try again.";
             }
 
+            // Log the API error so we can debug
+            Console.WriteLine($"[AI Chat] OpenAI API Error {(int)response.StatusCode}: {responseContent}");
             return GetFallbackResponse(userMessage);
         }
-        catch
+        catch (Exception ex)
         {
+            Console.WriteLine($"[AI Chat] Exception calling OpenAI: {ex.Message}");
             return GetFallbackResponse(userMessage);
         }
     }
@@ -192,6 +195,21 @@ public class AIChatService
 
         if (lowerMessage.Contains("risk") || lowerMessage.Contains("conservative") || lowerMessage.Contains("aggressive"))
             return "Risk profiles help determine what mix of investments suits you. Conservative investors prioritize safety (more debt funds), while aggressive investors accept short-term losses for higher long-term growth (more equity). Your risk profile depends on your age, income stability, investment horizon, and personal comfort with market fluctuations.\n\n*Disclaimer: This is for educational purposes only, not financial advice.*";
+
+        if (lowerMessage.Contains("small cap") || lowerMessage.Contains("mid cap") || lowerMessage.Contains("large cap") || lowerMessage.Contains("market cap"))
+            return "Mutual funds are categorized by the size of companies they invest in:\n\n• **Large Cap**: Top 100 companies (Reliance, TCS, HDFC). Stable, lower risk, moderate returns (12-15% CAGR).\n• **Mid Cap**: Companies ranked 101-250. Higher growth potential, moderate risk (15-20% CAGR).\n• **Small Cap**: Companies ranked 251+. Highest growth potential but volatile (18-25% CAGR in good years, can fall -30% in bad years).\n\nFor beginners, large cap is safest. For long-term (7+ years), a mix of all three works well.\n\n*Disclaimer: This is for educational purposes only, not financial advice.*";
+
+        if (lowerMessage.Contains("invest") && (lowerMessage.Contains("plan") || lowerMessage.Contains("india") || lowerMessage.Contains("option") || lowerMessage.Contains("begin") || lowerMessage.Contains("start")))
+            return "Popular investment options in India:\n\n• **Mutual Funds (SIP)**: Best for wealth creation. Start with Rs.500/month. Direct Growth plans have lowest fees.\n• **PPF**: 15-year lock-in, tax-free returns (~7.1%), very safe.\n• **Fixed Deposits**: Guaranteed returns (6-7%), but taxable.\n• **NPS**: Retirement-focused, tax benefits under 80CCD.\n• **ELSS**: Tax-saving mutual funds, 3-year lock-in, equity exposure.\n• **Gold (SGBs)**: Sovereign Gold Bonds — 2.5% interest + gold price appreciation.\n\nFor beginners, starting a SIP in a large cap mutual fund is the simplest way to begin.\n\n*Disclaimer: This is for educational purposes only, not financial advice.*";
+
+        if (lowerMessage.Contains("mutual fund") && (lowerMessage.Contains("what") || lowerMessage.Contains("explain") || lowerMessage.Contains("how")))
+            return "A mutual fund pools money from many investors and invests it in stocks, bonds, or other assets. A professional fund manager decides where to invest. You buy 'units' of the fund at the current NAV (Net Asset Value).\n\n**Why mutual funds?**\n• Professional management\n• Diversification (your money is spread across 50-100 stocks)\n• Start with as little as Rs.500\n• Liquid — you can withdraw anytime (except ELSS)\n• Tax-efficient (LTCG up to Rs.1L is tax-free)\n\n*Disclaimer: This is for educational purposes only, not financial advice.*";
+
+        if (lowerMessage.Contains("hybrid") || lowerMessage.Contains("balanced"))
+            return "Hybrid/Balanced funds invest in both equity (stocks) and debt (bonds). They offer a middle ground between growth and stability:\n\n• **Conservative Hybrid**: 75-90% debt + 10-25% equity. Low risk.\n• **Balanced Advantage**: Dynamically shifts between equity and debt based on market conditions. Popular choice.\n• **Aggressive Hybrid**: 65-80% equity + 20-35% debt. Growth-oriented with some cushion.\n\nThey're great for moderate-risk investors who want equity exposure without full volatility.\n\n*Disclaimer: This is for educational purposes only, not financial advice.*";
+
+        if (lowerMessage.Contains("direct") && (lowerMessage.Contains("regular") || lowerMessage.Contains("plan") || lowerMessage.Contains("differ")))
+            return "**Direct Plan vs Regular Plan:**\n\n• **Direct Plan**: You invest directly with the fund house. No middleman commission. Lower expense ratio (saves 0.5-1.5% annually). Higher returns.\n• **Regular Plan**: Bought through a broker/distributor. Commission is baked into the expense ratio. Lower returns.\n\n**Example (Rs.10L over 10 years):**\n• Direct (14.2% CAGR) → Rs.24.6L\n• Regular (12.8% CAGR) → Rs.22.9L\n• **You save Rs.1.7 Lakhs** with Direct!\n\nAlways choose Direct Growth plans for maximum returns.\n\n*Disclaimer: This is for educational purposes only, not financial advice.*";
 
         if (lowerMessage.Contains("equity") || lowerMessage.Contains("stock"))
             return "Equity mutual funds invest in company stocks. They're categorized by company size: Large Cap (stable, big companies), Mid Cap (growing companies), and Small Cap (smaller companies with high growth potential but more risk). Equity funds are best for long-term goals (5+ years) as they tend to outperform other asset classes over time.\n\n*Disclaimer: This is for educational purposes only, not financial advice.*";
