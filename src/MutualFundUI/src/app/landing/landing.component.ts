@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 
 @Component({
   selector: 'app-landing',
@@ -10,117 +10,128 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['./landing.component.css']
 })
 export class LandingComponent implements OnInit, OnDestroy {
-  private tickerInterval: any;
   private countUpDone = false;
-
-  // Market Ticker
-  marketIndices = [
-    { name: 'NIFTY 50', value: '24,856.15', change: '0.84%', isPositive: true, color: '#10b981' },
-    { name: 'SENSEX', value: '81,432.60', change: '0.72%', isPositive: true, color: '#10b981' },
-    { name: 'NIFTY IT', value: '29,441.90', change: '2.34%', isPositive: true, color: '#10b981' },
-    { name: 'GOLD', value: '7,245.00', change: '0.45%', isPositive: true, color: '#eab308' },
-    { name: 'USD/INR', value: '83.42', change: '0.12%', isPositive: false, color: '#6366f1' },
-    { name: 'BANKNIFTY', value: '55,230.80', change: '1.15%', isPositive: true, color: '#10b981' }
-  ];
-
-  // Stats with count-up
-  stats = [
-    { value: 33, suffix: '+', label: 'AMFI Funds', current: 0 },
-    { value: 4, suffix: '', label: 'Risk Profiles', current: 0 },
-    { value: 15, suffix: '', label: 'Assessment Questions', current: 0 },
-    { value: 6, suffix: '', label: 'Asset Classes', current: 0 }
-  ];
+  private comparisonCountDone = false;
+  private queryInterval: any;
+  currentQueryIndex = 0;
 
   // Navigation
   navLinks = ['Home', 'Features', 'Mutual Funds', 'Tools', 'About'];
 
-  // Trust badges
-  trustBadges = [
-    '33+ AMFI Funds',
-    'Daily NAV Updates',
-    'AI Powered',
-    'Direct Growth Plans'
+  // Trust strip items
+  trustStrip = ['Live AMFI NAV', 'Direct Growth', 'AI Powered', 'No Hidden Fees', 'Risk Assessment'];
+
+  // Hero trust badges
+  trustBadges = ['33+ AMFI Funds', 'Daily NAV Updates', 'AI Powered', 'Direct Growth Plans'];
+
+  // Stats with count-up
+  stats = [
+    { value: 33, suffix: '+', label: 'Mutual Funds', current: 0 },
+    { value: 24, suffix: '/7', label: 'AI Advisor', current: 0 },
+    { value: 365, suffix: '', label: 'Daily NAV Sync', current: 0 },
+    { value: 50, suffix: '%', label: 'Stress Testing', current: 0 }
   ];
 
   // Products
   products = [
     {
-      icon: '&#128201;', title: 'Mutual Funds', subtitle: 'Direct Growth Plans',
+      title: 'Mutual Funds',
+      subtitle: 'Direct Growth Plans',
       desc: 'Invest in top-rated funds across Equity, Debt, Gold, Hybrid & International — all Direct Growth for maximum returns.',
-      tags: ['Large Cap', 'Mid Cap', 'Small Cap', 'Debt', 'Gold', 'International'], color: '#6366f1'
+      tags: ['Large Cap', 'Mid Cap', 'Small Cap', 'Debt', 'Gold', 'International'],
+      color: '#6366f1',
+      iconType: 'chart'
     },
     {
-      icon: '&#129504;', title: 'AI-Powered Advice', subtitle: 'Ask WealthAI Anything',
+      title: 'AI-Powered Advice',
+      subtitle: 'Ask WealthAI Anything',
       desc: '',
-      queries: ['"What SIP should I start?"', '"What is NAV?"', '"Compare SBI vs Nippon"', '"Can I retire in 20 years?"'],
-      tags: [], color: '#14b8a6'
+      tags: [],
+      color: '#14b8a6',
+      iconType: 'brain'
     },
     {
-      icon: '&#128202;', title: 'Portfolio Analytics', subtitle: 'Deep Insights',
+      title: 'Portfolio Analytics',
+      subtitle: 'Deep Insights',
       desc: 'Diversification score, risk alignment, fund overlap detection, rebalancing suggestions & stress testing.',
-      tags: ['Analysis', 'Stress Test', 'What-If', 'Rebalance'], color: '#10b981'
+      tags: ['Analysis', 'Stress Test', 'What-If', 'Rebalance'],
+      color: '#10b981',
+      iconType: 'analytics'
     }
+  ];
+
+  // AI rotating queries
+  aiQueries = [
+    'What SIP should I start?',
+    'Explain NAV',
+    'Compare SBI vs Nippon',
+    'Should I invest ₹10,000?'
   ];
 
   // Steps
   steps = [
-    { icon: '&#128100;', title: 'Create Profile', desc: 'Income, savings, and goals' },
-    { icon: '&#128203;', title: 'Risk Assessment', desc: '15 questions, 5 minutes' },
-    { icon: '&#129302;', title: 'AI Recommends', desc: 'Personalized allocation' },
-    { icon: '&#128200;', title: 'Track & Grow', desc: 'Monitor and rebalance' }
+    { num: 1, title: 'Create Profile', desc: 'Income, savings, and goals', iconLetter: 'P' },
+    { num: 2, title: 'Risk Assessment', desc: '15 questions, 5 minutes', iconLetter: 'R' },
+    { num: 3, title: 'AI Recommends', desc: 'Personalized allocation', iconLetter: 'A' },
+    { num: 4, title: 'Track & Grow', desc: 'Monitor and rebalance', iconLetter: 'T' }
   ];
 
-  // Features - AI highlighted
+  // AI Feature
   aiFeature = {
-    icon: '&#129302;', title: 'WealthAI Advisor',
+    title: 'WealthAI Advisor',
     desc: 'GPT-powered financial assistant that explains investments in simple language. Ask about SIPs, NAV, risk profiles, fund comparisons — get instant, personalized answers.',
     queries: ['What SIP amount is right for me?', 'Explain expense ratio', 'Is my portfolio diversified?']
   };
 
+  // Features grid
   features = [
-    { icon: '&#127919;', title: 'Goal Planning', desc: 'Set wealth, retirement, education goals with SIP tracking' },
-    { icon: '&#9889;', title: 'Live AMFI Data', desc: 'Real-time NAV synced daily from AMFI India' },
-    { icon: '&#128176;', title: 'Tax Optimization', desc: 'ELSS recommendations & Section 80C calculator' },
-    { icon: '&#128200;', title: 'SIP Calculator', desc: 'Project returns over your investment horizon' },
-    { icon: '&#9888;&#65039;', title: 'Stress Testing', desc: 'Simulate -10% to -50% market crashes' }
+    { title: 'Goal Planning', desc: 'Set wealth, retirement, education goals with SIP tracking', iconLetter: 'G' },
+    { title: 'Live AMFI Data', desc: 'Real-time NAV synced daily from AMFI India', iconLetter: 'N' },
+    { title: 'Tax Optimization', desc: 'ELSS recommendations & Section 80C calculator', iconLetter: 'T' },
+    { title: 'SIP Calculator', desc: 'Project returns over your investment horizon', iconLetter: 'S' },
+    { title: 'Stress Testing', desc: 'Simulate -10% to -50% market crashes', iconLetter: '!' }
   ];
 
-  // Why WealthAI
+  // Comparison
+  directAmount = 0;
+  regularAmount = 0;
+
+  // Why WealthAI - 8 points with icon letters
   whyPoints = [
-    'AI-powered fund recommendations',
-    'Daily AMFI NAV sync',
-    'Personalized risk profiling',
-    'Portfolio health score',
-    'Stress testing & what-if analysis',
-    'Goal-based planning',
-    'Tax optimization tools',
-    'No commission bias — Direct plans only'
+    { text: 'AI-powered recommendations', letter: 'AI' },
+    { text: 'Daily AMFI NAV sync', letter: 'N' },
+    { text: 'Personalized risk profiling', letter: 'R' },
+    { text: 'Portfolio health score', letter: 'H' },
+    { text: 'Stress testing & what-if', letter: 'S' },
+    { text: 'Goal-based planning', letter: 'G' },
+    { text: 'Tax optimization tools', letter: 'T' },
+    { text: 'No commission bias', letter: '0' }
   ];
 
   // Trust section
   trustItems = [
-    { icon: '&#128274;', label: 'Secure Login' },
-    { icon: '&#128202;', label: 'AMFI Data' },
-    { icon: '&#129302;', label: 'AI Recommendations' },
-    { icon: '&#128200;', label: 'Direct Plans' },
-    { icon: '&#127470;&#127475;', label: 'Built for India' }
+    { label: 'Secure Login', letter: 'S', color: '#6366f1' },
+    { label: 'AMFI Data', letter: 'A', color: '#14b8a6' },
+    { label: 'AI Powered', letter: 'AI', color: '#8b5cf6' },
+    { label: 'Direct Plans', letter: 'D', color: '#10b981' },
+    { label: 'Built for India', letter: 'IN', color: '#f59e0b' }
   ];
 
-  // Screenshots/Teasers
+  // Teasers
   screenTeasers = [
-    { icon: '&#128202;', title: 'Dashboard Analytics', desc: 'Risk score, allocation chart, SIP schedule' },
-    { icon: '&#129302;', title: 'AI Advisor Chat', desc: 'Ask anything about mutual funds' },
-    { icon: '&#128200;', title: 'Portfolio Insights', desc: 'Diversification, overlap, rebalancing' },
-    { icon: '&#128178;', title: 'SIP & Goal Calculators', desc: 'Plan your financial future' },
-    { icon: '&#9888;&#65039;', title: 'Stress Testing', desc: 'Simulate market crashes' },
-    { icon: '&#128203;', title: 'Smart Reports', desc: 'Risk, portfolio & recommendation reports' }
+    { title: 'Dashboard Analytics', desc: 'Risk score, allocation chart, SIP schedule', letter: 'D' },
+    { title: 'AI Advisor Chat', desc: 'Ask anything about mutual funds', letter: 'C' },
+    { title: 'Portfolio Insights', desc: 'Diversification, overlap, rebalancing', letter: 'P' },
+    { title: 'SIP & Goal Calculators', desc: 'Plan your financial future', letter: 'S' },
+    { title: 'Stress Testing', desc: 'Simulate market crashes', letter: '!' },
+    { title: 'Smart Reports', desc: 'Risk, portfolio & recommendation reports', letter: 'R' }
   ];
 
   // Testimonials
   testimonials = [
-    { text: 'The AI Advisor explained mutual funds better than hours of YouTube videos.', name: 'Rahul S.', role: 'Software Developer', rating: 5 },
-    { text: 'Portfolio stress testing showed me exactly where my risk was. Incredible tool.', name: 'Priya P.', role: 'Doctor', rating: 5 },
-    { text: 'Finally understood my risk profile and got recommendations that actually made sense.', name: 'Arjun K.', role: 'Product Manager', rating: 5 }
+    { text: 'The AI Advisor explained mutual funds better than hours of YouTube videos.', name: 'Rahul S.', role: 'Software Developer', initials: 'RS', color: '#6366f1' },
+    { text: 'Portfolio stress testing showed me exactly where my risk was. Incredible tool.', name: 'Priya P.', role: 'Doctor', initials: 'PP', color: '#14b8a6' },
+    { text: 'Finally understood my risk profile and got recommendations that actually made sense.', name: 'Arjun K.', role: 'Product Manager', initials: 'AK', color: '#10b981' }
   ];
 
   // FAQ
@@ -133,31 +144,56 @@ export class LandingComponent implements OnInit, OnDestroy {
     { q: 'How is AI used in this platform?', a: 'AI powers the chat advisor (GPT-based), generates personalized allocation explanations, and provides portfolio insights. Risk scoring uses a rule-based algorithm, not AI.', open: false }
   ];
 
+  // Scroll animation tracking
+  animatedSections: Set<string> = new Set();
+
+  constructor(private el: ElementRef, private router: Router) {}
+
   ngOnInit() {
-    this.tickerInterval = setInterval(() => {
-      this.marketIndices = this.marketIndices.map(idx => ({
-        ...idx,
-        change: this.randomizeChange(idx.change),
-        isPositive: Math.random() > 0.25
-      }));
-    }, 8000);
+    // Rotate AI queries every 3 seconds
+    this.queryInterval = setInterval(() => {
+      this.currentQueryIndex = (this.currentQueryIndex + 1) % this.aiQueries.length;
+    }, 3000);
   }
 
   ngOnDestroy() {
-    if (this.tickerInterval) clearInterval(this.tickerInterval);
+    if (this.queryInterval) clearInterval(this.queryInterval);
   }
 
   @HostListener('window:scroll')
   onScroll() {
-    if (this.countUpDone) return;
-    const statsEl = document.querySelector('.stats-bar');
-    if (statsEl) {
-      const rect = statsEl.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.8) {
-        this.countUpDone = true;
-        this.animateCountUp();
+    // Stats count-up
+    if (!this.countUpDone) {
+      const statsEl = this.el.nativeElement.querySelector('.stats-bar');
+      if (statsEl) {
+        const rect = statsEl.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.85) {
+          this.countUpDone = true;
+          this.animateCountUp();
+        }
       }
     }
+
+    // Comparison count-up
+    if (!this.comparisonCountDone) {
+      const compEl = this.el.nativeElement.querySelector('.comparison-card');
+      if (compEl) {
+        const rect = compEl.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.85) {
+          this.comparisonCountDone = true;
+          this.animateComparison();
+        }
+      }
+    }
+
+    // Scroll-reveal animations
+    const reveals = this.el.nativeElement.querySelectorAll('.reveal');
+    reveals.forEach((el: HTMLElement) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.88) {
+        el.classList.add('revealed');
+      }
+    });
   }
 
   animateCountUp() {
@@ -178,13 +214,39 @@ export class LandingComponent implements OnInit, OnDestroy {
     });
   }
 
+  animateComparison() {
+    const targetDirect = 24.6;
+    const targetRegular = 22.9;
+    const duration = 1500;
+    const steps = 40;
+    const incDirect = targetDirect / steps;
+    const incRegular = targetRegular / steps;
+    let current = 0;
+    const interval = setInterval(() => {
+      current++;
+      if (current >= steps) {
+        this.directAmount = targetDirect;
+        this.regularAmount = targetRegular;
+        clearInterval(interval);
+      } else {
+        this.directAmount = Math.round(incDirect * current * 10) / 10;
+        this.regularAmount = Math.round(incRegular * current * 10) / 10;
+      }
+    }, duration / steps);
+  }
+
   toggleFaq(index: number) {
     this.faqs[index].open = !this.faqs[index].open;
   }
 
-  private randomizeChange(current: string): string {
-    const base = parseFloat(current.replace('%', ''));
-    const variation = (Math.random() - 0.4) * 0.3;
-    return Math.abs(base + variation).toFixed(2) + '%';
+  explorePlatform() {
+    this.router.navigate(['/register']);
+  }
+
+  scrollToFeatures() {
+    const el = this.el.nativeElement.querySelector('#features');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 }
