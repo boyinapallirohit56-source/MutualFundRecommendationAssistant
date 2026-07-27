@@ -1,4 +1,20 @@
-<nav class="navbar" *ngIf="authService.isLoggedIn() && !isAuthPage">
+<!-- Admin Navbar -->
+<nav class="navbar admin-navbar" *ngIf="authService.isLoggedIn() && !isAuthPage && isAdmin()">
+  <a class="navbar-brand" routerLink="/admin">
+    <span style="color:#6366f1; margin-right:6px">&#9670;</span>WealthAI <span class="admin-badge">Admin</span>
+  </a>
+  <div class="navbar-links">
+    <a routerLink="/admin">Admin Portal</a>
+
+    <!-- Dark Mode Toggle -->
+    <span class="dark-toggle" (click)="toggleDarkMode()">{{ isDarkMode ? '☀' : '🌙' }}</span>
+
+    <a (click)="logout()" style="cursor:pointer;color:#ef4444; font-weight:600">Logout</a>
+  </div>
+</nav>
+
+<!-- User Navbar -->
+<nav class="navbar" *ngIf="authService.isLoggedIn() && !isAuthPage && !isAdmin()">
   <a class="navbar-brand" routerLink="/dashboard">
     <span style="color:#6366f1; margin-right:6px">&#9670;</span>WealthAI
   </a>
@@ -20,7 +36,6 @@
         <a routerLink="/stress-test" (click)="showMore = false">Stress Test</a>
         <a routerLink="/watchlist" (click)="showMore = false">Watchlist</a>
         <a routerLink="/onboarding" (click)="showMore = false">Edit Profile</a>
-        <a routerLink="/admin" *ngIf="isAdmin()" (click)="showMore = false">Admin</a>
       </div>
     </div>
 
