@@ -19,7 +19,7 @@
       <div class="grid-2">
         <div class="form-group">
           <label>Select Fund</label>
-          <select [(ngModel)]="newHolding.mutualFundId" (change)="onFundSelect()">
+          <select [(ngModel)]="newHolding.mutualFundId" (ngModelChange)="onFundSelect()">
             <option [ngValue]="null">-- Select a Fund --</option>
             <option *ngFor="let fund of funds" [ngValue]="fund.id">{{ fund.name }} ({{ fund.category }})</option>
           </select>
