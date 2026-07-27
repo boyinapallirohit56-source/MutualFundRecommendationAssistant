@@ -44,11 +44,8 @@ export class PortfolioComponent implements OnInit {
     this.apiService.listFunds().subscribe({
       next: (funds) => {
         this.funds = funds;
-        console.log('[Portfolio] Funds loaded. Sample fund object:', funds.length > 0 ? funds[0] : 'No funds');
       },
-      error: (err) => {
-        console.error('[Portfolio] Failed to load funds:', err);
-      }
+      error: () => {}
     });
   }
 
@@ -89,7 +86,6 @@ export class PortfolioComponent implements OnInit {
   }
 
   onFundSelect(selectedId: number | null) {
-    // ngModelChange passes the NEW value directly
     this.newHolding.mutualFundId = selectedId;
 
     if (!selectedId) {
@@ -100,15 +96,28 @@ export class PortfolioComponent implements OnInit {
     }
 
     const fund = this.funds.find((f: any) => f.id === selectedId);
-    console.log('[Portfolio] Fund selected:', selectedId, 'Found:', fund);
 
     if (fund) {
       this.newHolding.fundName = fund.name;
-      // Try multiple possible property names for NAV
-      const navValue = fund.nav ?? fund.currentNAV ?? fund.Nav ?? fund.NAV ?? 0;
-      this.newHolding.purchaseNAV = navValue;
-      console.log('[Portfolio] Setting NAV to:', navValue);
-      this.recalculateInvestedAmount();
+      const navFromList = fund.nav ?? fund.currentNAV ?? fund.Nav ?? fund.NAV ?? 0;
+
+      if (navFromList > 0) {
+        // NAV available from fund list
+        this.newHolding.purchaseNAV = navFromList;
+        this.recalculateInvestedAmount();
+      } else {
+        // NAV not in list — fetch from fund factsheet API
+        this.apiService.getFundFactsheet(selectedId).subscribe({
+          next: (factsheet: any) => {
+            const nav = factsheet.nav ?? factsheet.NAV ?? factsheet.Nav ?? 0;
+            this.newHolding.purchaseNAV = nav;
+            this.recalculateInvestedAmount();
+          },
+          error: () => {
+            this.newHolding.purchaseNAV = 0;
+          }
+        });
+      }
     }
   }
 

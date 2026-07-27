@@ -21,7 +21,7 @@
           <label>Select Fund</label>
           <select [(ngModel)]="newHolding.mutualFundId" (ngModelChange)="onFundSelect($event)">
             <option [ngValue]="null">-- Select a Fund --</option>
-            <option *ngFor="let fund of funds" [ngValue]="fund.id">{{ fund.name }} ({{ fund.category }}) - NAV: {{ fund.nav || 'N/A' }}</option>
+            <option *ngFor="let fund of funds" [ngValue]="fund.id">{{ fund.name }} ({{ fund.category }})</option>
           </select>
         </div>
         <div class="form-group">
