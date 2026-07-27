@@ -1,4 +1,4 @@
-<nav class="navbar" *ngIf="authService.isLoggedIn()">
+<nav class="navbar" *ngIf="authService.isLoggedIn() && !isAuthPage">
   <a class="navbar-brand" routerLink="/dashboard">
     <span style="color:#6366f1; margin-right:6px">&#9670;</span>WealthAI
   </a>
