@@ -8,6 +8,7 @@ public class FundListItemDTO
     public string Category { get; set; } = string.Empty;
     public string SubCategory { get; set; } = string.Empty;
     public string AMC { get; set; } = string.Empty;
+    public decimal? NAV { get; set; }
     public decimal CAGR3Y { get; set; }
     public decimal? ExpenseRatio { get; set; }
     public decimal? Rating { get; set; }

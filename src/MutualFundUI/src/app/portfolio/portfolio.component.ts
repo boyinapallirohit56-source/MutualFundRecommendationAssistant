@@ -81,6 +81,18 @@ export class PortfolioComponent implements OnInit {
     if (fund) {
       this.newHolding.fundName = fund.name;
       this.newHolding.purchaseNAV = fund.nav || 0;
+      // Auto-calculate invested amount if units are already entered
+      this.recalculateInvestedAmount();
+    }
+  }
+
+  onUnitsOrNavChange() {
+    this.recalculateInvestedAmount();
+  }
+
+  private recalculateInvestedAmount() {
+    if (this.newHolding.units > 0 && this.newHolding.purchaseNAV > 0) {
+      this.newHolding.investedAmount = +(this.newHolding.units * this.newHolding.purchaseNAV).toFixed(2);
     }
   }
 

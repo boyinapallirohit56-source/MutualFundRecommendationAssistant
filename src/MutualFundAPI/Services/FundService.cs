@@ -138,6 +138,7 @@ public class FundService
                 Category = f.Category,
                 SubCategory = f.SubCategory,
                 AMC = f.AMC,
+                NAV = f.NAV,
                 CAGR3Y = f.CAGR3Y,
                 ExpenseRatio = f.ExpenseRatio,
                 Rating = f.Rating
