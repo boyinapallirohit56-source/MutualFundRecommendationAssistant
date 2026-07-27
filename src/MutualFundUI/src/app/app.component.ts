@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './shared/services/auth.service';
@@ -98,5 +98,18 @@ export class AppComponent implements OnInit {
   isAdmin(): boolean {
     const user = this.authService.getUser();
     return user?.role === 'Admin';
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const target = event.target as HTMLElement;
+    // Close "More" dropdown if click is outside
+    if (!target.closest('.more-dropdown-wrapper')) {
+      this.showMore = false;
+    }
+    // Close notification dropdown if click is outside
+    if (!target.closest('.notification-wrapper')) {
+      this.showNotifications = false;
+    }
   }
 }

@@ -37,10 +37,17 @@ export class PortfolioComponent implements OnInit {
 
   ngOnInit() {
     this.loadPortfolio();
+    this.loadFunds();
+  }
+
+  loadFunds() {
     this.apiService.listFunds().subscribe({
-      next: (f) => {
-        this.funds = f;
-        console.log('Funds loaded from API:', JSON.stringify(f[0])); // Debug: check if nav field exists
+      next: (funds) => {
+        this.funds = funds;
+        console.log('[Portfolio] Funds loaded. Sample fund object:', funds.length > 0 ? funds[0] : 'No funds');
+      },
+      error: (err) => {
+        console.error('[Portfolio] Failed to load funds:', err);
       }
     });
   }
@@ -81,19 +88,26 @@ export class PortfolioComponent implements OnInit {
     this.apiService.removeHolding(id).subscribe({ next: () => this.loadPortfolio() });
   }
 
-  onFundSelect() {
-    const fundId = this.newHolding.mutualFundId;
-    if (!fundId) {
+  onFundSelect(selectedId: number | null) {
+    // ngModelChange passes the NEW value directly
+    this.newHolding.mutualFundId = selectedId;
+
+    if (!selectedId) {
       this.newHolding.fundName = '';
       this.newHolding.purchaseNAV = 0;
       this.newHolding.investedAmount = 0;
       return;
     }
-    const fund = this.funds.find((f: any) => f.id === fundId);
+
+    const fund = this.funds.find((f: any) => f.id === selectedId);
+    console.log('[Portfolio] Fund selected:', selectedId, 'Found:', fund);
+
     if (fund) {
       this.newHolding.fundName = fund.name;
-      this.newHolding.purchaseNAV = fund.nav ?? fund.currentNAV ?? 0;
-      // Auto-calculate invested amount if units are already entered
+      // Try multiple possible property names for NAV
+      const navValue = fund.nav ?? fund.currentNAV ?? fund.Nav ?? fund.NAV ?? 0;
+      this.newHolding.purchaseNAV = navValue;
+      console.log('[Portfolio] Setting NAV to:', navValue);
       this.recalculateInvestedAmount();
     }
   }
