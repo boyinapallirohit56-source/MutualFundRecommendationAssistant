@@ -1,8 +1,8 @@
 <div class="landing">
-  <!-- Sticky Navbar -->
+  <!-- Navigation -->
   <nav class="landing-nav">
     <div class="nav-inner">
-      <span class="brand"><span class="brand-diamond">&#9670;</span> WealthAI</span>
+      <span class="brand"><span class="brand-icon">&#9670;</span> WealthAI</span>
       <div class="nav-links">
         <a class="nav-link" *ngFor="let link of navLinks">{{ link }}</a>
       </div>
@@ -13,97 +13,44 @@
     </div>
   </nav>
 
-  <!-- Trust Strip -->
-  <div class="trust-strip">
-    <div class="trust-strip-inner">
-      <span class="trust-strip-item" *ngFor="let item of trustStrip">
-        <span class="trust-strip-check">&#10003;</span> {{ item }}
-      </span>
+  <!-- Market Ticker -->
+  <div class="market-ticker">
+    <div class="ticker-track">
+      <div class="ticker-item" *ngFor="let idx of marketIndices">
+        <span class="ticker-name">{{ idx.name }}</span>
+        <span class="ticker-value">{{ idx.value }}</span>
+        <span class="ticker-change" [class.positive]="idx.isPositive" [class.negative]="!idx.isPositive">
+          {{ idx.isPositive ? '&#9650;' : '&#9660;' }} {{ idx.change }}
+        </span>
+      </div>
+      <div class="ticker-item" *ngFor="let idx of marketIndices">
+        <span class="ticker-name">{{ idx.name }}</span>
+        <span class="ticker-value">{{ idx.value }}</span>
+        <span class="ticker-change" [class.positive]="idx.isPositive" [class.negative]="!idx.isPositive">
+          {{ idx.isPositive ? '&#9650;' : '&#9660;' }} {{ idx.change }}
+        </span>
+      </div>
     </div>
   </div>
 
-  <!-- Hero Section -->
+  <!-- Hero -->
   <section class="hero">
     <div class="hero-glow"></div>
-    <div class="hero-content animate-hero">
+    <div class="hero-content">
       <span class="hero-eyebrow">AI-Powered Mutual Fund Investing</span>
       <h1 class="hero-title">Invest Smarter.<br><span class="gradient-text">Grow Wealthier.</span></h1>
       <p class="hero-desc">Personalized recommendations. Live AMFI NAV. Portfolio Intelligence. Risk Analysis.</p>
       <div class="hero-actions">
         <a routerLink="/register" class="btn btn-primary btn-xl btn-glow">Start Free <span class="arrow">&#8594;</span></a>
-        <button class="btn btn-outline btn-xl" (click)="explorePlatform()">Explore Platform</button>
+        <a class="btn btn-outline btn-xl">Watch Demo</a>
       </div>
-      <div class="hero-badges">
-        <span class="hero-badge" *ngFor="let badge of trustBadges">
-          <span class="hero-badge-check">&#10003;</span> {{ badge }}
-        </span>
-      </div>
-
-      <!-- Dashboard Preview Mockup -->
-      <div class="dashboard-preview">
-        <div class="preview-card">
-          <div class="preview-header">
-            <div class="preview-dots">
-              <span class="dot dot-red"></span>
-              <span class="dot dot-yellow"></span>
-              <span class="dot dot-green"></span>
-            </div>
-            <span class="preview-title">WealthAI Dashboard</span>
-          </div>
-          <div class="preview-body">
-            <!-- Risk Score -->
-            <div class="preview-risk">
-              <div class="risk-circle">
-                <svg viewBox="0 0 100 100" class="risk-svg">
-                  <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(99,102,241,0.15)" stroke-width="8"/>
-                  <circle cx="50" cy="50" r="42" fill="none" stroke="#6366f1" stroke-width="8" stroke-dasharray="206" stroke-dashoffset="45" stroke-linecap="round" transform="rotate(-90 50 50)"/>
-                </svg>
-                <div class="risk-value">
-                  <span class="risk-num">78</span>
-                  <span class="risk-label">Risk Score</span>
-                </div>
-              </div>
-              <div class="risk-details">
-                <div class="risk-bar-item">
-                  <span class="risk-bar-label">Equity</span>
-                  <div class="risk-bar"><div class="risk-bar-fill" style="width:65%;background:#6366f1"></div></div>
-                </div>
-                <div class="risk-bar-item">
-                  <span class="risk-bar-label">Debt</span>
-                  <div class="risk-bar"><div class="risk-bar-fill" style="width:20%;background:#14b8a6"></div></div>
-                </div>
-                <div class="risk-bar-item">
-                  <span class="risk-bar-label">Gold</span>
-                  <div class="risk-bar"><div class="risk-bar-fill" style="width:10%;background:#f59e0b"></div></div>
-                </div>
-                <div class="risk-bar-item">
-                  <span class="risk-bar-label">Intl</span>
-                  <div class="risk-bar"><div class="risk-bar-fill" style="width:5%;background:#10b981"></div></div>
-                </div>
-              </div>
-            </div>
-            <!-- Fund Cards -->
-            <div class="preview-funds">
-              <div class="mini-fund-card">
-                <span class="mini-fund-name">SBI Bluechip</span>
-                <span class="mini-fund-return positive">+18.4%</span>
-              </div>
-              <div class="mini-fund-card">
-                <span class="mini-fund-name">Axis Midcap</span>
-                <span class="mini-fund-return positive">+22.1%</span>
-              </div>
-              <div class="mini-fund-card">
-                <span class="mini-fund-name">HDFC Balanced</span>
-                <span class="mini-fund-return positive">+14.7%</span>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="trust-badges">
+        <span class="badge" *ngFor="let badge of trustBadges">&#10003; {{ badge }}</span>
       </div>
     </div>
   </section>
 
-  <!-- Stats Section -->
+  <!-- Stats -->
   <section class="stats-bar">
     <div class="stats-inner">
       <div class="stat-item" *ngFor="let stat of stats">
@@ -113,52 +60,26 @@
     </div>
   </section>
 
-  <!-- Products Section -->
-  <section class="section reveal" id="features">
+  <!-- Products -->
+  <section class="section" id="features">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">What We Offer</span>
         <h2>Your Complete Investment Toolkit</h2>
-        <p>Everything you need to make confident investment decisions</p>
+        <p>Everything you need to make confident decisions</p>
       </div>
       <div class="products-grid">
-        <!-- Mutual Funds Card -->
-        <div class="product-card">
-          <div class="product-icon icon-circle" style="--icon-color: #6366f1">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <div class="product-card" *ngFor="let product of products" [style.--accent]="product.color">
+          <div class="product-icon" [innerHTML]="product.icon"></div>
+          <h3>{{ product.title }}</h3>
+          <span class="product-subtitle">{{ product.subtitle }}</span>
+          <p *ngIf="product.desc">{{ product.desc }}</p>
+          <!-- AI Queries showcase -->
+          <div class="ai-queries" *ngIf="product.queries">
+            <div class="ai-query" *ngFor="let q of product.queries">{{ q }}</div>
           </div>
-          <h3>{{ products[0].title }}</h3>
-          <span class="product-subtitle">{{ products[0].subtitle }}</span>
-          <p>{{ products[0].desc }}</p>
-          <div class="product-tags">
-            <span class="tag" *ngFor="let tag of products[0].tags">{{ tag }}</span>
-          </div>
-        </div>
-
-        <!-- AI Card with rotating queries -->
-        <div class="product-card product-card-ai">
-          <div class="product-icon icon-circle" style="--icon-color: #14b8a6">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a4 4 0 0 1 4 4v1a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M6 10a2 2 0 0 0-2 2v1a2 2 0 0 0 4 0v-1a2 2 0 0 0-2-2z"/><path d="M18 10a2 2 0 0 0-2 2v1a2 2 0 0 0 4 0v-1a2 2 0 0 0-2-2z"/><path d="M12 16v6"/><path d="M8 22h8"/></svg>
-          </div>
-          <h3>{{ products[1].title }}</h3>
-          <span class="product-subtitle">{{ products[1].subtitle }}</span>
-          <div class="ai-query-rotator">
-            <div class="ai-query-bubble" *ngFor="let q of aiQueries; let i = index" [class.active]="i === currentQueryIndex">
-              "{{ q }}"
-            </div>
-          </div>
-        </div>
-
-        <!-- Portfolio Analytics Card -->
-        <div class="product-card">
-          <div class="product-icon icon-circle" style="--icon-color: #10b981">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-          </div>
-          <h3>{{ products[2].title }}</h3>
-          <span class="product-subtitle">{{ products[2].subtitle }}</span>
-          <p>{{ products[2].desc }}</p>
-          <div class="product-tags">
-            <span class="tag" *ngFor="let tag of products[2].tags">{{ tag }}</span>
+          <div class="product-tags" *ngIf="product.tags?.length">
+            <span class="tag" *ngFor="let tag of product.tags">{{ tag }}</span>
           </div>
         </div>
       </div>
@@ -166,7 +87,7 @@
   </section>
 
   <!-- How It Works -->
-  <section class="section section-reduced reveal">
+  <section class="section section-alt">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">How It Works</span>
@@ -175,9 +96,9 @@
       </div>
       <div class="steps-grid">
         <div class="step-card" *ngFor="let step of steps; let i = index">
-          <div class="step-number">{{ step.num }}</div>
+          <div class="step-number">{{ i + 1 }}</div>
           <div class="step-connector" *ngIf="i < 3"></div>
-          <div class="step-icon-circle">{{ step.iconLetter }}</div>
+          <div class="step-icon" [innerHTML]="step.icon"></div>
           <h3>{{ step.title }}</h3>
           <p>{{ step.desc }}</p>
         </div>
@@ -185,8 +106,8 @@
     </div>
   </section>
 
-  <!-- Features Layout: AI large + 5 small -->
-  <section class="section reveal">
+  <!-- AI Feature + Features Grid -->
+  <section class="section">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">Platform Features</span>
@@ -195,19 +116,17 @@
       <div class="features-layout">
         <!-- AI Hero Card -->
         <div class="ai-hero-card">
-          <div class="ai-hero-icon icon-circle-lg" style="--icon-color: #14b8a6">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-          </div>
+          <div class="ai-hero-icon" [innerHTML]="aiFeature.icon"></div>
           <h3>{{ aiFeature.title }}</h3>
           <p>{{ aiFeature.desc }}</p>
           <div class="ai-hero-queries">
             <span class="ai-bubble" *ngFor="let q of aiFeature.queries">{{ q }}</span>
           </div>
         </div>
-        <!-- Features Grid -->
+        <!-- Other Features -->
         <div class="features-grid">
           <div class="feature-card" *ngFor="let feature of features">
-            <div class="feature-icon-circle">{{ feature.iconLetter }}</div>
+            <div class="feature-icon" [innerHTML]="feature.icon"></div>
             <h3>{{ feature.title }}</h3>
             <p>{{ feature.desc }}</p>
           </div>
@@ -217,7 +136,7 @@
   </section>
 
   <!-- Direct Growth Comparison -->
-  <section class="section section-alt reveal">
+  <section class="section section-alt">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">Why Direct Growth?</span>
@@ -228,13 +147,13 @@
         <div class="comparison-row">
           <div class="comparison-item direct">
             <span class="comp-label">Direct Growth</span>
-            <span class="comp-amount">&#8377;{{ directAmount }}L</span>
+            <span class="comp-amount">&#8377;24.6L</span>
             <span class="comp-cagr">14.2% CAGR</span>
           </div>
           <div class="comparison-vs">vs</div>
           <div class="comparison-item regular">
             <span class="comp-label">Regular Plan</span>
-            <span class="comp-amount">&#8377;{{ regularAmount }}L</span>
+            <span class="comp-amount">&#8377;22.9L</span>
             <span class="comp-cagr">12.8% CAGR</span>
           </div>
         </div>
@@ -246,8 +165,8 @@
     </div>
   </section>
 
-  <!-- Why Choose WealthAI -->
-  <section class="section reveal">
+  <!-- Why WealthAI -->
+  <section class="section">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">Why Us</span>
@@ -255,15 +174,15 @@
       </div>
       <div class="why-grid">
         <div class="why-point" *ngFor="let point of whyPoints">
-          <span class="why-icon-circle">{{ point.letter }}</span>
-          <span>{{ point.text }}</span>
+          <span class="why-check">&#10003;</span>
+          <span>{{ point }}</span>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Trust Section -->
-  <section class="section section-alt reveal">
+  <section class="section section-alt">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">Trust</span>
@@ -271,7 +190,7 @@
       </div>
       <div class="trust-grid">
         <div class="trust-card" *ngFor="let item of trustItems">
-          <span class="trust-icon-circle" [style.background]="item.color + '15'" [style.color]="item.color" [style.border-color]="item.color + '30'">{{ item.letter }}</span>
+          <span class="trust-icon" [innerHTML]="item.icon"></span>
           <span class="trust-label">{{ item.label }}</span>
         </div>
       </div>
@@ -279,7 +198,7 @@
   </section>
 
   <!-- See WealthAI in Action -->
-  <section class="section reveal">
+  <section class="section">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">Preview</span>
@@ -288,7 +207,7 @@
       </div>
       <div class="teaser-grid">
         <div class="teaser-card" *ngFor="let screen of screenTeasers">
-          <div class="teaser-icon-circle">{{ screen.letter }}</div>
+          <div class="teaser-icon" [innerHTML]="screen.icon"></div>
           <h3>{{ screen.title }}</h3>
           <p>{{ screen.desc }}</p>
         </div>
@@ -297,7 +216,7 @@
   </section>
 
   <!-- Testimonials -->
-  <section class="section section-alt reveal">
+  <section class="section section-alt">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">Reviews</span>
@@ -305,24 +224,19 @@
       </div>
       <div class="testimonials-grid">
         <div class="testimonial-card" *ngFor="let t of testimonials">
-          <div class="testimonial-top">
-            <div class="testimonial-avatar" [style.background]="t.color">{{ t.initials }}</div>
-            <div class="testimonial-meta">
-              <strong>{{ t.name }}</strong>
-              <span>{{ t.role }}</span>
-            </div>
-          </div>
-          <div class="stars">
-            <span class="star" *ngFor="let s of [1,2,3,4,5]">&#9733;</span>
-          </div>
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
           <p class="testimonial-text">"{{ t.text }}"</p>
+          <div class="testimonial-author">
+            <strong>{{ t.name }}</strong>
+            <span>{{ t.role }}</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- FAQ -->
-  <section class="section reveal">
+  <section class="section">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">FAQ</span>
@@ -341,17 +255,15 @@
   </section>
 
   <!-- CTA -->
-  <section class="cta-section">
+  <section class="section cta-section">
     <div class="cta-card">
       <div class="cta-glow"></div>
       <h2>Ready to Start Your Wealth Journey?</h2>
       <p>Join investors who trust AI to build their wealth</p>
-      <a routerLink="/register" class="btn btn-primary btn-xxl btn-glow">Create Free Account <span class="arrow">&#8594;</span></a>
+      <a routerLink="/register" class="btn btn-primary btn-xxl btn-glow">Create Free Account &#8594;</a>
       <div class="cta-badges">
         <span>Free Forever</span>
-        <span>&#183;</span>
         <span>No Credit Card</span>
-        <span>&#183;</span>
         <span>2 Minutes Setup</span>
       </div>
     </div>
@@ -362,56 +274,28 @@
     <div class="footer-inner">
       <div class="footer-top">
         <div class="footer-brand-col">
-          <span class="footer-brand"><span class="brand-diamond">&#9670;</span> WealthAI</span>
+          <span class="footer-brand">&#9670; WealthAI</span>
           <p>AI-Powered Mutual Fund Recommendations</p>
-          <div class="footer-socials">
-            <a href="https://linkedin.com" target="_blank" class="social-icon" aria-label="LinkedIn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-            </a>
-            <a href="https://github.com" target="_blank" class="social-icon" aria-label="GitHub">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-            </a>
-            <a href="mailto:contact@wealthai.app" class="social-icon" aria-label="Email">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg>
-            </a>
-          </div>
         </div>
         <div class="footer-links">
           <div class="footer-col">
             <h4>Platform</h4>
-            <a routerLink="/funds">Mutual Funds</a>
-            <a routerLink="/risk-assessment">Risk Assessment</a>
-            <a routerLink="/chat">AI Advisor</a>
-            <a routerLink="/portfolio">Portfolio</a>
+            <a>Mutual Funds</a><a>Risk Assessment</a><a>AI Advisor</a><a>Portfolio</a>
           </div>
           <div class="footer-col">
             <h4>Tools</h4>
-            <a>SIP Calculator</a>
-            <a>Stress Testing</a>
-            <a>Tax Saving</a>
-            <a>What-If</a>
+            <a>SIP Calculator</a><a>Stress Testing</a><a>Tax Saving</a><a>What-If</a>
           </div>
           <div class="footer-col">
             <h4>Resources</h4>
-            <a href="https://www.amfiindia.com" target="_blank">AMFI India</a>
-            <a href="https://www.sebi.gov.in" target="_blank">SEBI</a>
-            <a>Privacy Policy</a>
-            <a>Terms</a>
+            <a>AMFI India</a><a>SEBI</a><a>Privacy Policy</a><a>Terms</a>
           </div>
         </div>
       </div>
       <div class="footer-bottom">
-        <span>&copy; 2025 WealthAI. All rights reserved.</span>
+        <span>&copy; 2026 WealthAI. All rights reserved.</span>
         <span class="disclaimer">For educational purposes only. Not SEBI registered. Not certified financial advice.</span>
       </div>
     </div>
   </footer>
-
-  <!-- Floating AI Assistant -->
-  <a routerLink="/register" class="floating-ai" aria-label="Ask WealthAI">
-    <span class="floating-ai-icon">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    </span>
-    <span class="floating-ai-label">Ask WealthAI</span>
-  </a>
 </div>
