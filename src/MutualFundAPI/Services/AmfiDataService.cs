@@ -255,71 +255,71 @@ public class AmfiDataService
     {
         // Equity - Large Cap
         // SEBI renamed "SBI Bluechip" → "SBI Large Cap Fund". AMFI uses: "SBI Large Cap FUND-DIRECT PLAN -GROWTH"
-        { "SBI Large Cap Fund", new[] { "sbi large cap fund", "sbi blue chip fund", "sbi bluechip fund" } },
+        { "SBI Large Cap Fund - Direct Growth", new[] { "sbi large cap fund", "sbi blue chip fund", "sbi bluechip fund" } },
         // AMFI: "ICICI Prudential Large Cap Fund (erstwhile Bluechip Fund) - Direct Plan - Growth"
-        { "ICICI Prudential Bluechip Fund", new[] { "icici prudential large cap fund", "icici prudential bluechip" } },
-        { "Mirae Asset Large Cap Fund", new[] { "mirae asset large cap fund" } },
+        { "ICICI Prudential Bluechip Fund - Direct Growth", new[] { "icici prudential large cap fund", "icici prudential bluechip" } },
+        { "Mirae Asset Large Cap Fund - Direct Growth", new[] { "mirae asset large cap fund" } },
 
         // Equity - Mid Cap
         // AMFI may use: "Kotak Emerging Equity Fund" or "Kotak Midcap Fund"
-        { "Kotak Emerging Equity Fund", new[] { "kotak emerging equity", "kotak midcap fund" } },
+        { "Kotak Emerging Equity Fund - Direct Growth", new[] { "kotak emerging equity", "kotak midcap fund" } },
         // AMFI: "HDFC Mid-Cap Fund" or "HDFC Mid Cap Opportunities Fund"
-        { "HDFC Mid-Cap Opportunities Fund", new[] { "hdfc mid-cap opportunities", "hdfc mid cap opportunities", "hdfc mid-cap fund", "hdfc mid cap fund" } },
+        { "HDFC Mid-Cap Opportunities Fund - Direct Growth", new[] { "hdfc mid-cap opportunities", "hdfc mid cap opportunities", "hdfc mid-cap fund", "hdfc mid cap fund" } },
 
         // Equity - Small Cap
-        { "Nippon India Small Cap Fund", new[] { "nippon india small cap fund" } },
-        { "SBI Small Cap Fund", new[] { "sbi small cap fund" } },
+        { "Nippon India Small Cap Fund - Direct Growth", new[] { "nippon india small cap fund" } },
+        { "SBI Small Cap Fund - Direct Growth", new[] { "sbi small cap fund" } },
 
         // Debt
         // AMFI: "HDFC Corporate Bond Fund - Growth Option - Direct Plan"
-        { "HDFC Corporate Bond Fund", new[] { "hdfc corporate bond fund" } },
-        { "ICICI Prudential All Seasons Bond Fund", new[] { "icici prudential all seasons bond" } },
+        { "HDFC Corporate Bond Fund - Direct Growth", new[] { "hdfc corporate bond fund" } },
+        { "ICICI Prudential All Seasons Bond Fund - Direct Growth", new[] { "icici prudential all seasons bond" } },
         // AMFI: "HDFC Multi-Asset Active FOF - Growth Option -Direct Plan"
-        { "HDFC Multi-Asset Active FOF", new[] { "hdfc multi-asset active fof", "hdfc multi asset active fof" } },
+        { "HDFC Multi-Asset Active FOF - Direct Growth", new[] { "hdfc multi-asset active fof", "hdfc multi asset active fof" } },
         // AMFI: "Axis Banking & PSU Debt Fund - Direct Plan - Growth"
-        { "Axis Banking & PSU Debt Fund", new[] { "axis banking & psu debt", "axis banking and psu debt" } },
-        { "Kotak Corporate Bond Fund", new[] { "kotak corporate bond fund" } },
-        { "Aditya Birla Sun Life Corporate Bond Fund", new[] { "aditya birla sun life corporate bond", "aditya birla sl corporate bond" } },
+        { "Axis Banking & PSU Debt Fund - Direct Growth", new[] { "axis banking & psu debt", "axis banking and psu debt" } },
+        { "Kotak Corporate Bond Fund - Direct Growth", new[] { "kotak corporate bond fund" } },
+        { "Aditya Birla Sun Life Corporate Bond Fund - Direct Growth", new[] { "aditya birla sun life corporate bond", "aditya birla sl corporate bond" } },
 
         // Hybrid
-        { "ICICI Prudential Balanced Advantage Fund", new[] { "icici prudential balanced advantage fund" } },
+        { "ICICI Prudential Balanced Advantage Fund - Direct Growth", new[] { "icici prudential balanced advantage fund" } },
         // AMFI: "HDFC Balanced Advantage Fund - Growth Plan - Direct Plan"
-        { "HDFC Balanced Advantage Fund", new[] { "hdfc balanced advantage fund" } },
-        { "Canara Robeco Equity Hybrid Fund", new[] { "canara robeco equity hybrid fund" } },
+        { "HDFC Balanced Advantage Fund - Direct Growth", new[] { "hdfc balanced advantage fund" } },
+        { "Canara Robeco Equity Hybrid Fund - Direct Growth", new[] { "canara robeco equity hybrid fund" } },
         // AMFI: "Kotak Equity Hybrid Fund" or "Kotak Aggressive Hybrid Fund"
-        { "Kotak Equity Hybrid Fund", new[] { "kotak equity hybrid", "kotak aggressive hybrid" } },
+        { "Kotak Equity Hybrid Fund - Direct Growth", new[] { "kotak equity hybrid", "kotak aggressive hybrid" } },
         // AMFI: "Mirae Asset Hybrid Equity Fund" or "Mirae Asset Aggressive Hybrid Fund"
-        { "Mirae Asset Hybrid Equity Fund", new[] { "mirae asset hybrid equity", "mirae asset aggressive hybrid" } },
+        { "Mirae Asset Hybrid Equity Fund - Direct Growth", new[] { "mirae asset hybrid equity", "mirae asset aggressive hybrid" } },
 
         // Gold
         // AMFI: "SBI Gold Fund - Direct Plan - Growth" or "SBI GOLD FUND- DIRECT PLAN - GROWTH"
-        { "SBI Gold Fund", new[] { "sbi gold fund" } },
+        { "SBI Gold Fund - Direct Growth", new[] { "sbi gold fund" } },
         // AMFI: "HDFC Gold ETF Fund of Fund - Direct Plan"
-        { "HDFC Gold ETF Fund of Fund", new[] { "hdfc gold etf fund of fund", "hdfc gold etf" } },
+        { "HDFC Gold ETF Fund of Fund - Direct Growth", new[] { "hdfc gold etf fund of fund", "hdfc gold etf" } },
         // AMFI: "Kotak Gold Fund Growth - Direct"
-        { "Kotak Gold Fund", new[] { "kotak gold fund" } },
+        { "Kotak Gold Fund - Direct Growth", new[] { "kotak gold fund" } },
         // AMFI: "Nippon India Gold Savings Fund"
-        { "Nippon India Gold Savings Fund", new[] { "nippon india gold savings fund" } },
+        { "Nippon India Gold Savings Fund - Direct Growth", new[] { "nippon india gold savings fund" } },
         // AMFI: "Axis Gold Fund - Direct Plan - Growth option"
-        { "Axis Gold Fund", new[] { "axis gold fund" } },
+        { "Axis Gold Fund - Direct Growth", new[] { "axis gold fund" } },
 
         // Liquid
-        { "HDFC Liquid Fund", new[] { "hdfc liquid fund" } },
-        { "SBI Liquid Fund", new[] { "sbi liquid fund" } },
-        { "ICICI Prudential Liquid Fund", new[] { "icici prudential liquid fund" } },
-        { "Axis Liquid Fund", new[] { "axis liquid fund" } },
-        { "Kotak Liquid Fund", new[] { "kotak liquid fund" } },
+        { "HDFC Liquid Fund - Direct Growth", new[] { "hdfc liquid fund" } },
+        { "SBI Liquid Fund - Direct Growth", new[] { "sbi liquid fund" } },
+        { "ICICI Prudential Liquid Fund - Direct Growth", new[] { "icici prudential liquid fund" } },
+        { "Axis Liquid Fund - Direct Growth", new[] { "axis liquid fund" } },
+        { "Kotak Liquid Fund - Direct Growth", new[] { "kotak liquid fund" } },
 
         // International
         // AMFI: "Motilal Oswal Nasdaq 100 Fund of Fund- Direct Plan Growth"
-        { "Motilal Oswal Nasdaq 100 Fund", new[] { "motilal oswal nasdaq 100" } },
+        { "Motilal Oswal Nasdaq 100 Fund - Direct Growth", new[] { "motilal oswal nasdaq 100" } },
         // AMFI: "Franklin India Feeder - Franklin U.S. Opportunities Fund - Direct Plan - Growth"
-        { "Franklin India Feeder - US Opportunities Fund", new[] { "franklin india feeder - franklin u.s. opportunities", "franklin india feeder - franklin us opportunities", "franklin u.s. opportunities equity active", "franklin us opportunities" } },
-        { "ICICI Prudential US Bluechip Equity Fund", new[] { "icici prudential us bluechip equity" } },
+        { "Franklin India Feeder - US Opportunities Fund - Direct Growth", new[] { "franklin india feeder - franklin u.s. opportunities", "franklin india feeder - franklin us opportunities", "franklin u.s. opportunities equity active", "franklin us opportunities" } },
+        { "ICICI Prudential US Bluechip Equity Fund - Direct Growth", new[] { "icici prudential us bluechip equity" } },
         // AMFI: "DSP Global Innovation Fund of Fund - Direct Plan - Growth" or "DSP Global Innovation Overseas Equity Omni FoF"
-        { "DSP Global Innovation Fund", new[] { "dsp global innovation" } },
+        { "DSP Global Innovation Fund - Direct Growth", new[] { "dsp global innovation" } },
         // AMFI: "Kotak International REIT FOF" or "Kotak International REIT Overseas Equity Omni FoF"
-        { "Kotak International REIT Fund", new[] { "kotak international reit" } },
+        { "Kotak International REIT Fund - Direct Growth", new[] { "kotak international reit" } },
     };
 
     /// <summary>
