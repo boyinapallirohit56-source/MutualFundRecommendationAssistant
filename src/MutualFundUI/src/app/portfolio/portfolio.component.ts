@@ -37,7 +37,12 @@ export class PortfolioComponent implements OnInit {
 
   ngOnInit() {
     this.loadPortfolio();
-    this.apiService.listFunds().subscribe({ next: (f) => this.funds = f });
+    this.apiService.listFunds().subscribe({
+      next: (f) => {
+        this.funds = f;
+        console.log('Funds loaded from API:', JSON.stringify(f[0])); // Debug: check if nav field exists
+      }
+    });
   }
 
   loadPortfolio() {
@@ -77,10 +82,17 @@ export class PortfolioComponent implements OnInit {
   }
 
   onFundSelect() {
-    const fund = this.funds.find(f => f.id === this.newHolding.mutualFundId);
+    const fundId = this.newHolding.mutualFundId;
+    if (!fundId) {
+      this.newHolding.fundName = '';
+      this.newHolding.purchaseNAV = 0;
+      this.newHolding.investedAmount = 0;
+      return;
+    }
+    const fund = this.funds.find((f: any) => f.id === fundId);
     if (fund) {
       this.newHolding.fundName = fund.name;
-      this.newHolding.purchaseNAV = fund.nav || 0;
+      this.newHolding.purchaseNAV = fund.nav ?? fund.currentNAV ?? 0;
       // Auto-calculate invested amount if units are already entered
       this.recalculateInvestedAmount();
     }
