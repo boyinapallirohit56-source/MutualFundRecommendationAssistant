@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './shared/services/auth.service';
 import { ApiService } from './shared/services/api.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -17,10 +18,28 @@ export class AppComponent implements OnInit {
   notifications: any[] = [];
   unreadCount = 0;
   isDarkMode = false;
+  isAuthPage = false;
 
-  constructor(public authService: AuthService, private apiService: ApiService) {}
+  // Routes where navbar should be hidden
+  private authRoutes = ['/', '/login', '/register', '/forgot-password'];
+
+  constructor(
+    public authService: AuthService,
+    private apiService: ApiService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
+    // Track route changes to hide navbar on auth pages
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.isAuthPage = this.authRoutes.includes(event.urlAfterRedirects || event.url);
+    });
+
+    // Check initial route
+    this.isAuthPage = this.authRoutes.includes(this.router.url);
+
     if (this.authService.isLoggedIn()) {
       this.loadNotifications();
     }
