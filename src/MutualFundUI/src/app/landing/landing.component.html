@@ -1,61 +1,130 @@
 <div class="landing">
-  <!-- Navigation -->
+
+  <!-- Top Navigation -->
   <nav class="landing-nav">
     <div class="nav-inner">
       <span class="brand">
         <span class="brand-icon">&#9670;</span>
         WealthAI
       </span>
+      <div class="nav-links">
+        <a class="nav-link">Mutual Funds</a>
+        <a class="nav-link">AI Advisor</a>
+        <a class="nav-link">Tools</a>
+      </div>
       <div class="nav-actions">
-        <a routerLink="/login" class="btn btn-ghost">Sign In</a>
-        <a routerLink="/register" class="btn btn-primary">Get Started Free</a>
+        <a routerLink="/login" class="btn btn-ghost">Login</a>
+        <a routerLink="/register" class="btn btn-primary btn-nav">Sign Up</a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="hero-badge animate-in">
-        <span class="badge-dot"></span>
-        AI-Powered Wealth Management
+  <!-- Live Market Ticker -->
+  <div class="market-ticker">
+    <div class="ticker-track">
+      <div class="ticker-item" *ngFor="let index of marketIndices">
+        <span class="ticker-name">{{ index.name }}</span>
+        <span class="ticker-value">{{ index.value }}</span>
+        <span class="ticker-change" [class.positive]="index.isPositive" [class.negative]="!index.isPositive">
+          {{ index.isPositive ? '&#9650;' : '&#9660;' }} {{ index.change }}
+        </span>
       </div>
-      <h1 class="hero-title animate-in">
-        Invest Smarter with<br>
-        <span class="gradient-text">Intelligent Recommendations</span>
+      <!-- Duplicate for seamless scroll -->
+      <div class="ticker-item" *ngFor="let index of marketIndices">
+        <span class="ticker-name">{{ index.name }}</span>
+        <span class="ticker-value">{{ index.value }}</span>
+        <span class="ticker-change" [class.positive]="index.isPositive" [class.negative]="!index.isPositive">
+          {{ index.isPositive ? '&#9650;' : '&#9660;' }} {{ index.change }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-orb orb-1"></div>
+      <div class="hero-orb orb-2"></div>
+      <div class="hero-orb orb-3"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-pulse"></span>
+        AI-Powered Investment Platform
+      </div>
+      <h1 class="hero-title">
+        Invest Smarter.<br>
+        <span class="gradient-text">Grow Wealthier.</span>
       </h1>
-      <p class="hero-desc animate-in">
-        Our AI analyzes your financial profile, risk tolerance, and goals to deliver
-        personalized mutual fund allocations — explained in language you understand.
+      <p class="hero-desc">
+        Your personal AI mutual fund advisor. Get risk-profiled, receive intelligent
+        fund recommendations, and track your wealth — all in one place.
       </p>
-      <div class="hero-actions animate-in">
-        <a routerLink="/register" class="btn btn-primary btn-lg hero-cta">
-          Begin Your Investment Journey
+      <div class="hero-actions">
+        <a routerLink="/register" class="btn btn-primary btn-xl hero-cta">
+          Get Started Free
           <span class="cta-arrow">&#8594;</span>
         </a>
-        <a routerLink="/login" class="btn btn-outline btn-lg">Sign In</a>
+        <a routerLink="/login" class="btn btn-outline btn-xl">
+          Sign In
+        </a>
       </div>
       <div class="hero-trust">
-        <span>&#128274; Bank-grade security</span>
-        <span>&#9889; AI-powered insights</span>
-        <span>&#128202; Data-driven allocation</span>
+        <div class="trust-item" *ngFor="let t of trustPoints">
+          <span class="trust-icon" [innerHTML]="t.icon"></span>
+          <span>{{ t.text }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <section class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item" *ngFor="let stat of stats">
+        <span class="stat-value">{{ stat.value }}</span>
+        <span class="stat-label">{{ stat.label }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section (Groww-style cards) -->
+  <section class="section products-section">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">What We Offer</span>
+        <h2>Your Complete Investment Toolkit</h2>
+        <p>Everything you need to make confident investment decisions</p>
+      </div>
+      <div class="products-grid">
+        <div class="product-card" *ngFor="let product of products" [style.--accent]="product.color">
+          <div class="product-icon" [innerHTML]="product.icon"></div>
+          <div class="product-content">
+            <h3>{{ product.title }}</h3>
+            <span class="product-subtitle">{{ product.subtitle }}</span>
+            <p>{{ product.desc }}</p>
+            <div class="product-tags">
+              <span class="tag" *ngFor="let tag of product.tags">{{ tag }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- How It Works -->
-  <section class="section how-it-works">
+  <section class="section how-section">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">How It Works</span>
-        <h2>Your Investment Journey in 4 Steps</h2>
-        <p>From understanding your goals to receiving personalized recommendations</p>
+        <h2>Start Investing in 4 Simple Steps</h2>
+        <p>From profile to portfolio in under 5 minutes</p>
       </div>
       <div class="steps-grid">
         <div class="step-card" *ngFor="let step of steps; let i = index">
           <div class="step-number">{{ i + 1 }}</div>
-          <div class="step-line" *ngIf="i < 3"></div>
+          <div class="step-connector" *ngIf="i < 3"></div>
+          <div class="step-icon" [innerHTML]="step.icon"></div>
           <h3>{{ step.title }}</h3>
           <p>{{ step.desc }}</p>
         </div>
@@ -63,16 +132,16 @@
     </div>
   </section>
 
-  <!-- Features -->
-  <section class="section features">
+  <!-- Features Grid -->
+  <section class="section features-section">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">Platform Features</span>
-        <h2>Everything You Need to Invest Confidently</h2>
+        <h2>Powerful Tools for Smart Investors</h2>
       </div>
       <div class="features-grid">
         <div class="feature-card" *ngFor="let feature of features">
-          <div class="feature-icon">{{ feature.icon }}</div>
+          <div class="feature-icon" [innerHTML]="feature.icon"></div>
           <h3>{{ feature.title }}</h3>
           <p>{{ feature.desc }}</p>
         </div>
@@ -80,21 +149,100 @@
     </div>
   </section>
 
-  <!-- CTA -->
+  <!-- Why Direct Growth -->
+  <section class="section why-section">
+    <div class="section-inner">
+      <div class="why-card">
+        <div class="why-content">
+          <span class="section-label">Why Direct Growth?</span>
+          <h2>Lower Costs. Higher Returns.</h2>
+          <p>We exclusively offer Direct Growth plans — the same approach used by Groww, Zerodha Coin, and Kuvera. No middleman commissions, no hidden fees.</p>
+          <div class="why-points">
+            <div class="why-point">
+              <span class="why-check">&#10003;</span>
+              <span>0.5-1.5% lower expense ratio than Regular plans</span>
+            </div>
+            <div class="why-point">
+              <span class="why-check">&#10003;</span>
+              <span>Growth option reinvests gains for compounding</span>
+            </div>
+            <div class="why-point">
+              <span class="why-check">&#10003;</span>
+              <span>Direct NAV sync from AMFI (updated daily)</span>
+            </div>
+            <div class="why-point">
+              <span class="why-check">&#10003;</span>
+              <span>33+ curated funds across 6 asset classes</span>
+            </div>
+          </div>
+        </div>
+        <div class="why-visual">
+          <div class="comparison-box">
+            <div class="comparison-item direct">
+              <span class="comp-label">Direct Growth</span>
+              <span class="comp-value">14.2%</span>
+              <span class="comp-sub">3Y CAGR</span>
+            </div>
+            <div class="comparison-vs">vs</div>
+            <div class="comparison-item regular">
+              <span class="comp-label">Regular Plan</span>
+              <span class="comp-value">12.8%</span>
+              <span class="comp-sub">3Y CAGR</span>
+            </div>
+          </div>
+          <p class="comparison-note">You save ~1.4% annually with Direct Growth</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
   <section class="section cta-section">
     <div class="cta-card">
-      <h2>Ready to Make Smarter Investment Decisions?</h2>
-      <p>Join investors who trust AI to guide their wealth creation journey</p>
-      <a routerLink="/register" class="btn btn-primary btn-lg">Create Free Account</a>
+      <div class="cta-glow"></div>
+      <h2>Ready to Start Your Wealth Journey?</h2>
+      <p>Join investors who trust AI to build their wealth with personalized mutual fund recommendations</p>
+      <a routerLink="/register" class="btn btn-primary btn-xl">Create Free Account &#8594;</a>
+      <span class="cta-note">No credit card required. Start in 2 minutes.</span>
     </div>
   </section>
 
   <!-- Footer -->
   <footer class="landing-footer">
     <div class="footer-inner">
-      <span class="footer-brand">&#9670; WealthAI</span>
-      <span class="footer-disclaimer">For educational purposes only. Not certified financial advice.</span>
-      <span class="footer-year">&copy; 2026</span>
+      <div class="footer-top">
+        <div class="footer-brand-section">
+          <span class="footer-brand">&#9670; WealthAI</span>
+          <p class="footer-tagline">AI-Powered Mutual Fund Recommendations</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Platform</h4>
+            <a>Mutual Funds</a>
+            <a>Risk Assessment</a>
+            <a>AI Advisor</a>
+            <a>Portfolio Analysis</a>
+          </div>
+          <div class="footer-col">
+            <h4>Tools</h4>
+            <a>SIP Calculator</a>
+            <a>What-If Simulator</a>
+            <a>Stress Testing</a>
+            <a>Tax Saving</a>
+          </div>
+          <div class="footer-col">
+            <h4>Company</h4>
+            <a>About</a>
+            <a>Privacy Policy</a>
+            <a>Terms of Service</a>
+            <a>Contact</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 WealthAI. All rights reserved.</span>
+        <span class="footer-disclaimer">For educational purposes only. Not SEBI registered. Not certified financial advice.</span>
+      </div>
     </div>
   </footer>
 </div>
