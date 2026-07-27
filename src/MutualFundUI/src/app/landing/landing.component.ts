@@ -1,13 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-
-interface MarketIndex {
-  name: string;
-  value: string;
-  change: string;
-  isPositive: boolean;
-}
 
 @Component({
   selector: 'app-landing',
@@ -17,101 +10,181 @@ interface MarketIndex {
   styleUrls: ['./landing.component.css']
 })
 export class LandingComponent implements OnInit, OnDestroy {
-  // Live market ticker data (simulated - updates every 5s)
-  marketIndices: MarketIndex[] = [
-    { name: 'NIFTY 50', value: '24,856.15', change: '+1.24%', isPositive: true },
-    { name: 'SENSEX', value: '81,432.60', change: '+0.98%', isPositive: true },
-    { name: 'NIFTY IT', value: '29,441.90', change: '+2.34%', isPositive: true },
-    { name: 'GOLD', value: '7,245.00', change: '+0.45%', isPositive: true },
-    { name: 'FINNIFTY', value: '26,126.15', change: '+0.83%', isPositive: true },
-    { name: 'BANKNIFTY', value: '55,230.80', change: '-0.12%', isPositive: false }
-  ];
-
   private tickerInterval: any;
+  private countUpDone = false;
 
-  // Stats
+  // Market Ticker
+  marketIndices = [
+    { name: 'NIFTY 50', value: '24,856.15', change: '0.84%', isPositive: true, color: '#10b981' },
+    { name: 'SENSEX', value: '81,432.60', change: '0.72%', isPositive: true, color: '#10b981' },
+    { name: 'NIFTY IT', value: '29,441.90', change: '2.34%', isPositive: true, color: '#10b981' },
+    { name: 'GOLD', value: '7,245.00', change: '0.45%', isPositive: true, color: '#eab308' },
+    { name: 'USD/INR', value: '83.42', change: '0.12%', isPositive: false, color: '#6366f1' },
+    { name: 'BANKNIFTY', value: '55,230.80', change: '1.15%', isPositive: true, color: '#10b981' }
+  ];
+
+  // Stats with count-up
   stats = [
-    { value: '33+', label: 'Direct Growth Funds' },
-    { value: '4', label: 'Risk Profiles' },
-    { value: '15', label: 'Assessment Questions' },
-    { value: '6', label: 'Asset Classes' }
+    { value: 33, suffix: '+', label: 'AMFI Funds', current: 0 },
+    { value: 4, suffix: '', label: 'Risk Profiles', current: 0 },
+    { value: 15, suffix: '', label: 'Assessment Questions', current: 0 },
+    { value: 6, suffix: '', label: 'Asset Classes', current: 0 }
   ];
 
-  // How it works steps
-  steps = [
-    { icon: '&#128100;', title: 'Create Profile', desc: 'Tell us about your income, savings, and investment goals' },
-    { icon: '&#128203;', title: 'Risk Assessment', desc: 'Answer 15 questions to find your risk appetite' },
-    { icon: '&#129302;', title: 'AI Recommends', desc: 'Get personalized fund allocation based on your profile' },
-    { icon: '&#128200;', title: 'Track & Grow', desc: 'Monitor portfolio, get insights, and rebalance' }
+  // Navigation
+  navLinks = ['Home', 'Features', 'Mutual Funds', 'Tools', 'About'];
+
+  // Trust badges
+  trustBadges = [
+    '33+ AMFI Funds',
+    'Daily NAV Updates',
+    'AI Powered',
+    'Direct Growth Plans'
   ];
 
-  // Product offerings (like Groww's cards)
+  // Products
   products = [
     {
-      icon: '&#128201;',
-      title: 'Mutual Funds',
-      subtitle: 'Direct Growth Plans',
-      desc: 'Invest in top-rated funds across Equity, Debt, Gold, Hybrid & International',
-      tags: ['Large Cap', 'Mid Cap', 'Small Cap', 'Debt', 'Gold'],
-      color: '#6366f1'
+      icon: '&#128201;', title: 'Mutual Funds', subtitle: 'Direct Growth Plans',
+      desc: 'Invest in top-rated funds across Equity, Debt, Gold, Hybrid & International — all Direct Growth for maximum returns.',
+      tags: ['Large Cap', 'Mid Cap', 'Small Cap', 'Debt', 'Gold', 'International'], color: '#6366f1'
     },
     {
-      icon: '&#129504;',
-      title: 'AI-Powered Advice',
-      subtitle: 'Personalized for You',
-      desc: 'ChatGPT-powered advisor that explains investments in simple language',
-      tags: ['Risk Profiling', 'Fund Selection', 'Rebalancing'],
-      color: '#06b6d4'
+      icon: '&#129504;', title: 'AI-Powered Advice', subtitle: 'Ask WealthAI Anything',
+      desc: '',
+      queries: ['"What SIP should I start?"', '"What is NAV?"', '"Compare SBI vs Nippon"', '"Can I retire in 20 years?"'],
+      tags: [], color: '#14b8a6'
     },
     {
-      icon: '&#128202;',
-      title: 'Portfolio Analytics',
-      subtitle: 'Deep Insights',
-      desc: 'Diversification score, risk alignment, fund overlap detection & stress testing',
-      tags: ['Analysis', 'Stress Test', 'What-If'],
-      color: '#10b981'
+      icon: '&#128202;', title: 'Portfolio Analytics', subtitle: 'Deep Insights',
+      desc: 'Diversification score, risk alignment, fund overlap detection, rebalancing suggestions & stress testing.',
+      tags: ['Analysis', 'Stress Test', 'What-If', 'Rebalance'], color: '#10b981'
     }
   ];
 
-  // Features list
-  features = [
-    { icon: '&#127919;', title: 'Goal-Based Planning', desc: 'Set wealth creation, retirement, tax saving or education goals with SIP tracking' },
-    { icon: '&#9889;', title: 'Live AMFI Data', desc: 'Real-time NAV updates synced directly from AMFI for accurate portfolio valuation' },
-    { icon: '&#128176;', title: 'Tax Optimization', desc: 'ELSS recommendations and Section 80C calculator to maximize your tax savings' },
-    { icon: '&#128200;', title: 'SIP Calculator', desc: 'Plan your systematic investments with projected returns over your time horizon' },
-    { icon: '&#9888;&#65039;', title: 'Stress Testing', desc: 'Simulate market crashes (-10% to -50%) and see how your portfolio would react' },
-    { icon: '&#128269;', title: 'Fund Comparison', desc: 'Compare up to 4 funds side-by-side on returns, risk, expense ratio & more' }
+  // Steps
+  steps = [
+    { icon: '&#128100;', title: 'Create Profile', desc: 'Income, savings, and goals' },
+    { icon: '&#128203;', title: 'Risk Assessment', desc: '15 questions, 5 minutes' },
+    { icon: '&#129302;', title: 'AI Recommends', desc: 'Personalized allocation' },
+    { icon: '&#128200;', title: 'Track & Grow', desc: 'Monitor and rebalance' }
   ];
 
-  // Trust signals
-  trustPoints = [
-    { icon: '&#128274;', text: 'Bank-grade Security' },
-    { icon: '&#128176;', text: 'Zero Commission' },
-    { icon: '&#128202;', text: 'Direct Growth Only' },
-    { icon: '&#129302;', text: 'AI-Powered' }
+  // Features - AI highlighted
+  aiFeature = {
+    icon: '&#129302;', title: 'WealthAI Advisor',
+    desc: 'GPT-powered financial assistant that explains investments in simple language. Ask about SIPs, NAV, risk profiles, fund comparisons — get instant, personalized answers.',
+    queries: ['What SIP amount is right for me?', 'Explain expense ratio', 'Is my portfolio diversified?']
+  };
+
+  features = [
+    { icon: '&#127919;', title: 'Goal Planning', desc: 'Set wealth, retirement, education goals with SIP tracking' },
+    { icon: '&#9889;', title: 'Live AMFI Data', desc: 'Real-time NAV synced daily from AMFI India' },
+    { icon: '&#128176;', title: 'Tax Optimization', desc: 'ELSS recommendations & Section 80C calculator' },
+    { icon: '&#128200;', title: 'SIP Calculator', desc: 'Project returns over your investment horizon' },
+    { icon: '&#9888;&#65039;', title: 'Stress Testing', desc: 'Simulate -10% to -50% market crashes' }
+  ];
+
+  // Why WealthAI
+  whyPoints = [
+    'AI-powered fund recommendations',
+    'Daily AMFI NAV sync',
+    'Personalized risk profiling',
+    'Portfolio health score',
+    'Stress testing & what-if analysis',
+    'Goal-based planning',
+    'Tax optimization tools',
+    'No commission bias — Direct plans only'
+  ];
+
+  // Trust section
+  trustItems = [
+    { icon: '&#128274;', label: 'Secure Login' },
+    { icon: '&#128202;', label: 'AMFI Data' },
+    { icon: '&#129302;', label: 'AI Recommendations' },
+    { icon: '&#128200;', label: 'Direct Plans' },
+    { icon: '&#127470;&#127475;', label: 'Built for India' }
+  ];
+
+  // Screenshots/Teasers
+  screenTeasers = [
+    { icon: '&#128202;', title: 'Dashboard Analytics', desc: 'Risk score, allocation chart, SIP schedule' },
+    { icon: '&#129302;', title: 'AI Advisor Chat', desc: 'Ask anything about mutual funds' },
+    { icon: '&#128200;', title: 'Portfolio Insights', desc: 'Diversification, overlap, rebalancing' },
+    { icon: '&#128178;', title: 'SIP & Goal Calculators', desc: 'Plan your financial future' },
+    { icon: '&#9888;&#65039;', title: 'Stress Testing', desc: 'Simulate market crashes' },
+    { icon: '&#128203;', title: 'Smart Reports', desc: 'Risk, portfolio & recommendation reports' }
+  ];
+
+  // Testimonials
+  testimonials = [
+    { text: 'The AI Advisor explained mutual funds better than hours of YouTube videos.', name: 'Rahul S.', role: 'Software Developer', rating: 5 },
+    { text: 'Portfolio stress testing showed me exactly where my risk was. Incredible tool.', name: 'Priya P.', role: 'Doctor', rating: 5 },
+    { text: 'Finally understood my risk profile and got recommendations that actually made sense.', name: 'Arjun K.', role: 'Product Manager', rating: 5 }
+  ];
+
+  // FAQ
+  faqs = [
+    { q: 'Where does the NAV data come from?', a: 'We sync NAV data directly from AMFI (Association of Mutual Funds in India) — the official source used by all mutual fund platforms in India.', open: false },
+    { q: 'Is WealthAI free to use?', a: 'Yes, WealthAI is completely free. No hidden charges, no subscription fees, no commission on investments.', open: false },
+    { q: 'How accurate are the recommendations?', a: 'Recommendations are based on your risk profile, SEBI-defined allocation rules, and fund performance metrics (CAGR, Sharpe ratio, alpha). They are educational, not SEBI-certified advice.', open: false },
+    { q: 'Can beginners use this platform?', a: 'Absolutely! The AI Advisor explains everything in simple language. The risk assessment is designed for first-time investors.', open: false },
+    { q: 'What are Direct Growth plans?', a: 'Direct plans have no distributor commission (0.5-1.5% lower expense ratio). Growth option reinvests profits for compounding. This is the industry standard for DIY platforms.', open: false },
+    { q: 'How is AI used in this platform?', a: 'AI powers the chat advisor (GPT-based), generates personalized allocation explanations, and provides portfolio insights. Risk scoring uses a rule-based algorithm, not AI.', open: false }
   ];
 
   ngOnInit() {
-    // Simulate live ticker updates
     this.tickerInterval = setInterval(() => {
-      this.marketIndices = this.marketIndices.map(index => ({
-        ...index,
-        change: this.randomizeChange(index.change),
-        isPositive: Math.random() > 0.3
+      this.marketIndices = this.marketIndices.map(idx => ({
+        ...idx,
+        change: this.randomizeChange(idx.change),
+        isPositive: Math.random() > 0.25
       }));
     }, 8000);
   }
 
   ngOnDestroy() {
-    if (this.tickerInterval) {
-      clearInterval(this.tickerInterval);
+    if (this.tickerInterval) clearInterval(this.tickerInterval);
+  }
+
+  @HostListener('window:scroll')
+  onScroll() {
+    if (this.countUpDone) return;
+    const statsEl = document.querySelector('.stats-bar');
+    if (statsEl) {
+      const rect = statsEl.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.8) {
+        this.countUpDone = true;
+        this.animateCountUp();
+      }
     }
   }
 
+  animateCountUp() {
+    this.stats.forEach(stat => {
+      const duration = 1500;
+      const steps = 40;
+      const increment = stat.value / steps;
+      let current = 0;
+      const interval = setInterval(() => {
+        current += increment;
+        if (current >= stat.value) {
+          stat.current = stat.value;
+          clearInterval(interval);
+        } else {
+          stat.current = Math.floor(current);
+        }
+      }, duration / steps);
+    });
+  }
+
+  toggleFaq(index: number) {
+    this.faqs[index].open = !this.faqs[index].open;
+  }
+
   private randomizeChange(current: string): string {
-    const base = parseFloat(current.replace('%', '').replace('+', ''));
-    const variation = (Math.random() - 0.4) * 0.5;
-    const newVal = Math.abs(base + variation).toFixed(2);
-    return (base + variation >= 0 ? '+' : '-') + newVal + '%';
+    const base = parseFloat(current.replace('%', ''));
+    const variation = (Math.random() - 0.4) * 0.3;
+    return Math.abs(base + variation).toFixed(2) + '%';
   }
 }
