@@ -3,8 +3,16 @@
   <nav class="landing-nav">
     <div class="nav-inner">
       <span class="brand"><span class="brand-icon">&#9670;</span> WealthAI</span>
-      <div class="nav-links">
-        <a class="nav-link" *ngFor="let link of navLinks">{{ link }}</a>
+      <div class="nav-links" aria-label="Landing page sections">
+        <a
+          class="nav-link"
+          *ngFor="let link of navLinks"
+          [href]="'#' + link.target"
+          [class.active]="activeSection === link.target"
+          [attr.aria-current]="activeSection === link.target ? 'location' : null"
+          (click)="scrollToSection($event, link.target)">
+          {{ link.label }}
+        </a>
       </div>
       <div class="nav-actions">
         <a routerLink="/login" class="btn btn-ghost">Login</a>
@@ -34,7 +42,7 @@
   </div>
 
   <!-- Hero -->
-  <section class="hero">
+  <section class="hero" id="home">
     <div class="hero-glow"></div>
     <div class="hero-content">
       <span class="hero-eyebrow">AI-Powered Mutual Fund Investing</span>
@@ -42,7 +50,6 @@
       <p class="hero-desc">Personalized recommendations. Live AMFI NAV. Portfolio Intelligence. Risk Analysis.</p>
       <div class="hero-actions">
         <a routerLink="/register" class="btn btn-primary btn-xl btn-glow">Start Free <span class="arrow">&#8594;</span></a>
-        <a class="btn btn-outline btn-xl">Watch Demo</a>
       </div>
       <div class="trust-badges">
         <span class="badge" *ngFor="let badge of trustBadges">&#10003; {{ badge }}</span>
@@ -54,6 +61,7 @@
   <section class="stats-bar">
     <div class="stats-inner">
       <div class="stat-item" *ngFor="let stat of stats">
+        <app-landing-icon class="stat-icon" [name]="stat.icon"></app-landing-icon>
         <span class="stat-value">{{ stat.current }}{{ stat.suffix }}</span>
         <span class="stat-label">{{ stat.label }}</span>
       </div>
@@ -69,8 +77,12 @@
         <p>Everything you need to make confident decisions</p>
       </div>
       <div class="products-grid">
-        <div class="product-card" *ngFor="let product of products" [style.--accent]="product.color">
-          <div class="product-icon" [innerHTML]="product.icon"></div>
+        <div
+          class="product-card"
+          *ngFor="let product of products"
+          [class.product-card-featured]="product.featured"
+          [style.--accent]="product.color">
+          <app-landing-icon class="product-icon" [name]="product.icon"></app-landing-icon>
           <h3>{{ product.title }}</h3>
           <span class="product-subtitle">{{ product.subtitle }}</span>
           <p *ngIf="product.desc">{{ product.desc }}</p>
@@ -87,7 +99,7 @@
   </section>
 
   <!-- How It Works -->
-  <section class="section section-alt">
+  <section class="section section-alt" id="how-it-works">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">How It Works</span>
@@ -98,7 +110,7 @@
         <div class="step-card" *ngFor="let step of steps; let i = index">
           <div class="step-number">{{ i + 1 }}</div>
           <div class="step-connector" *ngIf="i < 3"></div>
-          <div class="step-icon" [innerHTML]="step.icon"></div>
+          <app-landing-icon class="step-icon" [name]="step.icon"></app-landing-icon>
           <h3>{{ step.title }}</h3>
           <p>{{ step.desc }}</p>
         </div>
@@ -116,7 +128,7 @@
       <div class="features-layout">
         <!-- AI Hero Card -->
         <div class="ai-hero-card">
-          <div class="ai-hero-icon" [innerHTML]="aiFeature.icon"></div>
+          <app-landing-icon class="ai-hero-icon" [name]="aiFeature.icon"></app-landing-icon>
           <h3>{{ aiFeature.title }}</h3>
           <p>{{ aiFeature.desc }}</p>
           <div class="ai-hero-queries">
@@ -126,7 +138,7 @@
         <!-- Other Features -->
         <div class="features-grid">
           <div class="feature-card" *ngFor="let feature of features">
-            <div class="feature-icon" [innerHTML]="feature.icon"></div>
+            <app-landing-icon class="feature-icon" [name]="feature.icon"></app-landing-icon>
             <h3>{{ feature.title }}</h3>
             <p>{{ feature.desc }}</p>
           </div>
@@ -135,38 +147,46 @@
     </div>
   </section>
 
-  <!-- Direct Growth Comparison -->
+  <!-- Direct Growth Education -->
   <section class="section section-alt">
     <div class="section-inner">
       <div class="section-header">
-        <span class="section-label">Why Direct Growth?</span>
-        <h2>Lower Costs. Higher Returns.</h2>
-        <p>See the real difference Direct Growth makes on your wealth</p>
+        <span class="section-label">Fund Basics</span>
+        <h2>Why Direct Growth Funds?</h2>
+        <p>Understand the plan structure before reviewing a recommendation</p>
       </div>
-      <div class="comparison-card">
-        <div class="comparison-row">
-          <div class="comparison-item direct">
-            <span class="comp-label">Direct Growth</span>
-            <span class="comp-amount">&#8377;24.6L</span>
-            <span class="comp-cagr">14.2% CAGR</span>
+      <div class="plan-education">
+        <article
+          class="plan-path"
+          *ngFor="let plan of directGrowthPaths"
+          [class.plan-path-recommended]="plan.recommended">
+          <div class="plan-heading">
+            <app-landing-icon class="plan-icon" [name]="plan.icon"></app-landing-icon>
+            <div>
+              <span class="plan-badge" *ngIf="plan.recommended">WealthAI focus</span>
+              <h3>{{ plan.title }}</h3>
+            </div>
           </div>
-          <div class="comparison-vs">vs</div>
-          <div class="comparison-item regular">
-            <span class="comp-label">Regular Plan</span>
-            <span class="comp-amount">&#8377;22.9L</span>
-            <span class="comp-cagr">12.8% CAGR</span>
+          <div class="plan-flow">
+            <ng-container *ngFor="let step of plan.steps; let last = last">
+              <div class="plan-step">
+                <app-landing-icon class="plan-step-icon" [name]="step.icon"></app-landing-icon>
+                <span>{{ step.label }}</span>
+              </div>
+              <span class="plan-arrow" *ngIf="!last" aria-hidden="true">&#8595;</span>
+            </ng-container>
           </div>
-        </div>
-        <div class="comparison-footer">
-          <div class="comp-invested">&#8377;10L invested over 10 years</div>
-          <div class="comp-saved">You save <strong>&#8377;1.7 Lakhs</strong> with Direct Growth</div>
-        </div>
+        </article>
       </div>
+      <p class="education-note">
+        Direct and Regular plans invest in the same underlying portfolio, but their expense structures differ.
+        Growth options reinvest gains; market returns are never guaranteed.
+      </p>
     </div>
   </section>
 
   <!-- Why WealthAI -->
-  <section class="section">
+  <section class="section" id="why-wealthai">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">Why Us</span>
@@ -186,11 +206,11 @@
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">Trust</span>
-        <h2>Trusted Investment Platform</h2>
+        <h2>Designed for Informed Decisions</h2>
       </div>
       <div class="trust-grid">
         <div class="trust-card" *ngFor="let item of trustItems">
-          <span class="trust-icon" [innerHTML]="item.icon"></span>
+          <app-landing-icon class="trust-icon" [name]="item.icon"></app-landing-icon>
           <span class="trust-label">{{ item.label }}</span>
         </div>
       </div>
@@ -207,7 +227,7 @@
       </div>
       <div class="teaser-grid">
         <div class="teaser-card" *ngFor="let screen of screenTeasers">
-          <div class="teaser-icon" [innerHTML]="screen.icon"></div>
+          <app-landing-icon class="teaser-icon" [name]="screen.icon"></app-landing-icon>
           <h3>{{ screen.title }}</h3>
           <p>{{ screen.desc }}</p>
         </div>
@@ -236,7 +256,7 @@
   </section>
 
   <!-- FAQ -->
-  <section class="section">
+  <section class="section" id="faq">
     <div class="section-inner">
       <div class="section-header">
         <span class="section-label">FAQ</span>
@@ -280,15 +300,15 @@
         <div class="footer-links">
           <div class="footer-col">
             <h4>Platform</h4>
-            <a>Mutual Funds</a><a>Risk Assessment</a><a>AI Advisor</a><a>Portfolio</a>
-          </div>
-          <div class="footer-col">
-            <h4>Tools</h4>
-            <a>SIP Calculator</a><a>Stress Testing</a><a>Tax Saving</a><a>What-If</a>
+            <a routerLink="/funds">Mutual Funds</a>
+            <a routerLink="/portfolio">Portfolio</a>
+            <a routerLink="/chat">AI Advisor</a>
           </div>
           <div class="footer-col">
             <h4>Resources</h4>
-            <a>AMFI India</a><a>SEBI</a><a>Privacy Policy</a><a>Terms</a>
+            <a href="#how-it-works" (click)="scrollToSection($event, 'how-it-works')">How It Works</a>
+            <a href="#why-wealthai" (click)="scrollToSection($event, 'why-wealthai')">About WealthAI</a>
+            <a href="#faq" (click)="scrollToSection($event, 'faq')">FAQ</a>
           </div>
         </div>
       </div>
