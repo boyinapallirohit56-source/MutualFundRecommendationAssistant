@@ -1,12 +1,12 @@
-.watchlist-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #f3f4f6; }
+.watchlist-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); }
 .watchlist-item:last-child { border-bottom: none; }
 .item-info { display: flex; flex-direction: column; gap: 4px; }
-.item-info strong { font-size: 14px; color: #2563eb; }
+.item-info strong { font-size: 14px; color: var(--brand-accent-light); }
 .item-info strong:hover { text-decoration: underline; }
-.item-meta { font-size: 12px; color: #6b7280; }
+.item-meta { font-size: 12px; color: var(--text-tertiary); }
 .item-metrics { display: flex; gap: 20px; align-items: center; }
 .metric { text-align: center; }
-.metric-label { display: block; font-size: 11px; color: #6b7280; }
-.metric-value { display: block; font-size: 13px; font-weight: 600; }
-.btn-remove { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 12px; padding: 4px 8px; }
+.metric-label { display: block; font-size: 11px; color: var(--text-tertiary); }
+.metric-value { display: block; font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.btn-remove { background: none; border: none; color: #f87171; cursor: pointer; font-size: 12px; padding: 4px 8px; }
 .btn-remove:hover { text-decoration: underline; }

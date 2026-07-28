@@ -1,17 +1,17 @@
 .score-card { padding: 40px; }
 .score-circle { width: 140px; height: 140px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 16px; border: 6px solid; }
-.score-circle.excellent { border-color: #10b981; background: #ecfdf5; }
-.score-circle.good { border-color: #3b82f6; background: #eff6ff; }
-.score-circle.fair { border-color: #f59e0b; background: #fffbeb; }
-.score-circle.poor { border-color: #ef4444; background: #fef2f2; }
-.score-num { font-size: 42px; font-weight: 800; color: #111827; line-height: 1; }
-.score-max { font-size: 16px; color: #6b7280; }
-.score-rating { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-.score-desc { color: #6b7280; font-size: 14px; max-width: 400px; margin: 0 auto; }
+.score-circle.excellent { border-color: #34d399; background: rgba(52,211,153,0.08); }
+.score-circle.good { border-color: #60a5fa; background: rgba(96,165,250,0.08); }
+.score-circle.fair { border-color: #fbbf24; background: rgba(251,191,36,0.08); }
+.score-circle.poor { border-color: #f87171; background: rgba(248,113,113,0.08); }
+.score-num { font-size: 42px; font-weight: 800; color: var(--text-primary); line-height: 1; }
+.score-max { font-size: 16px; color: var(--text-tertiary); }
+.score-rating { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+.score-desc { color: var(--text-secondary); font-size: 14px; max-width: 400px; margin: 0 auto; }
 .breakdown-list { display: flex; flex-direction: column; gap: 20px; }
 .bi-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
-.bi-name { font-size: 14px; font-weight: 600; color: #374151; }
-.bi-score { font-size: 14px; font-weight: 700; color: #1e40af; }
-.bi-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+.bi-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.bi-score { font-size: 14px; font-weight: 700; color: var(--brand-accent-light); }
+.bi-bar { height: 8px; background: var(--surface-3); border-radius: 4px; overflow: hidden; }
 .bi-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
-.bi-tip { font-size: 12px; color: #6b7280; margin-top: 4px; }
+.bi-tip { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; }
