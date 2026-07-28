@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../shared/services/api.service';
+import { AuthService } from '../shared/services/auth.service';
 
 @Component({
   selector: 'app-fund-factsheet',
@@ -15,14 +16,19 @@ export class FundFactsheetComponent implements OnInit {
   addingToWatchlist = false;
   watchlistAdded = false;
   watchlistError = false;
+  isAdmin = false;
 
   constructor(
     private apiService: ApiService,
+    private authService: AuthService,
     private route: ActivatedRoute,
     public router: Router
   ) {}
 
   ngOnInit() {
+    const user = this.authService.getUser();
+    this.isAdmin = user?.role === 'Admin';
+
     this.route.params.subscribe(params => {
       const id = +params['id'];
       this.apiService.getFundFactsheet(id).subscribe({

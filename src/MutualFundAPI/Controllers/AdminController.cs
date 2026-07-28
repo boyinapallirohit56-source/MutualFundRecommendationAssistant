@@ -179,6 +179,20 @@ public class AdminController : ControllerBase
 
     // --- Funds ---
 
+    [HttpGet("funds")]
+    public async Task<IActionResult> GetAllFunds()
+    {
+        var funds = await _context.MutualFunds
+            .OrderBy(f => f.Name)
+            .Select(f => new {
+                f.Id, f.Name, f.Category, f.SubCategory, f.AMC,
+                f.NAV, f.ExpenseRatio, f.CAGR1Y, f.CAGR3Y, f.CAGR5Y,
+                f.AUM, f.Rating, f.IsActive
+            })
+            .ToListAsync();
+        return Ok(funds);
+    }
+
     [HttpPost("funds")]
     public async Task<IActionResult> AddFund([FromBody] AdminFundDTO dto)
     {
@@ -204,6 +218,16 @@ public class AdminController : ControllerBase
             return NotFound(new { message = "Fund not found" });
 
         return Ok(new { message = "Fund deactivated" });
+    }
+
+    [HttpPut("funds/{fundId}/reactivate")]
+    public async Task<IActionResult> ReactivateFund(int fundId)
+    {
+        var result = await _adminService.ReactivateFund(fundId);
+        if (!result)
+            return NotFound(new { message = "Fund not found" });
+
+        return Ok(new { message = "Fund reactivated" });
     }
 
     // --- Analytics ---

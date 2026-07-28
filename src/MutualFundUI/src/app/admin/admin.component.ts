@@ -53,7 +53,7 @@ export class AdminComponent implements OnInit {
   }
 
   loadFunds() {
-    this.apiService.listFunds().subscribe({
+    this.apiService.getAdminFunds().subscribe({
       next: (funds) => { this.funds = funds; }
     });
   }
@@ -62,6 +62,18 @@ export class AdminComponent implements OnInit {
     this.apiService.updateUserStatus(user.id, !user.isActive).subscribe({
       next: () => { user.isActive = !user.isActive; }
     });
+  }
+
+  toggleFundStatus(fund: any) {
+    if (fund.isActive) {
+      this.apiService.deleteFund(fund.id).subscribe({
+        next: () => { fund.isActive = false; }
+      });
+    } else {
+      this.apiService.reactivateFund(fund.id).subscribe({
+        next: () => { fund.isActive = true; }
+      });
+    }
   }
 
   // --- AMFI Sync ---
