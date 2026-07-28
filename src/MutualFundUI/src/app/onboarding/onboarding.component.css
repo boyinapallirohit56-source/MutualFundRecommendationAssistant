@@ -1,9 +1,8 @@
-h3 { font-size: 18px; font-weight: 600; }
+h3 { font-size: 18px; font-weight: 600; color: var(--text-primary); }
 .goals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.goal-checkbox { display: flex; align-items: center; gap: 8px; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; cursor: pointer; font-size: 14px; }
-.goal-checkbox:hover { border-color: #2563eb; }
-.goal-checkbox input { width: 16px; height: 16px; }
-
+.goal-checkbox { display: flex; align-items: center; gap: 8px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; color: var(--text-secondary); }
+.goal-checkbox:hover { border-color: var(--brand-accent); }
+.goal-checkbox input { width: 16px; height: 16px; accent-color: var(--brand-accent); }
 
 .goal-select-item {
   padding: 14px;
@@ -21,27 +20,20 @@ h3 { font-size: 18px; font-weight: 600; }
   gap: 12px;
 }
 
-.goal-target .form-group label {
-  font-size: 11px;
-}
-
-.goal-target .form-group input {
-  padding: 8px 12px;
-  font-size: 13px;
-}
-
+.goal-target .form-group label { font-size: 11px; }
+.goal-target .form-group input { padding: 8px 12px; font-size: 13px; }
 
 .investment-section {
   margin-top: 20px;
   padding: 16px;
-  background: var(--surface-1, #f8fafc);
+  background: var(--surface-2);
   border-radius: 10px;
-  border: 1px solid var(--border-light, #f1f5f9);
+  border: 1px solid var(--border);
 }
 
 .investment-section h4 {
   font-size: 14px;
   font-weight: 700;
-  color: var(--text-primary, #0f172a);
+  color: var(--text-primary);
   margin-bottom: 12px;
 }
