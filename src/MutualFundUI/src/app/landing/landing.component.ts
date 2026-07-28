@@ -14,7 +14,7 @@ import { RouterLink } from '@angular/router';
   `,
   styles: [':host { display: inline-flex; } svg { width: 1em; height: 1em; }']
 })
-class LandingIconComponent {
+export class LandingIconComponent {
   @Input() name = '';
 
   readonly paths: Record<string, string[]> = {
