@@ -116,10 +116,10 @@ public class AdminService
             SubCategory = dto.SubCategory,
             AMC = dto.AMC,
             NAV = dto.NAV,
-            ExpenseRatio = dto.ExpenseRatio,
-            CAGR1Y = dto.CAGR1Y,
-            CAGR3Y = dto.CAGR3Y,
-            CAGR5Y = dto.CAGR5Y,
+            ExpenseRatio = dto.ExpenseRatio ?? 0m,
+            CAGR1Y = dto.CAGR1Y ?? 0m,
+            CAGR3Y = dto.CAGR3Y ?? 0m,
+            CAGR5Y = dto.CAGR5Y ?? 0m,
             AUM = dto.AUM,
             FundManager = dto.FundManager,
             Rating = dto.Rating
@@ -140,10 +140,10 @@ public class AdminService
         fund.SubCategory = dto.SubCategory;
         fund.AMC = dto.AMC;
         fund.NAV = dto.NAV;
-        fund.ExpenseRatio = dto.ExpenseRatio;
-        fund.CAGR1Y = dto.CAGR1Y;
-        fund.CAGR3Y = dto.CAGR3Y;
-        fund.CAGR5Y = dto.CAGR5Y;
+        fund.ExpenseRatio = dto.ExpenseRatio ?? fund.ExpenseRatio;
+        fund.CAGR1Y = dto.CAGR1Y ?? fund.CAGR1Y;
+        fund.CAGR3Y = dto.CAGR3Y ?? fund.CAGR3Y;
+        fund.CAGR5Y = dto.CAGR5Y ?? fund.CAGR5Y;
         fund.AUM = dto.AUM;
         fund.FundManager = dto.FundManager;
         fund.Rating = dto.Rating;
@@ -180,7 +180,7 @@ public class AdminService
         // Goal distribution
         var profiles = await _context.UserProfiles
             .Where(p => !string.IsNullOrEmpty(p.Goals))
-            .Select(p => p.Goals)
+            .Select(p => p.Goals!)
             .ToListAsync();
 
         var goalDistribution = profiles
