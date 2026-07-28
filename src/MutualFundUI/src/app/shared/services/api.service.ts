@@ -160,6 +160,19 @@ export class ApiService {
     return this.http.put(`${this.apiUrl}/admin/allocation-rules/${riskProfile}`, { allocations });
   }
 
+  // Admin - Fund Management
+  deleteFund(fundId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/admin/funds/${fundId}`);
+  }
+
+  reactivateFund(fundId: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/admin/funds/${fundId}/reactivate`, {});
+  }
+
+  getAdminFunds(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admin/funds`);
+  }
+
   // Auth - Forgot Password
   forgotPassword(email: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/forgot-password`, { email });

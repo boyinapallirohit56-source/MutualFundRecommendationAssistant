@@ -110,6 +110,8 @@
             <th>AMC</th>
             <th>3Y CAGR</th>
             <th>Rating</th>
+            <th>Status</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -119,6 +121,8 @@
             <td>{{ fund.amc }}</td>
             <td>{{ fund.cagr3Y }}%</td>
             <td>{{ fund.rating }} &#9733;</td>
+            <td><span class="status-badge" [class.active]="fund.isActive" [class.inactive]="!fund.isActive">{{ fund.isActive ? 'Active' : 'Inactive' }}</span></td>
+            <td><button class="btn-action" (click)="toggleFundStatus(fund)">{{ fund.isActive ? 'Deactivate' : 'Reactivate' }}</button></td>
           </tr>
         </tbody>
       </table>

@@ -19,6 +19,7 @@ public class AdminService
     public async Task<List<AdminUserDTO>> GetAllUsers()
     {
         return await _context.Users
+            .Where(u => u.Role != "Admin")
             .Select(u => new AdminUserDTO
             {
                 Id = u.Id,
@@ -158,6 +159,16 @@ public class AdminService
         if (fund == null) return false;
 
         fund.IsActive = false;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> ReactivateFund(int fundId)
+    {
+        var fund = await _context.MutualFunds.FindAsync(fundId);
+        if (fund == null) return false;
+
+        fund.IsActive = true;
         await _context.SaveChangesAsync();
         return true;
     }

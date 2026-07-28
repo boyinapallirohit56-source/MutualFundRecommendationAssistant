@@ -55,6 +55,10 @@ public class AuthService
         if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             return null;
 
+        // Block deactivated users from logging in
+        if (!user.IsActive)
+            return null;
+
         return new AuthResponseDTO
         {
             Token = GenerateToken(user),
