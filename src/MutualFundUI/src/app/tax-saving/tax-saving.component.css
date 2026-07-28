@@ -1,15 +1,15 @@
-.range-slider { width: 100%; margin-top: 8px; accent-color: #1e40af; }
+.range-slider { width: 100%; margin-top: 8px; accent-color: var(--brand-accent); }
 .tax-result { margin-top: 20px; }
-.stat-box.highlight { background: #ecfdf5; border-color: #a7f3d0; }
-.stat-box.highlight .stat-value { color: #059669; }
-.tax-tip { font-size: 13px; color: #4b5563; background: #f9fafb; padding: 12px; border-radius: 8px; line-height: 1.6; }
+.stat-box.highlight { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); }
+.stat-box.highlight .stat-value { color: #34d399; }
+.tax-tip { font-size: 13px; color: var(--text-secondary); background: var(--surface-2); padding: 12px; border-radius: 8px; line-height: 1.6; }
 .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.info-item { padding: 16px; background: #f9fafb; border-radius: 8px; border: 1px solid #f3f4f6; }
-.info-item strong { display: block; font-size: 14px; color: #1e40af; margin-bottom: 4px; }
-.info-item p { font-size: 13px; color: #6b7280; line-height: 1.5; }
-.fund-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+.info-item { padding: 16px; background: var(--surface-2); border-radius: 8px; border: 1px solid var(--border); }
+.info-item strong { display: block; font-size: 14px; color: var(--brand-accent-light); margin-bottom: 4px; }
+.info-item p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.fund-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
 .fund-item:last-child { border-bottom: none; }
-.fund-info strong { display: block; font-size: 14px; color: #111827; }
-.fund-info span { font-size: 12px; color: #6b7280; }
+.fund-info strong { display: block; font-size: 14px; color: var(--text-primary); }
+.fund-info span { font-size: 12px; color: var(--text-tertiary); }
 .fund-metrics { display: flex; gap: 16px; }
-.metric { font-size: 13px; font-weight: 600; color: #059669; }
+.metric { font-size: 13px; font-weight: 600; color: #34d399; }

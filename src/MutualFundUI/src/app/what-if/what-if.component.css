@@ -1,19 +1,19 @@
-.card-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
-.range-slider { width: 100%; margin-top: 8px; accent-color: #1e40af; }
+.card-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: var(--text-primary); }
+.range-slider { width: 100%; margin-top: 8px; accent-color: var(--brand-accent); }
 .presets { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
-.presets button { padding: 10px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 12px; cursor: pointer; }
-.presets button:hover { border-color: #1e40af; background: #eff6ff; }
-.result-card { background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border: 1px solid #a7f3d0; }
+.presets button { padding: 10px; background: var(--surface-0); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; }
+.presets button:hover { border-color: var(--brand-accent); background: var(--brand-accent-bg); color: var(--brand-accent-light); }
+.result-card { background: linear-gradient(135deg, rgba(52,211,153,0.04), rgba(52,211,153,0.08)); border: 1px solid rgba(52,211,153,0.15); }
 .whatif-result { text-align: center; }
-.whatif-intro { font-size: 14px; color: #6b7280; }
-.whatif-ago { font-size: 20px; font-weight: 700; color: #374151; margin-bottom: 16px; }
-.whatif-value { padding: 20px; background: white; border-radius: 12px; margin-bottom: 16px; border: 1px solid #d1fae5; }
-.whatif-value .label { display: block; font-size: 12px; color: #6b7280; text-transform: uppercase; }
-.whatif-value .value { display: block; font-size: 32px; font-weight: 800; color: #059669; }
+.whatif-intro { font-size: 14px; color: var(--text-secondary); }
+.whatif-ago { font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; }
+.whatif-value { padding: 20px; background: var(--surface-0); border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(52,211,153,0.15); }
+.whatif-value .label { display: block; font-size: 12px; color: var(--text-tertiary); text-transform: uppercase; }
+.whatif-value .value { display: block; font-size: 32px; font-weight: 800; color: #34d399; }
 .whatif-details { margin-bottom: 16px; }
-.detail-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; color: #4b5563; }
-.detail-row.gain { color: #059669; font-weight: 600; }
-.whatif-moral { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 13px; color: #92400e; }
+.detail-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; color: var(--text-secondary); }
+.detail-row.gain { color: #34d399; font-weight: 600; }
+.whatif-moral { background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.15); border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 13px; color: #fbbf24; }
 .whatif-moral p { margin-bottom: 4px; }
-.start-today { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; font-size: 13px; color: #4b5563; }
-.start-today strong { color: #1e40af; }
+.start-today { background: var(--surface-0); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 13px; color: var(--text-secondary); }
+.start-today strong { color: var(--brand-accent-light); }
