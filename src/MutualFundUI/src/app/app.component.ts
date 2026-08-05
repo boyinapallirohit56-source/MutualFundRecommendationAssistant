@@ -3,12 +3,13 @@ import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router
 import { CommonModule } from '@angular/common';
 import { AuthService } from './shared/services/auth.service';
 import { ApiService } from './shared/services/api.service';
+import { FloatingChatComponent } from './shared/components/floating-chat/floating-chat.component';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, CommonModule],
+  imports: [RouterOutlet, RouterLink, CommonModule, FloatingChatComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

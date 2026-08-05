@@ -78,8 +78,8 @@ export class ApiService {
   }
 
   // AI Chat
-  sendChatMessage(message: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/ai/chat`, { message });
+  sendChatMessage(message: string, currentPage?: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/ai/chat`, { message, currentPage });
   }
 
   getChatHistory(): Observable<any[]> {
