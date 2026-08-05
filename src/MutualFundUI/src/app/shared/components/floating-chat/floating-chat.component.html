@@ -1,0 +1,126 @@
+<!-- Floating Action Button (FAB) -->
+<button class="chat-fab" 
+        (click)="toggleChat()" 
+        *ngIf="isLoggedIn() && !isOpen"
+        [class.has-notification]="hasNewMessage">
+  <span class="material-symbols-rounded fab-icon">smart_toy</span>
+  <span class="fab-label">AI Assist</span>
+  <span class="fab-pulse" *ngIf="hasNewMessage"></span>
+</button>
+
+<!-- Chat Widget Panel -->
+<div class="chat-widget" 
+     *ngIf="isLoggedIn() && isOpen" 
+     [class.minimized]="isMinimized">
+  
+  <!-- Header -->
+  <div class="widget-header" (click)="isMinimized ? minimizeChat() : null">
+    <div class="header-left">
+      <div class="header-avatar">
+        <span class="material-symbols-rounded">smart_toy</span>
+      </div>
+      <div class="header-info">
+        <span class="header-title">AI Financial Assistant</span>
+        <span class="header-status">
+          <span class="status-dot"></span> Always here to help
+        </span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <a class="header-btn expand-btn" routerLink="/chat" (click)="closeChat()" title="Open full chat">
+        <span class="material-symbols-rounded">open_in_full</span>
+      </a>
+      <button class="header-btn" (click)="minimizeChat()" title="Minimize">
+        <span class="material-symbols-rounded">{{ isMinimized ? 'expand_less' : 'remove' }}</span>
+      </button>
+      <button class="header-btn close-btn" (click)="closeChat()" title="Close">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Chat Body (hidden when minimized) -->
+  <div class="widget-body" *ngIf="!isMinimized">
+    
+    <!-- Messages Area -->
+    <div class="widget-messages" #messagesContainer>
+      
+      <!-- Welcome state when no messages -->
+      <div *ngIf="!messages.length && !loading" class="widget-welcome">
+        <div class="welcome-emoji">👋</div>
+        <p class="welcome-text">Hi! I'm your AI financial assistant. Ask me anything about mutual funds, investments, or your portfolio.</p>
+      </div>
+
+      <!-- Quick Prompts (shown when no messages or at top) -->
+      <div class="quick-prompts" *ngIf="!messages.length && !loading">
+        <p class="prompts-label">Suggestions for this page:</p>
+        <button class="quick-prompt-btn" 
+                *ngFor="let prompt of quickPrompts" 
+                (click)="askQuickPrompt(prompt)">
+          <span class="material-symbols-rounded prompt-icon">{{ prompt.icon }}</span>
+          <span class="prompt-text">{{ prompt.text }}</span>
+        </button>
+      </div>
+
+      <!-- Chat Messages -->
+      <div *ngFor="let msg of messages" class="widget-message" 
+           [class.user-msg]="msg.role === 'user'" 
+           [class.assistant-msg]="msg.role === 'assistant'">
+        <div class="msg-avatar" *ngIf="msg.role === 'assistant'">
+          <span class="material-symbols-rounded">smart_toy</span>
+        </div>
+        <div class="msg-bubble">
+          <div class="msg-text">{{ msg.content }}</div>
+          <div class="msg-time">{{ msg.role === 'user' ? 'You' : 'AI' }} • {{ getTimestamp(msg.createdAt) }}</div>
+        </div>
+      </div>
+
+      <!-- Typing indicator -->
+      <div *ngIf="loading" class="widget-message assistant-msg">
+        <div class="msg-avatar">
+          <span class="material-symbols-rounded">smart_toy</span>
+        </div>
+        <div class="msg-bubble">
+          <div class="msg-text typing-indicator">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick prompts strip (when messages exist) -->
+    <div class="prompts-strip" *ngIf="messages.length > 0">
+      <button class="strip-prompt" 
+              *ngFor="let prompt of quickPrompts" 
+              (click)="askQuickPrompt(prompt)"
+              [title]="prompt.question">
+        <span class="material-symbols-rounded">{{ prompt.icon }}</span>
+        {{ prompt.text }}
+      </button>
+    </div>
+
+    <!-- Input Area -->
+    <div class="widget-input">
+      <div class="input-row">
+        <input type="text" 
+               [(ngModel)]="userMessage" 
+               placeholder="Ask me anything..." 
+               (keyup.enter)="sendMessage()" 
+               [disabled]="loading"
+               class="chat-input">
+        <button class="send-btn" 
+                (click)="sendMessage()" 
+                [disabled]="loading || !userMessage.trim()">
+          <span class="material-symbols-rounded">send</span>
+        </button>
+      </div>
+      <div class="input-footer">
+        <a routerLink="/chat" (click)="closeChat()" class="view-full-link">
+          <span class="material-symbols-rounded">open_in_new</span> View Full Chat
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

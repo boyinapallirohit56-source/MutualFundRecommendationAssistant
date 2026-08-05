@@ -25,7 +25,7 @@ public class AIChatController : ControllerBase
             return BadRequest(new { message = "Message cannot be empty" });
 
         var userId = GetUserId();
-        var result = await _chatService.SendMessage(userId, dto.Message);
+        var result = await _chatService.SendMessage(userId, dto.Message, dto.CurrentPage);
         return Ok(result);
     }
 

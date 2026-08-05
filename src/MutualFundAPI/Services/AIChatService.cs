@@ -21,7 +21,7 @@ public class AIChatService
         _httpClient = httpClientFactory.CreateClient("OpenAI");
     }
 
-    public async Task<ChatResponseDTO> SendMessage(int userId, string userMessage)
+    public async Task<ChatResponseDTO> SendMessage(int userId, string userMessage, string? currentPage = null)
     {
         // Save user message
         _context.ChatMessages.Add(new ChatMessage
@@ -33,7 +33,7 @@ public class AIChatService
         await _context.SaveChangesAsync();
 
         // Get user context for personalized responses
-        var userContext = await BuildUserContext(userId);
+        var userContext = await BuildUserContext(userId, currentPage);
 
         // Get recent chat history (last 10 messages)
         var history = await _context.ChatMessages
@@ -79,7 +79,7 @@ public class AIChatService
             .ToListAsync();
     }
 
-    private async Task<string> BuildUserContext(int userId)
+    private async Task<string> BuildUserContext(int userId, string? currentPage = null)
     {
         var profile = await _context.UserProfiles.FirstOrDefaultAsync(p => p.UserId == userId);
         var assessment = await _context.RiskAssessments
@@ -100,7 +100,39 @@ public class AIChatService
             context += $"Risk Profile: {assessment.RiskProfile}, Risk Score: {assessment.TotalScore}/100. ";
         }
 
+        // Add current page context for more relevant responses
+        if (!string.IsNullOrWhiteSpace(currentPage))
+        {
+            var pageContext = GetPageContext(currentPage);
+            if (!string.IsNullOrEmpty(pageContext))
+            {
+                context += $"The user is currently on the '{currentPage}' page. {pageContext} ";
+            }
+        }
+
         return context;
+    }
+
+    private static string GetPageContext(string currentPage)
+    {
+        return currentPage?.ToLower() switch
+        {
+            "dashboard" => "They are viewing their investment dashboard with portfolio summary, goals, and recent activity. Prioritize answers about their overall financial health and next steps.",
+            "portfolio" => "They are viewing their portfolio holdings and analysis. Prioritize answers about portfolio diversification, rebalancing, and fund performance.",
+            "funds" or "fund-list" => "They are browsing mutual funds to discover new investment options. Help them understand fund metrics and selection criteria.",
+            "fund-compare" => "They are comparing multiple mutual funds side by side. Help them understand comparison metrics like CAGR, Sharpe ratio, expense ratio, and which fund might suit their profile.",
+            "fund-factsheet" => "They are viewing a specific fund's detailed factsheet. Help them understand the fund's metrics, risks, and suitability.",
+            "risk-assessment" => "They are taking or reviewing their risk assessment questionnaire. Help them understand risk profiles and what their answers mean for their investments.",
+            "sip-calculator" => "They are using the SIP calculator. Help them understand SIP concepts, compounding, and how to choose the right SIP amount.",
+            "what-if" => "They are using the what-if scenario simulator. Help them understand how different scenarios affect their investments.",
+            "tax-saving" => "They are exploring tax-saving investment options. Help them understand ELSS, Section 80C, and tax-efficient investing.",
+            "financial-health" => "They are checking their financial health score. Help them understand what factors affect financial health and how to improve.",
+            "stress-test" => "They are running stress tests on their portfolio. Help them understand market risk, drawdowns, and portfolio resilience.",
+            "reports" => "They are viewing or generating investment reports. Help them interpret the data and insights in their reports.",
+            "watchlist" => "They are managing their fund watchlist. Help them decide which funds to track and when to invest.",
+            "onboarding" => "They are setting up or editing their investment profile. Help them understand why each detail matters for recommendations.",
+            _ => ""
+        };
     }
 
     private async Task<string> CallOpenAI(string userContext, List<ChatMessage> history, string userMessage)

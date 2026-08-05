@@ -3,6 +3,7 @@ namespace MutualFundAPI.Models.DTOs;
 public class ChatRequestDTO
 {
     public string Message { get; set; } = string.Empty;
+    public string? CurrentPage { get; set; }
 }
 
 public class ChatResponseDTO
